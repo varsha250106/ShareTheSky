@@ -10,17 +10,15 @@
     <link rel="stylesheet" href="style.css" />
     
     <style>
-        /* Essential styles for the clickable logo */
+        /* Essential inline fix for the clickable logo link */
         .logo a {
             text-decoration: none;
             color: inherit;
-            display: inline-block;
-            transition: 0.3s;
-        }
-        .logo a:hover {
-            opacity: 0.8;
-            transform: scale(1.02);
-            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer !important;
+            user-select: none;
         }
     </style>
 </head>
@@ -53,6 +51,7 @@
     <div class="hero-content">
         <h2>Capture the Sky. Share the Magic.</h2>
         <p>A community where everyone uploads their sky photos together. 🌤️</p>
+        
         <a href="upload.html" class="main-upload-btn">Upload Your Sky</a>
     </div>
 </section>
@@ -97,9 +96,18 @@
 
     if (menuToggle) {
         menuToggle.addEventListener('click', () => {
+            // This line toggles the 'active' class you defined in your CSS media query
             navList.classList.toggle('active');
         });
     }
+
+    // Close menu when a link is clicked (Optional, good for user experience)
+    const navLinks = document.querySelectorAll('.nav-links a');
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            navList.classList.remove('active');
+        });
+    });
 </script>
 
 </body>
