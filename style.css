@@ -225,3 +225,55 @@ footer {
 .input-group input:focus {
     border-color: #3e3efc;
 }
+/* Centers the card on the screen */
+.upload-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+/* The White Glass Card */
+.upload-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    padding: 50px;
+    border-radius: 30px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    max-width: 550px;
+    width: 100%;
+    text-align: center;
+}
+
+/* The Dashed Upload Box inside the card */
+.upload-box {
+    border: 2px dashed #3e3efc;
+    background: rgba(255, 255, 255, 0.5);
+    padding: 40px 20px;
+    border-radius: 20px;
+    margin-bottom: 25px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.upload-box:hover {
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.upload-icon {
+    font-size: 50px;
+    margin-bottom: 10px;
+}
+
+/* The Caption Input */
+.input-group input {
+    width: 100%;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    margin-bottom: 25px;
+    font-size: 16px;
+    outline: none;
+}
