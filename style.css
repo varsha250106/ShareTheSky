@@ -1,39 +1,109 @@
-/* GENERAL */
+/* =========================================
+   1. CORE STYLES (Body & Background)
+   ========================================= */
 body {
     margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
-    background: linear-gradient(to bottom, #a8c0ff, #fbc2eb); /* sky colors */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to bottom, #a8c0ff, #fbc2eb);
     color: #333;
+    min-height: 100vh;
 }
 
-/* HEADER */
+/* =========================================
+   2. HEADER & NAVIGATION (The Fix is Here!)
+   ========================================= */
 header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(5px);
+    padding: 15px 5%;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
-.logo {
-    font-size: 28px;
-    font-weight: bold;
-    color: #2d2dff;
-}
-
-nav a {
-    margin: 0 10px;
+.logo a {
     text-decoration: none;
+    color: #1c1c8f;
+    font-size: 24px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer !important;
+}
+
+/* Desktop Navigation Links */
+.nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #333;
     font-weight: 600;
-    color: #000;
+    transition: 0.3s;
 }
 
-nav a:hover {
-    color: #2d2dff;
+.nav-links a:hover {
+    color: #6c5ce7;
 }
 
-/* HERO */
+/* Mobile Menu Toggle (The 3 Lines) */
+.menu-toggle {
+    display: none; /* Hidden on computers */
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.menu-toggle span {
+    width: 25px;
+    height: 3px;
+    background: #6c5ce7;
+    border-radius: 5px;
+}
+
+/* --- MOBILE RESPONSIVE LOGIC --- */
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: flex; /* Shows 3 lines on mobile */
+    }
+
+    .nav-links {
+        display: none; /* Hides links initially */
+        flex-direction: column;
+        position: absolute;
+        top: 70px;
+        right: 5%;
+        background: white;
+        width: 200px;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        z-index: 1001;
+    }
+
+    /* This is the rule that the JavaScript triggers */
+    .nav-links.active {
+        display: flex !important;
+    }
+
+    .nav-links a {
+        margin: 10px 0;
+        font-size: 18px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 5px;
+    }
+}
+
+/* =========================================
+   3. HERO & INFO SECTIONS
+   ========================================= */
 .hero {
     text-align: center;
     padding: 80px 20px;
@@ -41,311 +111,29 @@ nav a:hover {
 
 .hero h2 {
     font-size: 40px;
-    margin-bottom: 10px;
     color: #1c1c8f;
+    margin-bottom: 10px;
 }
 
-.btn {
+.main-upload-btn {
     display: inline-block;
-    padding: 12px 25px;
-    margin-top: 15px;
-    background: #2d2dff;
-    color: #fff;
-    border-radius: 6px;
+    padding: 15px 35px;
+    background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+    color: white;
+    border-radius: 30px;
     text-decoration: none;
     font-weight: bold;
+    box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3);
+    transition: 0.3s;
 }
 
-.btn:hover {
-    background: #1b1bac;
+.main-upload-btn:hover {
+    transform: translateY(-3px);
 }
 
-/* INFO SECTION */
-.info {
-    padding: 40px;
-    text-align: center;
-}
-
-/* FOOTER */
-footer {
-    text-align: center;
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.6);
-    margin-top: 40px;
-}
-.upload-section {
-    text-align: center;
-    padding: 50px 20px;
-}
-
-.upload-section input[type="file"] {
-    margin: 20px 0;
-    padding: 10px;
-}
-
-.preview-box {
-    margin-top: 20px;
-}
-
-#previewImage {
-    width: 300px;
-    border-radius: 10px;
-    margin-top: 10px;
-    display: none;
-}
-.gallery {
-    padding: 40px;
-    text-align: center;
-}
-
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-    margin-top: 30px;
-}
-
-.grid img {
-    width: 100%;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-}
-/* UPLOAD PAGE STYLE */
-.upload-section {
-    text-align: center;
-    padding: 50px 20px;
-}
-
-.upload-section input[type="file"] {
-    margin: 20px 0;
-    padding: 12px;
-    border: 2px solid #4a4aff;
-    border-radius: 8px;
-    background: white;
-    cursor: pointer;
-}
-
-.preview-box {
-    margin-top: 30px;
-    padding: 20px;
-    width: 320px;
-    margin-left: auto;
-    margin-right: auto;
-    background: rgba(255, 255, 255, 0.5);
-    border-radius: 12px;
-    backdrop-filter: blur(5px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-
-.preview-box p {
-    font-weight: bold;
-    color: #1b1bac;
-    margin-bottom: 10px;
-}
-
-#previewImage {
-    width: 100%;
-    border-radius: 12px;
-    display: none;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-}
-.gallery img {
-    width: 100%;
-    max-width: 400px;   /* Use bigger number if needed */
-    height: auto;
-    object-fit: cover;
-    border-radius: 10px;
-}
-.photoBox {
-    background: white;
-    padding: 10px;
-    margin: 15px;
-    border-radius: 12px;
-    width: 250px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.photoBox img {
-    width: 100%;
-    border-radius: 10px;
-}
-
-.caption {
-    font-weight: bold;
-    margin-top: 8px;
-}
-
-.date {
-    font-size: 12px;
-    color: gray;
-}
-.photoBox {
-    background: white;
-    padding: 10px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    text-align: center;
-}
-
-.photoBox img {
-    width: 100%;
-    border-radius: 10px;
-}
-
-.deleteBtn {
-    background-color: red;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    margin-top: 8px;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-.deleteBtn:hover {
-    background-color: darkred;
-}
-.likeBtn {
-    background-color: #ff4081;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    margin-top: 8px;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-.likeBtn:hover {
-    background-color: #e91e63;
-}
-.grid {
-    column-count: 3;        /* number of columns */
-    column-gap: 15px;       /* space between columns */
-}
-
-.photoBox {
-    break-inside: avoid;    /* prevent breaking images */
-    margin-bottom: 15px;
-    background: white;
-    padding: 10px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
-.photoBox img {
-    width: 100%;
-    border-radius: 10px;
-    display: block;
-}
-@media (max-width: 800px) {
-    .grid {
-        column-count: 2;
-    }
-}
-
-@media (max-width: 500px) {
-    .grid {
-        column-count: 1;
-    }
-}
-/* ------ Creator Profile Page ------ */
-
-.creatorHeader {
-    text-align: center;
-    padding: 30px;
-    background: linear-gradient(#87CEEB, #ffffff);
-}
-
-.profilePic {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid #fff;
-}
-
-.bio {
-    max-width: 500px;
-    margin: 10px auto;
-    color: #444;
-}
-
-.stats span {
-    margin: 10px;
-    font-weight: bold;
-}
-
-.creatorGallery {
-    padding: 20px;
-}
-
-.likeBtn {
-    margin-top: 8px;
-    padding: 5px 10px;
-    background: #ff7f7f;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-.likeBtn:hover {
-    background: #ff5c5c;
-}
-/* Gallery Grid */
-.gallery-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 25px;
-    padding: 20px;
-}
-
-/* Individual Photo Card */
-.photo-card {
-    border: 1px solid #eee;
-    border-radius: 12px;
-    overflow: hidden;
-    background: #fff;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    text-align: center;
-    padding-bottom: 20px;
-    transition: transform 0.2s ease;
-}
-
-.photo-card:hover {
-    transform: translateY(-5px);
-}
-
-.photo-card img {
-    width: 100%;
-    height: 220px;
-    object-fit: cover;
-}
-
-/* The Like Button */
-.like-btn {
-    padding: 10px 20px;
-    border: 2px solid #ff4757;
-    background: white;
-    color: #ff4757;
-    border-radius: 25px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: bold;
-    margin-top: 10px;
-}
-
-/* 🔥 The "Unlike" State (When already liked) */
-.like-btn.liked {
-    background: #ff4757;
-    color: white;
-    box-shadow: 0 4px 10px rgba(255, 71, 87, 0.3);
-}
-
-.like-btn:hover {
-    opacity: 0.8;
-}
-/* Container for the cards */
+/* =========================================
+   4. GALLERY & UPLOAD GRID
+   ========================================= */
 .gallery-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -353,13 +141,17 @@ footer {
     padding: 20px;
 }
 
-/* Individual Card */
 .photo-card {
     background: white;
     border-radius: 15px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     text-align: center;
+    transition: 0.3s;
+}
+
+.photo-card:hover {
+    transform: scale(1.02);
 }
 
 .photo-card img {
@@ -368,975 +160,41 @@ footer {
     object-fit: cover;
 }
 
-/* Default Like Button */
-.like-btn {
-    padding: 8px 15px;
-    border: 2px solid #ff4757;
-    background: white;
-    color: #ff4757;
-    border-radius: 20px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: 0.3s;
-}
-
-/* 🔥 The "Liked" State (Crucial) */
-.like-btn.liked {
-    background: #ff4757;
-    color: white;
-}
-
-.like-btn:disabled {
-    opacity: 0.6;
-    cursor: wait;
-}
-.delete-btn {
-    display: block;
-    margin: 10px auto 0;
-    color: #ff4d4d;
-    background: none;
-    border: none;
-    text-decoration: underline;
-    cursor: pointer;
-    font-size: 12px;
-}
-.upload-container {
+/* =========================================
+   5. ABOUT PAGE CARDS
+   ========================================= */
+.about-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 80vh;
-}
-
-.upload-card {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(10px);
-    padding: 40px;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    text-align: center;
-    max-width: 450px;
-    width: 90%;
-}
-
-.upload-box {
-    border: 3px dashed #a29bfe;
     padding: 40px 20px;
-    border-radius: 15px;
-    cursor: pointer;
-    background: rgba(162, 155, 254, 0.05);
-    transition: 0.3s;
-    margin: 20px 0;
-}
-
-.upload-box:hover {
-    background: rgba(162, 155, 254, 0.15);
-    border-color: #6c5ce7;
-}
-
-.upload-icon {
-    font-size: 50px;
-    margin-bottom: 10px;
-}
-
-.preview-img {
-    width: 100%;
-    max-height: 200px;
-    object-fit: cover;
-    border-radius: 10px;
-    margin-top: 10px;
-}
-
-#captionInput {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    outline: none;
-}
-
-.main-upload-btn {
-    width: 100%;
-    padding: 15px;
-    background: linear-gradient(135deg, #6c5ce7, #a29bfe);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3);
-}
-
-.main-upload-btn:hover {
-    transform: translateY(-2px);
-}
-/* Gallery Image Hover */
-.gallery-img {
-    width: 100%;
-    cursor: zoom-in;
-    transition: transform 0.3s ease;
-}
-
-.gallery-img:hover {
-    transform: scale(1.02);
-}
-
-/* Full Screen Modal */
-.sky-modal {
-    display: none; 
-    position: fixed;
-    z-index: 9999;
-    left: 0; top: 0;
-    width: 100%; height: 100%;
-    background-color: rgba(0, 0, 0, 0.95);
-    backdrop-filter: blur(8px);
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-container {
-    text-align: center;
-    max-width: 90%;
-}
-
-#modalImg {
-    max-height: 80vh;
-    max-width: 100%;
-    border-radius: 12px;
-}
-
-.modal-details {
-    margin-top: 15px;
-    color: white;
-}
-
-/* Download Button */
-.download-btn {
-    display: inline-block;
-    margin-top: 15px;
-    padding: 12px 25px;
-    background-color: #6c5ce7;
-    color: white;
-    text-decoration: none;
-    border-radius: 30px;
-    font-weight: bold;
-}
-
-/* Delete Button */
-.delete-btn {
-    background: none;
-    border: none;
-    color: #ff7675;
-    text-decoration: underline;
-    cursor: pointer;
-    font-size: 13px;
-    margin-top: 10px;
-}
-
-/* Close Modal X */
-.close-sky {
-    position: absolute;
-    top: 20px; right: 35px;
-    color: white;
-    font-size: 50px;
-    cursor: pointer;
-}
-/* This keeps the logo looking like text, not a blue link */
-.logo a {
-    text-decoration: none;
-    color: inherit; /* Inherits the color you already set for .logo */
-    display: inline-block;
-}
-
-/* This makes it feel interactive when you hover over it */
-.logo a:hover {
-    opacity: 0.8;
-    cursor: pointer;
-}
-/* Removes the blue color and underline from the logo link */
-.logo a {
-    text-decoration: none;
-    color: inherit; /* Keeps the color you originally chose for .logo */
-    display: inline-block;
-}
-
-/* Changes the cursor to a hand and slightly fades the logo when hovered */
-.logo a:hover {
-    opacity: 0.8;
-    cursor: pointer;
-}
-/* 1. Target the link inside the logo */
-.logo a {
-    text-decoration: none !important; /* Remove underline */
-    color: inherit !important;           /* Keep your original logo color */
-    cursor: pointer !important;        /* FORCE the hand icon to appear */
-    display: inline-block;             /* Makes the clickable area correct */
-    user-select: none;                 /* Prevents the text cursor from appearing */
-}
-
-/* 2. Optional: Add a slight change so users know it's a button */
-.logo a:hover {
-    opacity: 0.8;
-}
-/* The Logo Link Container */
-.logo a {
-    display: flex;
-    align-items: center;
-    gap: 12px; /* Space between icon and text */
-    text-decoration: none;
-    color: inherit;
-    cursor: pointer !important;
-}
-
-/* The Camera Lens Icon */
-.logo-icon {
-    width: 40px;
-    height: 40px;
-    background: #333; /* Dark camera body color */
-    border-radius: 8px; /* Rounded square like a camera body */
-    position: relative;
-    display: inline-block;
-}
-
-/* The Lens / Sunset Circle */
-.logo-icon::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 26px;
-    height: 26px;
-    /* This creates the sunset gradient inside the lens */
-    background: linear-gradient(to bottom, #ff9a9e 0%, #fad0c4 50%, #ffd1ff 100%);
-    border: 3px solid #555; /* The lens rim */
-    border-radius: 50%;
-}
-
-/* The Lens Flare (The little white dot) */
-.logo-icon::after {
-    content: '';
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 5px;
-    height: 5px;
-    background: rgba(255, 255, 255, 0.6);
-    border-radius: 50%;
-}
-
-/* Make it pop on hover */
-.logo a:hover .logo-icon {
-    transform: scale(1.1);
-    transition: 0.3s;
-}
-/* --- LOGO & NAVIGATION STYLES --- */
-
-.logo a {
-    display: flex;
-    align-items: center;
-    gap: 12px;                  /* Space between camera and text */
-    text-decoration: none !important;
-    color: inherit !important;
-    cursor: pointer !important; /* Force the hand icon */
-    user-select: none;          /* Prevents the text-selection cursor */
-    transition: transform 0.2s ease;
-}
-
-/* The Camera Body */
-.logo-icon {
-    width: 38px;
-    height: 30px;
-    background: #2d2d2d;       /* Dark camera body */
-    border-radius: 6px;
-    position: relative;
-    display: inline-block;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-
-/* The Camera "Shutter Button" on top */
-.logo-icon::before {
-    content: '';
-    position: absolute;
-    top: -3px;
-    left: 8px;
-    width: 10px;
-    height: 3px;
-    background: #2d2d2d;
-    border-radius: 2px 2px 0 0;
-}
-
-/* The Camera Lens (Sunset Gradient) */
-.logo-icon::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 20px;
-    height: 20px;
-    /* This creates the sunset vibe inside the lens */
-    background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 50%, #a18cd1 100%);
-    border: 2px solid #444;    /* Lens rim */
-    border-radius: 50%;
-    box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
-}
-
-/* Hover Effect: Makes the whole logo "pop" */
-.logo a:hover {
-    transform: scale(1.05);
-}
-
-.logo a:hover .logo-icon {
-    background: #444; /* Lights up the camera body slightly */
-}
-/* --- LOGO NAVIGATION & ICON STYLES --- */
-
-/* This targets the <a> tag we just put inside the H1 */
-.logo a {
-    display: flex;
-    align-items: center;
-    gap: 12px;                  /* Space between camera and text */
-    text-decoration: none !important;
-    color: inherit !important;
-    
-    /* 🛑 FIXES THE CURSOR ISSUE 🛑 */
-    cursor: pointer !important; /* Forces the 'Hand' icon */
-    user-select: none;          /* Prevents the 'Text I-beam' cursor */
-    
-    transition: transform 0.2s ease;
-}
-
-/* The Camera Body */
-.logo-icon {
-    width: 38px;
-    height: 30px;
-    background: #2d2d2d;       /* Dark camera body */
-    border-radius: 6px;
-    position: relative;
-    display: inline-block;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    cursor: pointer !important;
-}
-
-/* The Camera "Shutter Button" on top */
-.logo-icon::before {
-    content: '';
-    position: absolute;
-    top: -3px;
-    left: 8px;
-    width: 10px;
-    height: 3px;
-    background: #2d2d2d;
-    border-radius: 2px 2px 0 0;
-}
-
-/* The Camera Lens (Sunset Gradient) */
-.logo-icon::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 20px;
-    height: 20px;
-    /* Captured Sunset Moment Colors */
-    background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 50%, #a18cd1 100%);
-    border: 2px solid #444;
-    border-radius: 50%;
-    box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
-}
-
-/* Hover Effect for the whole logo */
-.logo a:hover {
-    transform: scale(1.05); /* Slight zoom when hovered */
-}
-.logo a {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    text-decoration: none !important;
-    color: inherit !important;
-    
-    /* This makes the cursor change to a hand */
-    cursor: pointer !important; 
-    
-    /* This prevents the "text line" selection cursor */
-    user-select: none; 
-}
-
-/* Ensure the camera icon also shows the hand cursor */
-.logo-icon {
-    cursor: pointer !important;
-}
-/* --- ABOUT ME PAGE STYLES --- */
-
-.about-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 50px 20px;
-    min-height: 80vh;
 }
 
 .about-card {
     background: white;
     padding: 40px;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    max-width: 600px;
-    text-align: center;
-}
-
-.profile-pic {
-    font-size: 60px;
-    background: #f0f0f0;
-    width: 100px;
-    height: 100px;
-    line-height: 100px;
-    border-radius: 50%;
-    margin: 0 auto 20px;
-}
-
-.subtitle {
-    color: #a18cd1;
-    font-weight: bold;
-    margin-bottom: 20px;
-}
-
-.about-content {
-    text-align: left;
-    line-height: 1.6;
-    color: #444;
-}
-
-.about-content h3 {
-    margin-top: 25px;
-    color: #333;
-}
-
-.skills-tag {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-top: 20px;
-}
-
-.skills-tag span {
-    background: #f0f0f0;
-    padding: 5px 15px;
-    border-radius: 15px;
-    font-size: 14px;
-    color: #666;
-}
-/* --- ABOUT ME PAGE STYLING --- */
-
-.about-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 60px 20px;
-    min-height: 80vh;
-}
-
-.about-card {
-    background: white;
-    padding: 40px;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    max-width: 600px;
+    border-radius: 25px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    max-width: 550px;
     width: 100%;
-    text-align: center;
+    box-sizing: border-box;
 }
-
-.profile-pic {
-    font-size: 50px;
-    background: #f0f0f0;
-    width: 90px;
-    height: 90px;
-    line-height: 90px;
-    border-radius: 50%;
-    margin: 0 auto 20px;
-}
-
-.subtitle {
-    color: #a18cd1;
-    font-weight: bold;
-    margin-top: -10px;
-    margin-bottom: 25px;
-}
-
-.about-content {
-    text-align: left;
-    line-height: 1.6;
-    color: #444;
-}
-
-.skills-tag {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin: 20px 0;
-}
-
-.skills-tag span {
-    background: #f3e5f5;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 13px;
-    color: #7b1fa2;
-}
-/* Styling for the Contact Box */
-.contact-info {
-    background: #fdf6ff; /* Very light purple tint */
-    padding: 15px;
-    border-radius: 12px;
-    margin: 20px 0;
-    border-left: 5px solid #a18cd1; /* Matches your theme */
-    text-align: left;
-}
-
-.contact-info p {
-    margin: 10px 0;
-    font-size: 15px;
-}
-
-.contact-info a {
-    color: #a18cd1;
-    text-decoration: none;
-    font-weight: 600;
-}
-
-.contact-info a:hover {
-    color: #ff9a9e; /* Pinkish-orange hover from your gradient */
-    text-decoration: underline;
-}
-/* --- ABOUT ME PAGE LAYOUT --- */
-
-.about-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 80px 20px; /* Space from top and bottom */
-    min-height: 80vh;
-}
-
-.about-card {
-    background: white;
-    padding: 40px;
-    border-radius: 25px; /* Rounded corners */
-    box-shadow: 0 15px 35px rgba(0,0,0,0.1); /* Soft shadow */
-    max-width: 550px; /* Limits width so it doesn't stretch */
-    width: 100%;
-    text-align: center;
-}
-
-.profile-pic {
-    font-size: 50px;
-    background: #f3f3f3;
-    width: 100px;
-    height: 100px;
-    line-height: 100px;
-    border-radius: 50%;
-    margin: 0 auto 20px;
-}
-
-.subtitle {
-    color: #a18cd1;
-    font-weight: bold;
-    margin-bottom: 30px;
-}
-
-.about-content {
-    text-align: left; /* Text is easier to read left-aligned */
-    line-height: 1.7;
-    color: #333;
-}
-
-/* --- CONTACT INFO BOX --- */
 
 .contact-info {
     background: #f8f6ff;
-    padding: 20px;
-    border-radius: 15px;
+    padding: 15px;
+    border-radius: 12px;
     margin: 20px 0;
-    border-left: 6px solid #a18cd1;
+    border-left: 5px solid #a18cd1;
+    text-align: left;
 }
 
-.contact-info p {
-    margin: 12px 0;
-}
-
-.contact-info a {
-    color: #a18cd1;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.contact-info a:hover {
-    color: #ff9a9e;
-    text-decoration: underline;
-}
-
-/* --- SKILLS TAGS --- */
-
-.skills-tag {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-top: 25px;
-}
-
-.skills-tag span {
-    background: #eee;
-    padding: 8px 15px;
-    border-radius: 20px;
-    font-size: 13px;
-}
-<style>
-    .about-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 40px 20px; /* Reduced padding to fit more on screen */
-        min-height: 90vh;
-    }
-
-    .about-card {
-        background: white;
-        padding: 30px; /* Adjusted padding */
-        border-radius: 25px;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-        max-width: 550px;
-        width: 100%;
-        text-align: center;
-        display: flex;
-        flex-direction: column; /* Stack items vertically */
-        align-items: center;
-        animation: fadeIn 0.8s ease;
-    }
-
-    .about-content {
-        text-align: left;
-        line-height: 1.5; /* Slightly tighter line height */
-        color: #333;
-        width: 100%;
-    }
-
-    .contact-info {
-        background: #f8f6ff;
-        padding: 12px;
-        border-radius: 12px;
-        margin: 15px 0;
-        border-left: 5px solid #a18cd1;
-    }
-
-    /* This fixes the button being beyond the box */
-    .main-upload-btn {
-        background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
-        color: white;
-        padding: 12px 0; /* Full width padding */
-        width: 100%;    /* Makes it stay inside the card boundaries */
-        border-radius: 30px;
-        text-decoration: none;
-        font-weight: bold;
-        margin-top: 20px;
-        display: block; /* Ensures it behaves like a block inside the flex container */
-        transition: transform 0.3s ease;
-    }
-
-    .main-upload-btn:hover {
-        transform: scale(1.02);
-    }
-</style>
-.main-upload-btn {
-    background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
-    color: white;
-    padding: 12px 30px; /* Adjusted padding */
-    border-radius: 30px;
-    border: none;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-    margin-top: 25px;
-    display: inline-block; /* Keeps it centered as a button */
-    text-decoration: none;
-    box-shadow: 0 4px 15px rgba(161, 140, 209, 0.3);
-    
-    /* 🛑 THE ALIGNMENT FIX 🛑 */
-    max-width: 90%;       /* Ensures it never goes beyond the card */
-    box-sizing: border-box; /* Includes padding in the width calculation */
-}
-
-.main-upload-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(161, 140, 209, 0.4);
-}
-.about-card {
-    /* ... your other styles ... */
-    padding: 40px 30px;
-    box-sizing: border-box; /* This keeps the button from going outside */
-}
-
-.main-upload-btn {
-    /* ... your other styles ... */
-    display: inline-block;
-    max-width: 100%;        /* Prevents the button from being wider than the card */
-    box-sizing: border-box;
-}
-/* --- RESPONSIVE HEADER STYLES --- */
-
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 5%;
-    background: white;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
-
-/* Desktop Nav */
-.nav-links a {
-    margin-left: 20px;
-    text-decoration: none;
-    color: #333;
-    font-weight: 500;
-}
-
-/* Mobile Menu Icon (Hidden by default) */
-.menu-toggle {
-    display: none;
-    flex-direction: column;
-    cursor: pointer;
-    gap: 5px;
-}
-
-.menu-toggle span {
-    width: 25px;
-    height: 3px;
-    background: #a18cd1;
-    border-radius: 5px;
-}
-
-/* --- MOBILE MEDIA QUERY --- */
-@media (max-width: 768px) {
-    .menu-toggle {
-        display: flex; /* Show icon on mobile */
-    }
-
-    .nav-links {
-        display: none; /* Hide links by default on mobile */
-        flex-direction: column;
-        position: absolute;
-        top: 70px;
-        right: 5%;
-        background: white;
-        width: 200px;
-        padding: 20px;
-        border-radius: 15px;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-    }
-
-    .nav-links.active {
-        display: flex; /* Show when toggled */
-    }
-
-    .nav-links a {
-        margin: 10px 0;
-    }
-}
-/* This part makes the menu actually show up when clicked */
-@media (max-width: 768px) {
-    .nav-links {
-        display: none; /* Keep it hidden by default on mobile */
-        flex-direction: column;
-        position: absolute;
-        top: 70px;
-        right: 5%;
-        background: white;
-        width: 200px;
-        padding: 20px;
-        border-radius: 15px;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        z-index: 1001;
-    }
-
-    /* When JavaScript adds the 'active' class, this makes it visible */
-    .nav-links.active {
-        display: flex !important;
-    }
-
-    .nav-links a {
-        margin: 10px 0;
-        color: #a18cd1; /* Matches your theme */
-        font-size: 18px;
-    }
-}
-/* --- MOBILE MENU STYLES --- */
-@media (max-width: 768px) {
-    /* 1. Hide the links by default on mobile */
-    .nav-links {
-        display: none; 
-        flex-direction: column;
-        position: absolute;
-        top: 70px;
-        right: 5%;
-        background: white;
-        width: 200px;
-        padding: 20px;
-        border-radius: 15px;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        z-index: 1001; /* Keeps it above other content */
-    }
-
-    /* 2. SHOW the links when JavaScript adds the 'active' class */
-    .nav-links.active {
-        display: flex !important;
-    }
-
-    /* 3. Style the links for easier clicking on phones */
-    .nav-links a {
-        margin: 10px 0;
-        color: #a18cd1;
-        font-size: 18px;
-        text-align: center;
-        border-bottom: 1px solid #f0f0f0;
-        padding-bottom: 5px;
-    }
-    
-    .nav-links a:last-child {
-        border-bottom: none;
-    }
-}
-/* --- MOBILE MENU STYLES --- */
-@media (max-width: 768px) {
-    /* 1. Hide the links by default on mobile */
-    .nav-links {
-        display: none; 
-        flex-direction: column;
-        position: absolute;
-        top: 70px;
-        right: 5%;
-        background: white;
-        width: 200px;
-        padding: 20px;
-        border-radius: 15px;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        z-index: 1001; /* Keeps it above other content */
-    }
-
-    /* 2. SHOW the links when JavaScript adds the 'active' class */
-    .nav-links.active {
-        display: flex !important;
-    }
-
-    /* 3. Style the links for easier clicking on phones */
-    .nav-links a {
-        margin: 10px 0;
-        color: #a18cd1;
-        font-size: 18px;
-        text-align: center;
-        border-bottom: 1px solid #f0f0f0;
-        padding-bottom: 5px;
-    }
-    
-    .nav-links a:last-child {
-        border-bottom: none;
-    }
-}
-/* --- 1. GENERAL HEADER STYLES --- */
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 5%;
-    background: white;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-}
-
-.logo a {
-    text-decoration: none;
-    color: #333;
-    font-size: 24px;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-/* --- 2. DESKTOP NAVIGATION --- */
-.nav-links {
-    display: flex;
-    gap: 25px;
-}
-
-.nav-links a {
-    text-decoration: none;
-    color: #333;
-    font-weight: 500;
-    transition: 0.3s;
-}
-
-.nav-links a:hover {
-    color: #a18cd1;
-}
-
-/* --- 3. MOBILE MENU ICON (The 3 Lines) --- */
-.menu-toggle {
-    display: none; /* Hidden on Desktop */
-    flex-direction: column;
-    gap: 5px;
-    cursor: pointer;
-}
-
-.menu-toggle span {
-    width: 25px;
-    height: 3px;
-    background: #a18cd1;
-    border-radius: 5px;
-    transition: 0.3s;
-}
-
-/* --- 4. MOBILE RESPONSIVE LOGIC (The Fix) --- */
-@media (max-width: 768px) {
-    .menu-toggle {
-        display: flex; /* Show 3 lines on mobile */
-    }
-
-    .nav-links {
-        display: none; /* Hide the paths by default */
-        flex-direction: column;
-        position: absolute;
-        top: 70px;
-        right: 5%;
-        background: white;
-        width: 200px;
-        padding: 20px;
-        border-radius: 15px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        z-index: 1001;
-    }
-
-    /* THIS IS THE KEY: When JS adds the 'active' class */
-    .nav-links.active {
-        display: flex !important; 
-    }
-
-    .nav-links a {
-        margin: 10px 0;
-        font-size: 18px;
-        color: #333;
-        border-bottom: 1px solid #f5f5f5;
-        padding-bottom: 5px;
-    }
-
-    .nav-links a:last-child {
-        border-bottom: none;
-    }
+/* =========================================
+   6. FOOTER
+   ========================================= */
+footer {
+    text-align: center;
+    padding: 20px;
+    margin-top: 40px;
+    background: rgba(255, 255, 255, 0.5);
 }
