@@ -1,6 +1,8 @@
 /* =========================================
-   1. GLOBAL RESET & BASE STYLES
+   1. GLOBAL RESET & FONTS
    ========================================= */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
 * {
     margin: 0;
     padding: 0;
@@ -9,43 +11,44 @@
 }
 
 body {
-    /* The signature lavender-to-pink gradient */
     background: linear-gradient(135deg, #c2c2f0 0%, #f7c7db 100%);
-    background-attachment: fixed; /* Keeps gradient smooth during scroll */
+    background-attachment: fixed;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     color: #333;
+    overflow-x: hidden;
 }
 
 /* =========================================
-   2. NAVIGATION HEADER
+   2. NAVIGATION BAR
    ========================================= */
 header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 5%;
+    padding: 25px 8%;
     background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(10px);
 }
 
 .logo a {
     text-decoration: none;
-    font-size: 24px;
+    font-size: 26px;
     font-weight: 700;
     color: #1c1c8f;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
 }
 
 .nav-links a {
     text-decoration: none;
     color: #333;
-    margin-left: 20px;
+    margin-left: 30px;
     font-weight: 600;
     transition: 0.3s;
+    font-size: 15px;
 }
 
 .nav-links a:hover {
@@ -53,7 +56,7 @@ header {
 }
 
 /* =========================================
-   3. HERO SECTION (Index Page)
+   3. INDEX PAGE (Hero & Features)
    ========================================= */
 .hero-section {
     flex: 1;
@@ -62,120 +65,120 @@ header {
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 60px 20px;
+    padding: 100px 20px; /* Big spacing at top/bottom */
+}
+
+.hero-content {
+    margin-bottom: 100px; /* Huge gap between hero and "Why" section */
 }
 
 .hero-content h1 {
-    font-size: clamp(2rem, 5vw, 3rem);
+    font-size: clamp(2.5rem, 6vw, 4rem);
     color: #1c1c8f;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
+    line-height: 1.1;
+}
+
+.hero-content p {
+    font-size: 1.2rem;
+    color: #555;
+    margin-bottom: 40px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .cta-button {
     display: inline-block;
     background-color: #3e3efc;
     color: white;
-    padding: 12px 35px;
-    border-radius: 8px;
+    padding: 16px 40px;
+    border-radius: 12px;
     text-decoration: none;
     font-weight: 600;
-    box-shadow: 0 4px 15px rgba(62, 62, 252, 0.4);
-    transition: 0.3s;
+    box-shadow: 0 10px 20px rgba(62, 62, 252, 0.3);
+    transition: all 0.3s ease;
 }
 
 .cta-button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(62, 62, 252, 0.6);
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(62, 62, 252, 0.5);
+}
+
+.features {
+    max-width: 800px;
+    width: 100%;
+}
+
+.feature-item {
+    margin-bottom: 60px; /* Space between each point */
+}
+
+.feature-item h3 {
+    font-size: 26px;
+    color: #1c1c8f;
+    margin-bottom: 15px;
+}
+
+.feature-item p {
+    font-size: 17px;
+    line-height: 1.8;
+    color: #444;
 }
 
 /* =========================================
-   4. UPLOAD PAGE STYLES (The Glass Card)
+   4. UPLOAD & GALLERY (Glass Cards)
    ========================================= */
-.upload-container {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 40px 20px;
+.upload-container, .gallery-container {
+    padding: 50px 5%;
 }
 
 .upload-card {
     background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(15px);
-    padding: 40px;
-    border-radius: 20px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(20px);
+    padding: 50px;
+    border-radius: 30px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.4);
-    width: 100%;
-    max-width: 450px;
+    max-width: 550px;
+    margin: 0 auto;
     text-align: center;
 }
 
-.upload-box {
-    border: 2px dashed #3e3efc;
-    background: rgba(255, 255, 255, 0.5);
-    border-radius: 15px;
-    padding: 30px;
-    margin: 20px 0;
-    cursor: pointer;
-}
-
-/* =========================================
-   5. GALLERY GRID STYLES
-   ========================================= */
 .gallery-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 25px;
-    padding: 40px 5%;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
 }
 
 .photo-card {
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(10px);
-    border-radius: 15px;
+    border-radius: 20px;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    transition: transform 0.3s;
+    transition: 0.3s;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    text-align: center;
+    padding-bottom: 20px;
 }
 
 .photo-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-10px);
 }
 
 .gallery-img {
     width: 100%;
-    height: 200px;
+    height: 220px;
     object-fit: cover;
 }
 
-.like-btn {
-    padding: 8px 20px;
-    border: 2px solid #ff4757;
-    background: white;
-    color: #ff4757;
-    border-radius: 20px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.like-btn.liked {
-    background: #ff4757;
-    color: white;
-}
-
 /* =========================================
-   6. FOOTER & RESPONSIVE
+   5. FOOTER
    ========================================= */
 footer {
     text-align: center;
-    padding: 30px;
+    padding: 40px;
+    margin-top: auto;
     font-size: 14px;
     color: #666;
-}
-
-@media (max-width: 768px) {
-    .nav-links { display: none; } /* Add a mobile menu toggle if needed */
-    .hero-content h1 { font-size: 2.2rem; }
 }
