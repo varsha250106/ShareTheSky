@@ -554,3 +554,15 @@ footer {
     opacity: 0.8;
     cursor: pointer;
 }
+/* Removes the blue color and underline from the logo link */
+.logo a {
+    text-decoration: none;
+    color: inherit; /* Keeps the color you originally chose for .logo */
+    display: inline-block;
+}
+
+/* Changes the cursor to a hand and slightly fades the logo when hovered */
+.logo a:hover {
+    opacity: 0.8;
+    cursor: pointer;
+}
