@@ -1,5 +1,5 @@
 /* =========================================
-   1. CORE STYLES (Body & Background)
+   1. CORE STYLES 
    ========================================= */
 body {
     margin: 0;
@@ -10,65 +10,32 @@ body {
 }
 
 /* =========================================
-   1. DESKTOP HEADER (Your Original Look)
+   2. HEADER & NAVIGATION (FIXED)
    ========================================= */
 header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 5%;
-    background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(5px);
+    padding: 15px 5%;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
     position: sticky;
     top: 0;
     z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
-.nav-links {
-    display: flex;
-    gap: 20px;
-}
-
-.nav-links a {
+.logo a {
     text-decoration: none;
-    font-weight: 600;
-    color: #000;
-    transition: 0.3s;
+    color: #1c1c8f;
+    font-size: 24px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-/* =========================================
-   2. MOBILE MENU FIX (Max-width 768px)
-   ========================================= */
-@media (max-width: 768px) {
-    .menu-toggle {
-        display: flex !important; /* Forces the 3 lines to show */
-        flex-direction: column;
-        gap: 5px;
-        cursor: pointer;
-    }
-
-    /* This creates the floating menu box */
-    .nav-links {
-        display: none; /* Keep hidden until clicked */
-        flex-direction: column;
-        position: absolute;
-        top: 100%; /* Sits right under the header */
-        right: 5%;
-        background: white;
-        width: 180px;
-        padding: 15px;
-        border-radius: 12px;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-        gap: 15px;
-    }
-
-    /* THE KEY: This rule shows the menu when you click */
-    .nav-links.active {
-        display: flex !important;
-    }
-}
-
-/* Desktop Navigation Links */
+/* Desktop Menu Styles */
 .nav-links {
     display: flex;
     gap: 20px;
@@ -85,9 +52,9 @@ header {
     color: #6c5ce7;
 }
 
-/* Mobile Menu Toggle (The 3 Lines) */
+/* Three-Line Menu Icon (Hidden on Desktop) */
 .menu-toggle {
-    display: none; /* Hidden on computers */
+    display: none; 
     flex-direction: column;
     gap: 5px;
     cursor: pointer;
@@ -103,24 +70,24 @@ header {
 /* --- MOBILE RESPONSIVE LOGIC --- */
 @media (max-width: 768px) {
     .menu-toggle {
-        display: flex; /* Shows 3 lines on mobile */
+        display: flex; /* Show icon on mobile */
     }
 
     .nav-links {
-        display: none; /* Hides links initially */
+        display: none; /* Hide links by default */
         flex-direction: column;
         position: absolute;
-        top: 70px;
+        top: 60px; /* Adjusted to fit your header height */
         right: 5%;
         background: white;
-        width: 200px;
+        width: 180px;
         padding: 20px;
         border-radius: 15px;
         box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         z-index: 1001;
     }
 
-    /* This is the rule that the JavaScript triggers */
+    /* THIS MAKES IT WORK: Shown when JS adds 'active' class */
     .nav-links.active {
         display: flex !important;
     }
@@ -134,7 +101,7 @@ header {
 }
 
 /* =========================================
-   3. HERO & INFO SECTIONS
+   3. HERO, GALLERY & ABOUT SECTIONS
    ========================================= */
 .hero {
     text-align: center;
@@ -159,13 +126,6 @@ header {
     transition: 0.3s;
 }
 
-.main-upload-btn:hover {
-    transform: translateY(-3px);
-}
-
-/* =========================================
-   4. GALLERY & UPLOAD GRID
-   ========================================= */
 .gallery-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -179,11 +139,6 @@ header {
     overflow: hidden;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     text-align: center;
-    transition: 0.3s;
-}
-
-.photo-card:hover {
-    transform: scale(1.02);
 }
 
 .photo-card img {
@@ -192,24 +147,14 @@ header {
     object-fit: cover;
 }
 
-/* =========================================
-   5. ABOUT PAGE CARDS
-   ========================================= */
-.about-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 40px 20px;
-}
-
 .about-card {
     background: white;
     padding: 40px;
     border-radius: 25px;
     box-shadow: 0 15px 35px rgba(0,0,0,0.1);
     max-width: 550px;
-    width: 100%;
-    box-sizing: border-box;
+    width: 90%;
+    margin: 40px auto;
 }
 
 .contact-info {
@@ -218,15 +163,10 @@ header {
     border-radius: 12px;
     margin: 20px 0;
     border-left: 5px solid #a18cd1;
-    text-align: left;
 }
 
-/* =========================================
-   6. FOOTER
-   ========================================= */
 footer {
     text-align: center;
     padding: 20px;
-    margin-top: 40px;
     background: rgba(255, 255, 255, 0.5);
 }
