@@ -1675,3 +1675,15 @@ footer {
     transform: scale(1.05);
     filter: brightness(1.05);
 }
+/* This makes the logo and text sit perfectly side-by-side on ALL pages */
+.logo a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.header-logo {
+    width: 32px;
+    height: auto;
+}
