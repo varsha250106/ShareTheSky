@@ -277,3 +277,56 @@ footer {
     font-size: 16px;
     outline: none;
 }
+/* 1. Center the entire container */
+.upload-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh; /* Keeps it centered vertically */
+    padding: 20px;
+}
+
+/* 2. Create the neat centered box (Image 2 style) */
+.upload-card {
+    background: rgba(255, 255, 255, 0.8); /* White glass look */
+    backdrop-filter: blur(10px);
+    padding: 40px;
+    border-radius: 24px;
+    width: 100%;
+    max-width: 500px; /* THIS stops the button/box from being too long */
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* 3. Style the dashed upload area */
+.upload-box {
+    border: 2px dashed #3e3efc;
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    background: rgba(62, 62, 252, 0.05);
+}
+
+/* 4. Fix the long button */
+.cta-button {
+    width: 100%; /* Fills the 500px box, NOT the whole screen */
+    background-color: #3e3efc;
+    color: white;
+    padding: 15px;
+    border-radius: 12px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    outline: none;
+}
