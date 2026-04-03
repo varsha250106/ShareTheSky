@@ -579,3 +579,55 @@ footer {
 .logo a:hover {
     opacity: 0.8;
 }
+/* The Logo Link Container */
+.logo a {
+    display: flex;
+    align-items: center;
+    gap: 12px; /* Space between icon and text */
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer !important;
+}
+
+/* The Camera Lens Icon */
+.logo-icon {
+    width: 40px;
+    height: 40px;
+    background: #333; /* Dark camera body color */
+    border-radius: 8px; /* Rounded square like a camera body */
+    position: relative;
+    display: inline-block;
+}
+
+/* The Lens / Sunset Circle */
+.logo-icon::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 26px;
+    height: 26px;
+    /* This creates the sunset gradient inside the lens */
+    background: linear-gradient(to bottom, #ff9a9e 0%, #fad0c4 50%, #ffd1ff 100%);
+    border: 3px solid #555; /* The lens rim */
+    border-radius: 50%;
+}
+
+/* The Lens Flare (The little white dot) */
+.logo-icon::after {
+    content: '';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 5px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+}
+
+/* Make it pop on hover */
+.logo a:hover .logo-icon {
+    transform: scale(1.1);
+    transition: 0.3s;
+}
