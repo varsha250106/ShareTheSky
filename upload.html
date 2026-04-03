@@ -18,33 +18,35 @@
         <a href="index.html">Home</a>
         <a href="upload.html">Upload</a>
         <a href="gallery.html">Gallery</a>
-        <a href="about.html">Creator</a>
+        <a href="about.html">About me</a>
     </nav>
 </header>
 
 <main class="center-wrapper">
-    <section class="upload-card">
-        <h2>Upload Your Sky Photo 🌤️</h2>
-        
-        <div id="errorMessage" class="error-box" style="display: none;">
-            ❌ Not a sky! Please upload a clear photo of the sky to keep our community beautiful.
-        </div>
-        
-        <div id="dropArea" class="upload-box" onclick="document.getElementById('fileInput').click()">
-            <div class="upload-icon" id="cloudIcon" style="font-size: 50px; margin-bottom: 10px;">☁️</div>
-            <p id="uploadText">Click to select or drag your sky here</p>
-            <img id="previewImage" style="display:none; max-width: 100%; border-radius: 12px; margin-top: 10px;">
-        </div>
+    <div class="content-box">
+        <section class="upload-card">
+            <h2>Upload Your Sky Photo 🌤️</h2>
+            
+            <div id="errorMessage" class="error-box" style="display: none;">
+                ❌ Not a sky! Please upload a clear photo of the sky to keep our community beautiful.
+            </div>
+            
+            <div id="dropArea" class="upload-box" onclick="document.getElementById('fileInput').click()">
+                <div class="upload-icon" id="cloudIcon" style="font-size: 50px; margin-bottom: 10px;">☁️</div>
+                <p id="uploadText">Click to select or drag your sky here</p>
+                <img id="previewImage" style="display:none; max-width: 100%; border-radius: 12px; margin-top: 10px;">
+            </div>
 
-        <input type="file" id="fileInput" accept="image/*" style="display: none;">
+            <input type="file" id="fileInput" accept="image/*" style="display: none;">
 
-        <div class="input-group" style="margin-bottom: 20px;">
-            <input type="text" id="captionInput" placeholder="Write a caption... (or leave blank for a random name)" 
-                   style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ddd;">
-        </div>
+            <div class="input-group" style="margin-bottom: 20px;">
+                <input type="text" id="captionInput" placeholder="Write a caption... (or leave blank for a random name)" 
+                       style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ddd;">
+            </div>
 
-        <button id="uploadBtn" class="cta-button">Share the Sky</button>
-    </section>
+            <button id="uploadBtn" class="cta-button">Share the Sky</button>
+        </section>
+    </div>
 </main>
 
 <footer>
