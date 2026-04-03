@@ -1085,3 +1085,66 @@ footer {
     max-width: 100%;        /* Prevents the button from being wider than the card */
     box-sizing: border-box;
 }
+/* --- RESPONSIVE HEADER STYLES --- */
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 5%;
+    background: white;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+/* Desktop Nav */
+.nav-links a {
+    margin-left: 20px;
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+}
+
+/* Mobile Menu Icon (Hidden by default) */
+.menu-toggle {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    gap: 5px;
+}
+
+.menu-toggle span {
+    width: 25px;
+    height: 3px;
+    background: #a18cd1;
+    border-radius: 5px;
+}
+
+/* --- MOBILE MEDIA QUERY --- */
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: flex; /* Show icon on mobile */
+    }
+
+    .nav-links {
+        display: none; /* Hide links by default on mobile */
+        flex-direction: column;
+        position: absolute;
+        top: 70px;
+        right: 5%;
+        background: white;
+        width: 200px;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    .nav-links.active {
+        display: flex; /* Show when toggled */
+    }
+
+    .nav-links a {
+        margin: 10px 0;
+    }
+}
