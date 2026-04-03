@@ -12,15 +12,9 @@
 <header>
     <h1 class="logo">
         <a href="index.html">
-            <span class="logo-icon"></span>
-            ShareTheSky
+            <span>📷</span> ShareTheSky
         </a>
     </h1>
-    <div class="menu-toggle" id="mobile-menu">
-        <span></span>
-        <span></span>
-        <span></span>
-    </div>
     <nav class="nav-links" id="nav-list">
         <a href="index.html">Home</a>
         <a href="upload.html">Upload</a>
@@ -29,12 +23,13 @@
     </nav>
 </header>
 
-<main>
+<main class="gallery-page">
     <section class="gallery-header">
         <h2>Community Sky Gallery ☁️</h2>
+        <p>Explore the beauty of the world, one sky at a time.</p>
     </section>
 
-    <div id="galleryContainer" class="gallery-container"></div>
+    <div id="galleryContainer" class="pinterest-grid"></div>
 </main>
 
 <footer>
@@ -45,7 +40,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    // 1. Your Firebase Configuration
     const firebaseConfig = {
         apiKey: "AIzaSyDxgtNzywhjYGR7R2XMVobR73-SioT6v98",
         authDomain: "sharethesky-a9c7d.firebaseapp.com",
@@ -58,79 +52,60 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const galleryContainer = document.getElementById("galleryContainer");
-
-    // Get the unique ID for this browser to handle "Delete" permissions
     const mySkyUserId = localStorage.getItem("mySkyUserId");
 
-    // 2. Real-time Gallery Sync
     const q = query(collection(db, "photos"), orderBy("date", "desc"));
 
     onSnapshot(q, (snapshot) => {
-        galleryContainer.innerHTML = ""; // Clear current view
+        galleryContainer.innerHTML = ""; 
         
         snapshot.forEach((docSnap) => {
             const data = docSnap.data();
             const id = docSnap.id;
-
-            // Create the Card
-            const card = document.createElement("div");
-            card.className = "photo-card";
-
-            // Determine if WE are the ones who uploaded this (to show delete button)
             const isOwner = data.uploaderId === mySkyUserId;
 
+            const card = document.createElement("div");
+            card.className = "pin-card";
+
             card.innerHTML = `
-                <img src="${data.url}" class="gallery-img" alt="Sky">
-                <div class="photo-info">
-                    <h3>${data.caption}</h3>
-                    <p>${data.date}</p>
-                    <button class="like-btn ${localStorage.getItem('liked_'+id) ? 'liked' : ''}" id="btn-${id}">
-                        ❤️ <span id="count-${id}">${data.likes || 0}</span>
+                <div class="pin-image-wrapper">
+                    <img src="${data.url}" class="pin-img" alt="Sky">
+                    <button class="pin-like-btn ${localStorage.getItem('liked_'+id) ? 'liked' : ''}" id="btn-${id}">
+                        ❤️ <span>${data.likes || 0}</span>
                     </button>
-                    ${isOwner ? `<button class="delete-btn" id="del-${id}">Delete My Photo</button>` : ''}
+                </div>
+                <div class="pin-content">
+                    <h3>${data.caption}</h3>
+                    <div class="pin-footer">
+                        <span>${data.date.split(',')[0]}</span>
+                        ${isOwner ? `<button class="pin-delete" id="del-${id}">🗑️</button>` : ''}
+                    </div>
                 </div>
             `;
 
             galleryContainer.appendChild(card);
 
-            // --- Like Button Logic ---
+            // Like Logic
             const likeBtn = card.querySelector(`#btn-${id}`);
-            likeBtn.onclick = async () => {
+            likeBtn.onclick = async (e) => {
+                e.stopPropagation();
                 const isLiked = likeBtn.classList.contains("liked");
                 const newCount = isLiked ? (data.likes - 1) : (data.likes + 1);
-
                 await updateDoc(doc(db, "photos", id), { likes: newCount });
-
-                if (isLiked) {
-                    localStorage.removeItem('liked_'+id);
-                    likeBtn.classList.remove("liked");
-                } else {
-                    localStorage.setItem('liked_'+id, "true");
-                    likeBtn.classList.add("liked");
-                }
+                if (isLiked) { localStorage.removeItem('liked_'+id); } 
+                else { localStorage.setItem('liked_'+id, "true"); }
             };
 
-            // --- Delete Button Logic ---
+            // Delete Logic
             if (isOwner) {
                 card.querySelector(`#del-${id}`).onclick = async () => {
-                    if (confirm("Are you sure you want to remove your sky photo?")) {
+                    if (confirm("Delete your sky photo?")) {
                         await deleteDoc(doc(db, "photos", id));
                     }
                 };
             }
         });
     });
-</script>
-
-<script>
-    // Mobile Menu Logic
-    const menuToggle = document.getElementById('mobile-menu');
-    const navList = document.getElementById('nav-list');
-    if (menuToggle) {
-        menuToggle.addEventListener('click', () => {
-            navList.classList.toggle('active');
-        });
-    }
 </script>
 </body>
 </html>
