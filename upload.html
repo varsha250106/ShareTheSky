@@ -31,7 +31,7 @@
         <input type="file" id="fileInput" accept="image/*" style="display: none;">
 
         <div class="input-group">
-            <input type="text" id="captionInput" placeholder="Write a caption about the sky (or leave blank for a random name)...">
+            <input type="text" id="captionInput" placeholder="Write a caption... (or leave blank for a random name)">
         </div>
 
         <button id="uploadBtn" class="main-upload-btn">Share the Sky</button>
@@ -65,7 +65,7 @@
     const uploadText = document.getElementById("uploadText");
     const uploadBtn = document.getElementById("uploadBtn");
 
-    // --- RANDOM SKY NAME GENERATOR ---
+    // --- RANDOM SKY NAMES ---
     const skyNames = [
         "Infinite Azure", "Cotton Candy Clouds", "Golden Hour Glow", 
         "Midnight Whisper", "Painted Horizon", "Celestial Canvas", 
@@ -90,7 +90,7 @@
         uploadBtn.disabled = true;
         uploadBtn.innerText = "Sending to the clouds...";
 
-        // Handle the caption (Manual or Random)
+        // Pick a random caption if the user didn't write one
         let userCaption = document.getElementById("captionInput").value.trim();
         if (userCaption === "") {
             userCaption = skyNames[Math.floor(Math.random() * skyNames.length)];
@@ -109,20 +109,27 @@
             
             const data = await res.json();
 
-            if (data.error) {
-                if (data.error.message.toLowerCase().includes("moderation")) {
-                    alert("☁️ Sky Check Failed: Our AI flagged this image as inappropriate. Please share a real sky!");
-                } else {
-                    alert("Upload Error: " + data.error.message);
-                }
+            // --- REFINED AI CHECK ---
+            // If Cloudinary rejects it, it will have a 'rejected' status in the moderation object
+            if (data.moderation && data.moderation[0].status === "rejected") {
+                alert("☁️ Sky Check: This photo was flagged by our safety filters. Please try a different sky!");
                 uploadBtn.disabled = false;
                 uploadBtn.innerText = "Share the Sky";
                 return;
             }
 
+            // If it's a general error (not AI related)
+            if (data.error) {
+                alert("Upload Error: " + data.error.message);
+                uploadBtn.disabled = false;
+                uploadBtn.innerText = "Share the Sky";
+                return;
+            }
+
+            // If we reach here, the photo is GOOD! Save to Firebase
             await addDoc(collection(db, "photos"), {
                 url: data.secure_url,
-                caption: userCaption, // Using our generated caption here
+                caption: userCaption,
                 date: new Date().toLocaleString(),
                 likes: 0,
                 uploaderId: mySkyUserId 
@@ -133,7 +140,7 @@
 
         } catch (err) {
             console.error(err);
-            alert("Upload failed. Try again!");
+            alert("Connection error. Please try again!");
             uploadBtn.disabled = false;
             uploadBtn.innerText = "Share the Sky";
         }
