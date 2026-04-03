@@ -8,88 +8,125 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* Essential CSS for the Dropdown & Mobile Menu */
-        body { font-family: 'Inter', sans-serif; margin: 0; }
+        /* Essential CSS for Navigation & Centering */
+        body { 
+            font-family: 'Inter', sans-serif; 
+            margin: 0; 
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
 
-        /* Dropdown Desktop Logic */
+        /* --- NAVIGATION STYLES --- */
         .dropdown { position: relative; display: inline-block; }
-        
         .dropbtn {
-            background: none;
-            border: none;
-            color: #4a4a8a;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            padding: 10px 15px;
-            font-family: inherit;
+            background: none; border: none; color: #4a4a8a;
+            font-size: 16px; font-weight: 600; cursor: pointer;
+            padding: 10px 15px; font-family: inherit;
         }
-
         .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: white;
-            min-width: 180px;
-            box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
-            border-radius: 12px;
-            z-index: 100;
-            top: 100%;
-            overflow: hidden;
+            display: none; position: absolute; background-color: white;
+            min-width: 180px; box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
+            border-radius: 12px; z-index: 100; top: 100%; overflow: hidden;
         }
-
         .dropdown-content a {
-            color: #333;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-            font-size: 14px;
-            transition: background 0.2s;
+            color: #333; padding: 12px 16px; text-decoration: none;
+            display: block; font-size: 14px; transition: background 0.2s;
         }
-
         .dropdown-content a:hover { background-color: #f8f6ff; color: #a18cd1; }
         .dropdown:hover .dropdown-content { display: block; }
 
-        /* Mobile Menu (Three Lines) */
-        .menu-toggle {
-            display: none; /* Hidden on desktop */
-            flex-direction: column;
-            gap: 5px;
-            cursor: pointer;
-        }
-
-        .menu-toggle span {
-            width: 25px;
-            height: 3px;
-            background-color: #a18cd1;
-            border-radius: 3px;
-        }
+        .menu-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+        .menu-toggle span { width: 25px; height: 3px; background-color: #a18cd1; border-radius: 3px; }
 
         @media (max-width: 768px) {
             .menu-toggle { display: flex; }
-            
             .nav-links {
-                display: none; /* Hidden by default on mobile */
-                flex-direction: column;
-                position: absolute;
-                top: 70px;
-                right: 20px;
-                background: white;
-                width: 200px;
-                padding: 20px;
-                border-radius: 15px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                display: none; flex-direction: column; position: absolute;
+                top: 70px; right: 20px; background: white; width: 200px;
+                padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
                 z-index: 1000;
             }
-
-            .nav-links.active { display: flex; } /* Toggled by JS */
-            
-            .dropdown-content {
-                position: static;
-                box-shadow: none;
-                background: #f9f9f9;
-                margin-top: 10px;
-            }
+            .nav-links.active { display: flex; }
+            .dropdown-content { position: static; box-shadow: none; background: #f9f9f9; margin-top: 10px; }
         }
+
+        /* --- HERO & CENTERING LOGIC --- */
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;    /* Standard horizontal center */
+            justify-content: center;
+            text-align: center;     /* Centers inline text */
+            width: 100%;
+            padding: 100px 20px;
+            box-sizing: border-box;
+        }
+
+        .hero-content {
+            width: 100%;
+            max-width: 800px;       /* Limits text width for readability */
+            margin: 0 auto 50px auto;
+        }
+
+        .hero-content h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            color: #2d2d6a;
+            margin-bottom: 15px;
+            line-height: 1.1;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            color: #555;
+            margin-bottom: 35px;
+        }
+
+        /* --- INFO BOXES STYLES --- */
+        .info-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+            justify-content: center;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 35px;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .info-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 15px 35px rgba(161, 140, 209, 0.15);
+        }
+
+        .info-card h3 { color: #4a4a8a; margin-bottom: 12px; }
+        .info-card p { color: #666; line-height: 1.6; font-size: 0.95rem; margin: 0; }
+
+        /* Button Style */
+        .main-upload-btn {
+            background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+            color: white !important;
+            padding: 16px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            display: inline-block;
+            box-shadow: 0 10px 20px rgba(161, 140, 209, 0.3);
+            transition: 0.3s;
+        }
+        .main-upload-btn:hover { transform: scale(1.05); filter: brightness(1.05); }
+
+        footer { text-align: center; padding: 40px 0; color: #777; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -107,7 +144,6 @@
 
     <nav class="nav-links" id="nav-list">
         <a href="index.html">Home</a>
-        
         <div class="dropdown">
             <button class="dropbtn">Explore ▾</button>
             <div class="dropdown-content">
@@ -121,8 +157,8 @@
 
 <main class="hero">
     <div class="hero-content">
-        <h1>Capture the sky. Share the magic.</h1>
-        <p>>A community where everyone uploads their sky pics together.</p>
+        <h1>Capture the sky.<br>Share the magic.</h1>
+        <p>A community where everyone uploads their sky pics together.</p>
         <a href="upload.html" class="main-upload-btn">Upload Your Sky ☁️</a>
     </div>
 
@@ -143,12 +179,12 @@
         </div>
     </div>
 </main>
+
 <footer>
     <p>&copy; 2026 ShareTheSky — Created with love ♥</p>
 </footer>
 
 <script>
-    // Script to handle the mobile menu toggle
     const menuToggle = document.getElementById('mobile-menu');
     const navList = document.getElementById('nav-list');
 
@@ -158,7 +194,6 @@
         });
     }
 
-    // Close mobile menu when clicking outside
     document.addEventListener('click', (e) => {
         if (!menuToggle.contains(e.target) && !navList.contains(e.target)) {
             navList.classList.remove('active');
