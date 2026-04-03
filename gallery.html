@@ -63,7 +63,7 @@
             const isOwner = data.uploaderId === mySkyUserId;
 
             const card = document.createElement("div");
-            card.className = "pin-card"; // Using pin-card for Pinterest styling
+            card.className = "pin-card";
 
             card.innerHTML = `
                 <div class="pin-image-wrapper">
@@ -82,7 +82,7 @@
                 <div class="pin-content">
                     <h3>${data.caption}</h3>
                     <div class="pin-footer">
-                        <span>${data.date.split(',')[0]}</span>
+                        <span>${data.date ? data.date.split(',')[0] : 'Today'}</span>
                         ${isOwner ? `<button class="pin-delete" id="del-${id}">🗑️ Remove</button>` : ''}
                     </div>
                 </div>
@@ -101,8 +101,10 @@
 
                 if (isLiked) {
                     localStorage.removeItem('liked_'+id);
+                    btn.classList.remove("liked");
                 } else {
                     localStorage.setItem('liked_'+id, "true");
+                    btn.classList.add("liked");
                 }
             };
 
@@ -117,47 +119,50 @@
         });
     });
 
-window.openZoom = (url) => {
-    let currentScale = 1;
+    // Integrated Zoom Function with centered controls
+    window.openZoom = (url) => {
+        let currentScale = 1;
 
-    const overlay = document.createElement('div');
-    overlay.className = 'zoom-overlay';
-    overlay.id = 'activeZoom';
-    
-    overlay.innerHTML = `
-        <div class="zoom-content">
-            <img src="${url}" id="zoomedImage" class="zoomed-img">
-        </div>
+        const overlay = document.createElement('div');
+        overlay.className = 'zoom-overlay';
+        overlay.id = 'activeZoom';
+        
+        overlay.innerHTML = `
+            <div class="zoom-content">
+                <img src="${url}" id="zoomedImage" class="zoomed-img">
+            </div>
 
-        <div class="zoom-controls">
-            <button onclick="changeZoom(-0.25)" class="zoom-btn">➖</button>
-            <span id="zoomLevel" style="font-weight:bold; color:black;">100%</span>
-            <button onclick="changeZoom(0.25)" class="zoom-btn">➕</button>
-            <div style="width:1px; height:25px; background:#ddd; margin:0 10px;"></div>
-            <button onclick="document.getElementById('activeZoom').remove()" class="zoom-close-btn">Close</button>
-        </div>
-    `;
-    
-    document.body.appendChild(overlay);
+            <div class="zoom-controls">
+                <button onclick="changeZoom(-0.25)" class="zoom-btn">➖</button>
+                <span id="zoomLevel">100%</span>
+                <button onclick="changeZoom(0.25)" class="zoom-btn">➕</button>
+                <div style="width:1px; height:25px; background:#ddd; margin:0 10px;"></div>
+                <button onclick="document.getElementById('activeZoom').remove()" class="zoom-close-btn" style="background:#6c5ce7; color:white; border:none; padding:8px 15px; border-radius:20px; cursor:pointer; font-weight:600;">Close</button>
+            </div>
+        `;
+        
+        document.body.appendChild(overlay);
 
-    window.changeZoom = (amount) => {
-        const img = document.getElementById('zoomedImage');
-        const zoomText = document.getElementById('zoomLevel');
-        currentScale += amount;
-        if (currentScale < 0.5) currentScale = 0.5;
-        if (currentScale > 3) currentScale = 3;
-        img.style.transform = `scale(${currentScale})`;
-        zoomText.innerText = `${Math.round(currentScale * 100)}%`;
+        // Global functions for the buttons
+        window.changeZoom = (amount) => {
+            const img = document.getElementById('zoomedImage');
+            const zoomText = document.getElementById('zoomLevel');
+            currentScale += amount;
+            
+            if (currentScale < 0.5) currentScale = 0.5;
+            if (currentScale > 3) currentScale = 3;
+
+            img.style.transform = `scale(${currentScale})`;
+            zoomText.innerText = `${Math.round(currentScale * 100)}%`;
+        };
+
+        // Close on background click
+        overlay.onclick = (e) => {
+            if (e.target.id === 'activeZoom' || e.target.className === 'zoom-content') {
+                overlay.remove();
+            }
+        };
     };
-};
-
-    // Clicking the background still closes the zoom
-    overlay.onclick = (e) => {
-        if (e.target.id === 'activeZoom' || e.target.className === 'zoom-content') {
-            overlay.remove();
-        }
-    };
-};
 </script>
 </body>
 </html>
