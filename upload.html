@@ -31,7 +31,7 @@
         <input type="file" id="fileInput" accept="image/*" style="display: none;">
 
         <div class="input-group">
-            <input type="text" id="captionInput" placeholder="Write a caption about the sky...">
+            <input type="text" id="captionInput" placeholder="Write a caption about the sky (or leave blank for a random name)...">
         </div>
 
         <button id="uploadBtn" class="main-upload-btn">Share the Sky</button>
@@ -42,7 +42,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    // Your Firebase Configuration
     const firebaseConfig = {
         apiKey: "AIzaSyDxgtNzywhjYGR7R2XMVobR73-SioT6v98",
         authDomain: "sharethesky-a9c7d.firebaseapp.com",
@@ -55,11 +54,9 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // User ID setup
     let mySkyUserId = localStorage.getItem("mySkyUserId") || "user_" + Math.random().toString(36).substr(2, 9);
     localStorage.setItem("mySkyUserId", mySkyUserId);
 
-    // Cloudinary Configuration
     const cloudName = "dqpmybazh";
     const uploadPreset = "sharethesky";
 
@@ -68,7 +65,14 @@
     const uploadText = document.getElementById("uploadText");
     const uploadBtn = document.getElementById("uploadBtn");
 
-    // Handle File Selection Preview
+    // --- RANDOM SKY NAME GENERATOR ---
+    const skyNames = [
+        "Infinite Azure", "Cotton Candy Clouds", "Golden Hour Glow", 
+        "Midnight Whisper", "Painted Horizon", "Celestial Canvas", 
+        "Eternal Blue", "Sun-Kissed Stratus", "Twilight Magic", 
+        "Dreamy Overcast", "Velvet Dusk", "Ocean in the Sky"
+    ];
+
     fileInput.addEventListener("change", function() {
         const file = this.files[0];
         if (file) {
@@ -79,7 +83,6 @@
         }
     });
 
-    // Upload Logic
     uploadBtn.addEventListener("click", async () => {
         const file = fileInput.files[0];
         if (!file) return alert("Please select a sky photo first!");
@@ -87,12 +90,15 @@
         uploadBtn.disabled = true;
         uploadBtn.innerText = "Sending to the clouds...";
 
+        // Handle the caption (Manual or Random)
+        let userCaption = document.getElementById("captionInput").value.trim();
+        if (userCaption === "") {
+            userCaption = skyNames[Math.floor(Math.random() * skyNames.length)];
+        }
+
         const formData = new FormData();
         formData.append("file", file);
         formData.append("upload_preset", uploadPreset);
-        
-        // --- AI MODERATION ACTIVATION ---
-        // This triggers the Amazon Rekognition tool you set to "Reject" in Cloudinary
         formData.append("moderation", "aws_rek"); 
 
         try {
@@ -103,23 +109,20 @@
             
             const data = await res.json();
 
-            // --- AI REJECTION CHECK ---
             if (data.error) {
-                // If the AI rejects it, Cloudinary returns a message containing "moderation"
                 if (data.error.message.toLowerCase().includes("moderation")) {
-                    alert("☁️ Sky Check: Our AI flagged this image as inappropriate for our gallery. Please only share beautiful skies!");
+                    alert("☁️ Sky Check Failed: Our AI flagged this image as inappropriate. Please share a real sky!");
                 } else {
                     alert("Upload Error: " + data.error.message);
                 }
                 uploadBtn.disabled = false;
                 uploadBtn.innerText = "Share the Sky";
-                return; // Stops the code so it isn't saved to Firebase
+                return;
             }
 
-            // --- SAVE TO FIREBASE (Only if AI allows it) ---
             await addDoc(collection(db, "photos"), {
                 url: data.secure_url,
-                caption: document.getElementById("captionInput").value.trim(),
+                caption: userCaption, // Using our generated caption here
                 date: new Date().toLocaleString(),
                 likes: 0,
                 uploaderId: mySkyUserId 
@@ -130,7 +133,7 @@
 
         } catch (err) {
             console.error(err);
-            alert("Oops! Something went wrong. Check your connection and try again.");
+            alert("Upload failed. Try again!");
             uploadBtn.disabled = false;
             uploadBtn.innerText = "Share the Sky";
         }
