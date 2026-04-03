@@ -1579,3 +1579,99 @@ footer {
     align-items: center; /* Centers items horizontally in flex */
     justify-content: center; /* Centers items vertically in flex */
 }
+/* --- 1. Hero Section Layout --- */
+.hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;    /* Standard horizontal center */
+    justify-content: center;
+    text-align: center;     /* Centers the actual text lines */
+    width: 100%;
+    padding: 100px 20px;
+    box-sizing: border-box;
+    min-height: 60vh;       /* Gives it some vertical breathing room */
+}
+
+.hero-content {
+    width: 100%;
+    max-width: 800px;       /* Limits text width so it doesn't stretch too thin */
+    margin: 0 auto 50px auto;
+}
+
+.hero-content h1 {
+    font-size: clamp(2.5rem, 6vw, 4rem); /* Responsive: gets bigger on large screens */
+    color: #2d2d6a;
+    margin-bottom: 15px;
+    line-height: 1.1;
+    font-weight: 700;
+}
+
+.hero-content p {
+    font-size: 1.2rem;
+    color: #555;
+    margin-bottom: 35px;
+    line-height: 1.6;
+}
+
+/* --- 2. Info Boxes Grid --- */
+.info-section {
+    display: grid;
+    /* This creates 3 columns on desktop, 1 on mobile automatically */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;         /* Centers the entire grid container */
+    justify-content: center;
+}
+
+.info-card {
+    background: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 35px;
+    border-radius: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    transition: all 0.3s ease;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.info-card:hover {
+    transform: translateY(-10px);
+    background: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 15px 35px rgba(161, 140, 209, 0.15);
+}
+
+.info-card h3 {
+    color: #4a4a8a;
+    margin-bottom: 12px;
+    font-size: 1.3rem;
+}
+
+.info-card p {
+    color: #666;
+    line-height: 1.6;
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+/* --- 3. Main Call-to-Action Button --- */
+.main-upload-btn {
+    background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+    color: white !important;
+    padding: 16px 40px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 700;
+    display: inline-block;
+    box-shadow: 0 10px 20px rgba(161, 140, 209, 0.3);
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.main-upload-btn:hover {
+    transform: scale(1.05);
+    filter: brightness(1.05);
+}
