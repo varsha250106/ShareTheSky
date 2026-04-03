@@ -49,13 +49,13 @@ header {
 }
 
 /* =========================================
-   3. BUTTONS (Standardized)
+   3. BUTTONS (The Fix for the "Big Button")
    ========================================= */
 .cta-button {
-    display: inline-block;
+    display: inline-block; /* Keeps it neat on the Home Page */
     background-color: #3e3efc;
     color: white;
-    padding: 18px 45px;
+    padding: 15px 40px;
     border-radius: 12px;
     text-decoration: none;
     font-weight: 600;
@@ -70,11 +70,73 @@ header {
     box-shadow: 0 15px 30px rgba(62, 62, 252, 0.6);
 }
 
+/* This ONLY makes the button full-width when it's inside the Upload Card */
+.upload-card .cta-button {
+    width: 100%;
+}
+
 /* =========================================
-   4. UPLOAD PAGE (Clean & Centered)
+   4. HOME PAGE (Hero & Features)
+   ========================================= */
+.hero-section {
+    text-align: center;
+    padding: 100px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.hero-content h1 {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    color: #1c1c8f;
+    margin-bottom: 20px;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.hero-content p {
+    font-size: 1.2rem;
+    color: #4a4a8a;
+    margin-bottom: 40px;
+    max-width: 600px;
+}
+
+/* The "Other Lines" (Features) Styles */
+.features {
+    width: 100%;
+    max-width: 850px;
+    margin: 60px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.feature-item {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 40px;
+    border-radius: 25px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    text-align: center;
+}
+
+.ai-badge {
+    display: inline-block;
+    background: #1c1c8f;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 50px;
+    font-size: 10px;
+    font-weight: 800;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+}
+
+/* =========================================
+   5. UPLOAD PAGE (Container & Card)
    ========================================= */
 .upload-container {
-    flex: 1; /* Pushes footer down */
+    flex: 1; 
     display: flex;
     justify-content: center;
     align-items: center;
@@ -82,42 +144,29 @@ header {
 }
 
 .upload-card {
-    background: rgba(255, 255, 255, 0.8); /* Neat White Glass */
+    background: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(15px);
-    padding: 50px;
+    padding: 40px;
     border-radius: 30px;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.4);
-    max-width: 500px; /* STOPS THE STRETCHING */
+    max-width: 500px;
     width: 100%;
     text-align: center;
 }
 
-.upload-card h2 {
-    color: #1c1c8f;
-    margin-bottom: 25px;
-    font-size: 24px;
-    font-weight: 700;
-}
-
 .upload-box {
-    border: 2px dashed #3e3efc; /* The neat dashed border */
-    background: rgba(62, 62, 252, 0.03);
+    border: 2px dashed #3e3efc;
+    background: rgba(62, 62, 252, 0.05);
     padding: 40px 20px;
     border-radius: 20px;
     cursor: pointer;
-    transition: 0.3s;
     margin-bottom: 25px;
+    transition: 0.3s;
 }
 
 .upload-box:hover {
     background: rgba(255, 255, 255, 0.9);
-    border-color: #1c1c8f;
-}
-
-.upload-icon {
-    font-size: 50px;
-    margin-bottom: 15px;
 }
 
 .input-group input {
@@ -125,29 +174,17 @@ header {
     padding: 15px;
     border-radius: 12px;
     border: 1px solid #ddd;
-    margin-bottom: 25px;
-    font-size: 16px;
+    margin-bottom: 20px;
     outline: none;
-    transition: 0.3s;
-}
-
-.input-group input:focus {
-    border-color: #3e3efc;
-    box-shadow: 0 0 10px rgba(62, 62, 252, 0.1);
-}
-
-/* Fix for the button inside the card */
-.upload-card .cta-button {
-    width: 100%;
-    padding: 15px;
 }
 
 /* =========================================
-   5. FOOTER
+   6. FOOTER
    ========================================= */
 footer {
     text-align: center;
     padding: 40px;
     font-size: 14px;
     color: #666;
+    margin-top: auto;
 }
