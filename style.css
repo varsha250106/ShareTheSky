@@ -1,5 +1,5 @@
 /* =========================================
-   1. GLOBAL SETTINGS & BACKGROUND
+   1. GLOBAL SETTINGS & NAVIGATION
    ========================================= */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap');
 
@@ -19,9 +19,6 @@ body {
     color: #333;
 }
 
-/* =========================================
-   2. NAVIGATION
-   ========================================= */
 header {
     display: flex;
     justify-content: space-between;
@@ -49,10 +46,10 @@ header {
 }
 
 /* =========================================
-   3. BUTTONS (The Fix for the "Big Button")
+   2. BUTTONS & UI COMPONENTS
    ========================================= */
 .cta-button {
-    display: inline-block; /* Keeps it neat on the Home Page */
+    display: inline-block;
     background-color: #3e3efc;
     color: white;
     padding: 15px 40px;
@@ -70,183 +67,8 @@ header {
     box-shadow: 0 15px 30px rgba(62, 62, 252, 0.6);
 }
 
-/* This ONLY makes the button full-width when it's inside the Upload Card */
-.upload-card .cta-button {
-    width: 100%;
-}
-
 /* =========================================
-   4. HOME PAGE (Hero & Features)
-   ========================================= */
-.hero-section {
-    text-align: center;
-    padding: 100px 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.hero-content h1 {
-    font-size: clamp(2.5rem, 6vw, 4rem);
-    color: #1c1c8f;
-    margin-bottom: 20px;
-    font-weight: 800;
-    line-height: 1.2;
-}
-
-.hero-content p {
-    font-size: 1.2rem;
-    color: #4a4a8a;
-    margin-bottom: 40px;
-    max-width: 600px;
-}
-
-/* The "Other Lines" (Features) Styles */
-.features {
-    width: 100%;
-    max-width: 850px;
-    margin: 60px auto;
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-}
-
-.feature-item {
-    background: rgba(255, 255, 255, 0.2);
-    padding: 40px;
-    border-radius: 25px;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    text-align: center;
-}
-
-.ai-badge {
-    display: inline-block;
-    background: #1c1c8f;
-    color: white;
-    padding: 5px 15px;
-    border-radius: 50px;
-    font-size: 10px;
-    font-weight: 800;
-    margin-bottom: 10px;
-    letter-spacing: 1px;
-}
-
-/* =========================================
-   5. UPLOAD PAGE (Container & Card)
-   ========================================= */
-.upload-container {
-    flex: 1; 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 40px 20px;
-}
-
-.upload-card {
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(15px);
-    padding: 40px;
-    border-radius: 30px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    max-width: 500px;
-    width: 100%;
-    text-align: center;
-}
-
-.upload-box {
-    border: 2px dashed #3e3efc;
-    background: rgba(62, 62, 252, 0.05);
-    padding: 40px 20px;
-    border-radius: 20px;
-    cursor: pointer;
-    margin-bottom: 25px;
-    transition: 0.3s;
-}
-
-.upload-box:hover {
-    background: rgba(255, 255, 255, 0.9);
-}
-
-.input-group input {
-    width: 100%;
-    padding: 15px;
-    border-radius: 12px;
-    border: 1px solid #ddd;
-    margin-bottom: 20px;
-    outline: none;
-}
-
-/* =========================================
-   6. FOOTER
-   ========================================= */
-footer {
-    text-align: center;
-    padding: 40px;
-    font-size: 14px;
-    color: #666;
-    margin-top: auto;
-}
-/* =========================================
-   UPLOAD PAGE - ERROR & PREVIEW STYLES
-   ========================================= */
-
-/* The Error Message Box */
-#errorMessage {
-    background: rgba(255, 77, 77, 0.12); /* Light red glass effect */
-    color: #d63031;
-    padding: 15px;
-    border-radius: 15px;
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 20px;
-    border: 1px solid rgba(214, 48, 49, 0.2);
-    animation: shake 0.4s ease-in-out; /* Attention grabber */
-}
-
-/* Animation to make the error shake slightly when it appears */
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
-}
-
-/* The Preview Image inside the dashed box */
-#previewImage {
-    width: 100%;
-    max-height: 250px;
-    object-fit: cover; /* Keeps the sky looking natural, not squashed */
-    border-radius: 12px;
-    margin-top: 5px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
-
-/* Adjust the upload box when an image is inside */
-.upload-box {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 200px;
-}
-
-/* Input field focus effect */
-#captionInput:focus {
-    border-color: #3e3efc;
-    background: rgba(255, 255, 255, 1);
-    box-shadow: 0 0 15px rgba(62, 62, 252, 0.1);
-}
-
-/* Button loading state style */
-#uploadBtn:disabled {
-    background-color: #a0a0ff;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-}
-/* =========================================
-   PINTEREST STYLE GALLERY
+   3. PINTEREST STYLE GALLERY
    ========================================= */
 .gallery-page {
     padding: 40px 5%;
@@ -258,22 +80,14 @@ footer {
     margin-bottom: 40px;
 }
 
-.gallery-header h2 {
-    font-size: 32px;
-    color: #1c1c8f;
-    font-weight: 800;
-}
-
-/* The Pinterest Columns */
 .pinterest-grid {
-    column-count: 4; /* 4 columns on desktop */
+    column-count: 4;
     column-gap: 20px;
     width: 100%;
 }
 
-/* Individual Card */
 .pin-card {
-    break-inside: avoid; /* Prevents card from splitting across columns */
+    break-inside: avoid;
     margin-bottom: 20px;
     background: white;
     border-radius: 20px;
@@ -282,12 +96,11 @@ footer {
     transition: transform 0.3s ease;
 }
 
-.pin-card:hover {
-    transform: translateY(-5px);
-}
+.pin-card:hover { transform: translateY(-5px); }
 
 .pin-image-wrapper {
     position: relative;
+    overflow: hidden;
     cursor: pointer;
 }
 
@@ -297,44 +110,65 @@ footer {
     border-radius: 20px 20px 0 0;
 }
 
-/* Floating Like Button */
-.pin-like-btn {
+/* Action Buttons (Zoom & Download) */
+.pin-top-actions {
     position: absolute;
     top: 15px;
-    right: 15px;
-    background: rgba(255, 255, 255, 0.9);
-    border: none;
-    padding: 8px 12px;
-    border-radius: 50px;
-    font-weight: 600;
-    font-size: 13px;
-    cursor: pointer;
-    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
-    opacity: 0; /* Hidden until hover */
-    transition: 0.3s;
+    left: 15px;
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+    opacity: 0; /* Hidden on desktop until hover */
+    transition: 0.3s ease;
 }
 
-.pin-card:hover .pin-like-btn {
-    opacity: 1;
+.pin-card:hover .pin-top-actions { opacity: 1; }
+
+.action-btn {
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 18px;
+    backdrop-filter: blur(4px);
+    transition: 0.2s;
+}
+
+.action-btn:hover {
+    background: rgba(0, 0, 0, 0.8);
+    transform: scale(1.1);
+}
+
+/* Like Button */
+.pin-like-btn {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    background: white;
+    border: 1px solid rgba(0,0,0,0.1);
+    padding: 8px 15px;
+    border-radius: 25px;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    z-index: 10;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
 .pin-like-btn.liked {
     background: #ff4d4d;
     color: white;
-    opacity: 1;
 }
 
-/* Content Section */
-.pin-content {
-    padding: 15px;
-}
-
-.pin-content h3 {
-    font-size: 15px;
-    font-weight: 700;
-    color: #333;
-    margin-bottom: 8px;
-}
+/* Content & Footer */
+.pin-content { padding: 15px; }
+.pin-content h3 { font-size: 15px; color: #333; margin-bottom: 8px; }
 
 .pin-footer {
     display: flex;
@@ -345,79 +179,17 @@ footer {
 }
 
 .pin-delete {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 14px;
-    opacity: 0.6;
-}
-
-.pin-delete:hover {
-    opacity: 1;
-}
-
-/* RESPONSIVE FIXES */
-@media (max-width: 1100px) {
-    .pinterest-grid { column-count: 3; }
-}
-
-@media (max-width: 800px) {
-    .pinterest-grid { column-count: 2; }
-}
-
-@media (max-width: 500px) {
-    .pinterest-grid { column-count: 1; }
-}
-/* Better Visibility for Buttons */
-.pin-top-actions {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    display: flex;
-    gap: 8px;
-    opacity: 0;
-    transition: 0.3s;
-}
-
-.pin-card:hover .pin-top-actions {
-    opacity: 1;
-}
-
-.action-btn {
-    background: rgba(0, 0, 0, 0.5); /* Dark semi-transparent background */
-    color: white;
-    border: none;
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    font-size: 16px;
-    backdrop-filter: blur(5px);
-}
-
-/* Like Button visibility fix */
-.pin-like-btn {
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(0,0,0,0.1);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2) !important;
-    opacity: 1 !important; /* Always visible on mobile */
-}
-
-/* Delete Button Visibility */
-.pin-delete {
     color: #ff4d4d;
     font-weight: 600;
-    padding: 5px 10px;
-    border-radius: 8px;
     background: rgba(255, 77, 77, 0.1);
     border: 1px solid rgba(255, 77, 77, 0.2);
+    padding: 5px 10px;
+    border-radius: 8px;
+    cursor: pointer;
 }
 
 /* =========================================
-   FULL SCREEN ZOOM MODAL
+   4. FULL SCREEN ZOOM MODAL
    ========================================= */
 #zoomOverlay {
     position: fixed;
@@ -429,83 +201,18 @@ footer {
     justify-content: center;
 }
 
-.zoom-container {
-    position: relative;
-    max-width: 90%;
-    max-height: 90%;
-}
+.zoom-container { position: relative; max-width: 90%; max-height: 90%; }
+.zoomed-image { width: 100%; border-radius: 10px; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
+.close-zoom { position: absolute; top: -40px; right: 0; color: white; font-size: 40px; cursor: pointer; }
 
-.zoomed-image {
-    width: 100%;
-    height: auto;
-    border-radius: 10px;
-    box-shadow: 0 0 30px rgba(0,0,0,0.5);
-}
+/* =========================================
+   5. RESPONSIVE DESIGN
+   ========================================= */
+@media (max-width: 1100px) { .pinterest-grid { column-count: 3; } }
+@media (max-width: 800px) { .pinterest-grid { column-count: 2; } }
 
-.close-zoom {
-    position: absolute;
-    top: -40px;
-    right: 0;
-    color: white;
-    font-size: 40px;
-    cursor: pointer;
-}
-
-/* Mobile Adjustments */
 @media (max-width: 600px) {
+    .pinterest-grid { column-count: 1; }
     .pin-top-actions { opacity: 1; } /* Always show buttons on mobile */
-    .action-btn { width: 40px; height: 40px; }
-}
-/* Container for top icons (Download/Zoom) */
-.pin-top-actions {
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    display: flex;
-    gap: 10px;
-    z-index: 10;
-    /* Visible by default on mobile, hover on desktop */
-    opacity: 1; 
-}
-
-/* Style for individual action buttons */
-.action-btn {
-    background: rgba(0, 0, 0, 0.6); /* Dark background for contrast */
-    color: white;
-    border: none;
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    font-size: 18px;
-    transition: 0.2s ease;
-    backdrop-filter: blur(4px); /* Glass effect */
-}
-
-.action-btn:hover {
-    background: rgba(0, 0, 0, 0.8);
-    transform: scale(1.1);
-}
-
-/* Ensure the image wrapper can contain absolute buttons */
-.pin-image-wrapper {
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-}
-
-/* Always show Like button with better shadow */
-.pin-like-btn {
-    position: absolute;
-    bottom: 15px;
-    right: 15px;
-    background: white;
-    padding: 8px 15px;
-    border-radius: 25px;
-    font-weight: 600;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    z-index: 10;
+    .action-btn { width: 42px; height: 42px; }
 }
