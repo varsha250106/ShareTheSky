@@ -117,41 +117,39 @@
         });
     });
 
- window.openZoom = (url) => {
+window.openZoom = (url) => {
     let currentScale = 1;
 
     const overlay = document.createElement('div');
     overlay.className = 'zoom-overlay';
     overlay.id = 'activeZoom';
     
-   overlay.innerHTML = `
-    <div class="zoom-content">
-        <img src="${url}" id="zoomedImage" class="zoomed-img">
-    </div>
+    overlay.innerHTML = `
+        <div class="zoom-content">
+            <img src="${url}" id="zoomedImage" class="zoomed-img">
+        </div>
 
-    <div class="zoom-controls">
-        <button onclick="changeZoom(-0.25)" style="border:none; background:#eee; border-radius:50%; width:30px; height:30px; cursor:pointer;">➖</button>
-        <span id="zoomLevel" style="font-weight:bold; color:#333; min-width:45px; text-align:center;">100%</span>
-        <button onclick="changeZoom(0.25)" style="border:none; background:#eee; border-radius:50%; width:30px; height:30px; cursor:pointer;">➕</button>
-        <button onclick="document.getElementById('activeZoom').remove()" style="margin-left:10px; background:#6c5ce7; color:white; border:none; padding:5px 15px; border-radius:20px; cursor:pointer;">Close</button>
-    </div>
-`;
+        <div class="zoom-controls">
+            <button onclick="changeZoom(-0.25)" class="zoom-btn">➖</button>
+            <span id="zoomLevel" style="font-weight:bold; color:black;">100%</span>
+            <button onclick="changeZoom(0.25)" class="zoom-btn">➕</button>
+            <div style="width:1px; height:25px; background:#ddd; margin:0 10px;"></div>
+            <button onclick="document.getElementById('activeZoom').remove()" class="zoom-close-btn">Close</button>
+        </div>
+    `;
     
     document.body.appendChild(overlay);
 
     window.changeZoom = (amount) => {
         const img = document.getElementById('zoomedImage');
         const zoomText = document.getElementById('zoomLevel');
-        
         currentScale += amount;
-        
-        // Boundaries to keep the image usable
         if (currentScale < 0.5) currentScale = 0.5;
         if (currentScale > 3) currentScale = 3;
-
         img.style.transform = `scale(${currentScale})`;
         zoomText.innerText = `${Math.round(currentScale * 100)}%`;
     };
+};
 
     // Clicking the background still closes the zoom
     overlay.onclick = (e) => {
