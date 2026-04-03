@@ -1047,3 +1047,68 @@ footer {
     gap: 15px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.4);
 }
+/* Dark Background for Zoom */
+.zoom-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 10000;
+    display: flex;
+    flex-direction: column; /* Image on top, buttons below */
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+/* The Small White Pill */
+.zoom-controls {
+    background: white;
+    height: 60px; /* Forces it to stay small, not a bar */
+    padding: 0 25px;
+    border-radius: 50px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+/* The Perfect Circle Buttons */
+.zoom-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: none;
+    background: #f0f0f0;
+    cursor: pointer;
+    
+    /* Centers the + and - symbols inside the circle */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #6c5ce7;
+    transition: 0.2s ease;
+}
+
+.zoom-btn:hover {
+    background: #e2e2e2;
+}
+.zoomed-img {
+    max-width: 90%;
+    max-height: 70vh; /* Keeps space at bottom for buttons */
+    border-radius: 15px;
+    transition: transform 0.2s ease;
+    box-shadow: 0 0 30px rgba(255,255,255,0.1);
+}
+
+#zoomLevel {
+    font-weight: 700;
+    color: #333;
+    min-width: 50px;
+    text-align: center;
+}
