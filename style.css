@@ -1050,3 +1050,26 @@ footer {
         transform: scale(1.02);
     }
 </style>
+.main-upload-btn {
+    background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+    color: white;
+    padding: 12px 30px; /* Adjusted padding */
+    border-radius: 30px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 25px;
+    display: inline-block; /* Keeps it centered as a button */
+    text-decoration: none;
+    box-shadow: 0 4px 15px rgba(161, 140, 209, 0.3);
+    
+    /* 🛑 THE ALIGNMENT FIX 🛑 */
+    max-width: 90%;       /* Ensures it never goes beyond the card */
+    box-sizing: border-box; /* Includes padding in the width calculation */
+}
+
+.main-upload-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(161, 140, 209, 0.4);
+}
