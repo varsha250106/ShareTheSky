@@ -1,12 +1,27 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ShareTheSky</title>
+    <title>ShareTheSky - Capture the Magic</title>
 
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css" />
+    
+    <style>
+        /* Essential styles for the clickable logo to work correctly */
+        .logo a {
+            text-decoration: none;
+            color: inherit;
+            display: inline-block;
+            transition: 0.3s;
+        }
+        .logo a:hover {
+            opacity: 0.8;
+            transform: scale(1.02);
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body>
@@ -16,29 +31,48 @@
         <a href="index.html">ShareTheSky</a>
     </h1>
     <nav>
-        <a href="index.html">Home</a>
+        <a href="index.html" class="active">Home</a>
         <a href="upload.html">Upload</a>
         <a href="gallery.html">Gallery</a>
         <a href="creator.html">Creator</a>
     </nav>
 </header>
 
-<!-- HERO SECTION -->
 <section class="hero">
-    <h2>Capture the Sky. Share the Magic.</h2>
-    <p>A community where everyone uploads their sky photos together.</p>
+    <div class="hero-content">
+        <h2>Capture the Sky. Share the Magic.</h2>
+        <p>A community where everyone uploads their sky photos together. 🌤️</p>
 
-    <!-- Button to Upload Page -->
-    <a href="upload.html" class="btn">Upload Your Sky</a>
+        <a href="upload.html" class="btn">Upload Your Sky</a>
+    </div>
 </section>
 
-<!-- OPTIONAL INFO SECTION -->
 <section class="info">
-    <h3>Why ShareTheSky?</h3>
-    <p>
-        Every sky tells a different story.  
-        Share your moments with the world 🌍
-    </p>
+    <div class="container">
+        <h3>Why ShareTheSky?</h3>
+        <p>
+            Every sky tells a different story. Whether it's a fiery sunset, 
+            a moody storm, or a clear blue afternoon, share your moments with the world 🌍
+        </p>
+        
+        <div class="features">
+            <div class="feature-card">
+                <span>🛡️</span>
+                <h4>Safe Community</h4>
+                <p>AI-powered moderation keeps our sky clean and beautiful.</p>
+            </div>
+            <div class="feature-card">
+                <span>☁️</span>
+                <h4>Cloud Storage</h4>
+                <p>Your memories are safely stored in the clouds forever.</p>
+            </div>
+            <div class="feature-card">
+                <span>❤️</span>
+                <h4>Connect</h4>
+                <p>Like and share the best views from around the globe.</p>
+            </div>
+        </div>
+    </div>
 </section>
 
 <footer>
