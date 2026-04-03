@@ -994,3 +994,59 @@ footer {
     border-radius: 20px;
     font-size: 13px;
 }
+<style>
+    .about-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px 20px; /* Reduced padding to fit more on screen */
+        min-height: 90vh;
+    }
+
+    .about-card {
+        background: white;
+        padding: 30px; /* Adjusted padding */
+        border-radius: 25px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        max-width: 550px;
+        width: 100%;
+        text-align: center;
+        display: flex;
+        flex-direction: column; /* Stack items vertically */
+        align-items: center;
+        animation: fadeIn 0.8s ease;
+    }
+
+    .about-content {
+        text-align: left;
+        line-height: 1.5; /* Slightly tighter line height */
+        color: #333;
+        width: 100%;
+    }
+
+    .contact-info {
+        background: #f8f6ff;
+        padding: 12px;
+        border-radius: 12px;
+        margin: 15px 0;
+        border-left: 5px solid #a18cd1;
+    }
+
+    /* This fixes the button being beyond the box */
+    .main-upload-btn {
+        background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+        color: white;
+        padding: 12px 0; /* Full width padding */
+        width: 100%;    /* Makes it stay inside the card boundaries */
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: bold;
+        margin-top: 20px;
+        display: block; /* Ensures it behaves like a block inside the flex container */
+        transition: transform 0.3s ease;
+    }
+
+    .main-upload-btn:hover {
+        transform: scale(1.02);
+    }
+</style>
