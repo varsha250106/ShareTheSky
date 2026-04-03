@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,35 +8,69 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     
     <style>
+        /* --- Keep only unique 'About' Styles here --- */
         body {
             font-family: 'Inter', sans-serif;
             margin: 0;
-            padding: 0;
-            /* Ensuring the background matches your gallery theme */
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
         }
 
-        /* Glassmorphism Container */
+        /* Dropdown & Mobile Menu CSS (Sync with other pages) */
+        .dropdown { position: relative; display: inline-block; }
+        .dropbtn {
+            background: none; border: none; color: #4a4a8a;
+            font-size: 16px; font-weight: 600; cursor: pointer;
+            padding: 10px 15px; font-family: inherit;
+        }
+        .dropdown-content {
+            display: none; position: absolute; background-color: white;
+            min-width: 180px; box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
+            border-radius: 12px; z-index: 100; top: 100%; overflow: hidden;
+        }
+        .dropdown-content a {
+            color: #333; padding: 12px 16px; text-decoration: none;
+            display: block; font-size: 14px; transition: background 0.2s;
+        }
+        .dropdown-content a:hover { background-color: #f8f6ff; color: #a18cd1; }
+        .dropdown:hover .dropdown-content { display: block; }
+
+        .menu-toggle {
+            display: none; flex-direction: column; gap: 5px; cursor: pointer;
+        }
+        .menu-toggle span {
+            width: 25px; height: 3px; background-color: #a18cd1; border-radius: 3px;
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle { display: flex; }
+            .nav-links {
+                display: none; flex-direction: column; position: absolute;
+                top: 70px; right: 20px; background: white; width: 200px;
+                padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                z-index: 1000;
+            }
+            .nav-links.active { display: flex; }
+            .dropdown-content {
+                position: static; box-shadow: none; background: #f9f9f9; margin-top: 10px;
+            }
+        }
+
+        /* Glassmorphism Card Styles */
         .about-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 80px 20px;
-            min-height: 85vh;
+            display: flex; justify-content: center; align-items: center;
+            padding: 80px 20px; min-height: 85vh;
         }
 
         .about-card {
-            background: rgba(255, 255, 255, 0.75); /* Translucent white */
-            backdrop-filter: blur(15px); /* Frost effect */
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             padding: 50px 40px;
             border-radius: 30px;
             border: 1px solid rgba(255, 255, 255, 0.4);
             box-shadow: 0 25px 50px rgba(0,0,0,0.08);
-            max-width: 580px;
-            width: 100%;
-            text-align: center;
+            max-width: 580px; width: 100%; text-align: center;
             animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -47,132 +80,54 @@
         }
 
         .profile-pic {
-            font-size: 55px;
-            background: #ffffff;
-            width: 110px;
-            height: 110px;
-            line-height: 110px;
-            border-radius: 50%;
-            margin: 0 auto 25px;
+            font-size: 55px; background: #ffffff;
+            width: 110px; height: 110px; line-height: 110px;
+            border-radius: 50%; margin: 0 auto 25px;
             box-shadow: 0 10px 20px rgba(161, 140, 209, 0.15);
-            border: 4px solid #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border: 4px solid #fff; display: flex;
+            align-items: center; justify-content: center;
+            transition: transform 0.3s ease;
         }
 
-        .about-card h2 {
-            color: #2d3436;
-            font-size: 2rem;
-            margin-bottom: 5px;
-        }
+        .profile-pic:hover { transform: scale(1.1) rotate(5deg); }
 
+        .about-card h2 { color: #2d3436; font-size: 2rem; margin-bottom: 5px; }
         .subtitle {
-            color: #a18cd1;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            font-size: 0.85rem;
-            margin-bottom: 30px;
-            display: block;
+            color: #a18cd1; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1.5px; font-size: 0.85rem; margin-bottom: 30px; display: block;
         }
 
-        .about-content {
-            text-align: left;
-            line-height: 1.8;
-            color: #444;
-        }
+        .about-content { text-align: left; line-height: 1.8; color: #444; }
 
-        /* Interactive Contact Section */
         .contact-info {
-            background: rgba(255, 255, 255, 0.5);
-            padding: 20px;
-            border-radius: 20px;
-            margin: 25px 0;
-            border-left: 6px solid #a18cd1;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            background: rgba(255, 255, 255, 0.5); padding: 20px;
+            border-radius: 20px; margin: 25px 0; border-left: 6px solid #a18cd1;
             transition: all 0.3s ease;
         }
 
         .contact-info:hover {
-            transform: translateX(10px);
-            background: white;
+            transform: translateX(10px); background: white;
             box-shadow: 0 10px 25px rgba(161, 140, 209, 0.12);
         }
 
-        .contact-info p {
-            margin: 12px 0;
-            font-size: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .contact-info a {
-            color: #6c5ce7;
-            text-decoration: none;
-            font-weight: 600;
-            transition: 0.2s;
-        }
-
-        .contact-info a:hover {
-            color: #a18cd1;
-            text-decoration: underline;
-        }
-
-        /* Pill-style Skills Tags */
-        .skills-tag {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 25px;
-        }
-
+        .skills-tag { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 25px; }
         .skills-tag span {
-            background: white;
-            border: 1px solid #e0e0e0;
-            padding: 8px 18px;
-            border-radius: 50px;
-            font-size: 13px;
-            font-weight: 600;
-            color: #666;
-            transition: all 0.3s ease;
-            cursor: default;
+            background: white; border: 1px solid #e0e0e0;
+            padding: 8px 18px; border-radius: 50px; font-size: 13px;
+            font-weight: 600; color: #666; transition: all 0.3s ease;
         }
 
         .skills-tag span:hover {
-            background: #a18cd1;
-            color: white;
-            border-color: #a18cd1;
-            transform: translateY(-4px);
-            box-shadow: 0 5px 15px rgba(161, 140, 209, 0.3);
+            background: #a18cd1; color: white; border-color: #a18cd1;
+            transform: translateY(-4px); box-shadow: 0 5px 15px rgba(161, 140, 209, 0.3);
         }
-        
-        /* Modernized Button */
+
         .main-upload-btn {
             background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
-            color: white !important;
-            padding: 16px 45px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 1.05rem;
-            display: inline-block;
-            margin-top: 35px;
-            transition: all 0.3s ease;
+            color: white !important; padding: 16px 45px; border-radius: 50px;
+            text-decoration: none; font-weight: 700; display: inline-block;
+            margin-top: 35px; transition: all 0.3s ease;
             box-shadow: 0 10px 20px rgba(161, 140, 209, 0.3);
-        }
-
-        .main-upload-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 30px rgba(161, 140, 209, 0.5);
-            filter: brightness(1.05);
-        }
-
-        /* Mobile Adjustments */
-        @media (max-width: 600px) {
-            .about-card { padding: 30px 20px; }
-            .about-container { padding: 40px 15px; }
         }
     </style>
 </head>
@@ -191,9 +146,14 @@
 
     <nav class="nav-links" id="nav-list">
         <a href="index.html">Home</a>
-        <a href="upload.html">Upload</a>
-        <a href="gallery.html">Gallery</a>
-        <a href="about.html">About Me</a>
+        <div class="dropdown">
+            <button class="dropbtn">Explore ▾</button>
+            <div class="dropdown-content">
+                <a href="gallery.html">Gallery</a>
+                <a href="upload.html">Upload</a>
+                <a href="about.html" style="color: #a18cd1; font-weight: bold;">About Me</a>
+            </div>
+        </div>
     </nav>
 </header>
 
@@ -214,7 +174,7 @@
             
             <div class="contact-info">
                 <p>📧 <strong>Email:</strong> <a href="mailto:varshasv2516@gmail.com">varshasv2516@gmail.com</a></p>
-                <p>🔗 <strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/varsha-sv" target="_blank">www.linkedin.com/in/varsha-sv</a></p>
+                <p>🔗 <strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/varsha-sv" target="_blank">linkedin.com/in/varsha-sv</a></p>
                 <p>💻 <strong>GitHub:</strong> <a href="https://github.com/varsha250106" target="_blank">varsha250106</a></p>
             </div>
 
@@ -230,6 +190,7 @@
 </main>
 
 <script>
+    // Handle mobile menu toggle
     const menuToggle = document.getElementById('mobile-menu');
     const navList = document.getElementById('nav-list');
 
@@ -238,6 +199,13 @@
             navList.classList.toggle('active');
         });
     }
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!menuToggle.contains(e.target) && !navList.contains(e.target)) {
+            navList.classList.remove('active');
+        }
+    });
 </script>
 
 </body>
