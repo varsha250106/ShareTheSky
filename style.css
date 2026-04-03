@@ -566,3 +566,16 @@ footer {
     opacity: 0.8;
     cursor: pointer;
 }
+/* 1. Target the link inside the logo */
+.logo a {
+    text-decoration: none !important; /* Remove underline */
+    color: inherit !important;           /* Keep your original logo color */
+    cursor: pointer !important;        /* FORCE the hand icon to appear */
+    display: inline-block;             /* Makes the clickable area correct */
+    user-select: none;                 /* Prevents the text cursor from appearing */
+}
+
+/* 2. Optional: Add a slight change so users know it's a button */
+.logo a:hover {
+    opacity: 0.8;
+}
