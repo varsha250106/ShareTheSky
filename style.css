@@ -542,3 +542,7 @@ footer {
     font-size: 50px;
     cursor: pointer;
 }
+.logo a:hover {
+    opacity: 0.8;
+    cursor: pointer;
+}
