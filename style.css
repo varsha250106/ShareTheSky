@@ -967,3 +967,34 @@ footer {
     border-radius: 12px;
     transition: transform 0.2s ease;
 }
+/* Styling the zoom buttons to be perfect circles */
+.zoom-btn {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: none;
+    background-color: #f0f0f0; /* Light gray background */
+    cursor: pointer;
+    
+    /* CRITICAL: Centering the symbol inside the circle */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #6c5ce7; /* Matching your theme color */
+    transition: background 0.2s;
+}
+
+.zoom-btn:hover {
+    background-color: #e2e2e2;
+}
+
+/* Adjust the zoom level text alignment */
+#zoomLevel {
+    font-weight: bold;
+    font-family: sans-serif;
+    min-width: 50px;
+    text-align: center;
+}
