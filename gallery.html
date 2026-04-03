@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gallery - ShareTheSky</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -15,45 +16,36 @@
             ShareTheSky
         </a>
     </h1>
-    
-   <div class="menu-toggle" id="mobile-menu">
-    <span></span>
-    <span></span>
-    <span></span>
-</div>
-
-<nav class="nav-links" id="nav-list">
-    <a href="index.html">Home</a>
-    <a href="upload.html">Upload</a>
-    <a href="gallery.html">Gallery</a>
-    <a href="about.html">About Me</a>
-</nav>
-</header>
-<section>
-    <h2 style="text-align:center; margin-top:30px;">Community Sky Gallery ☁️</h2>
-    <div id="gallery" class="gallery-container">
-        </div>
-</section>
-
-<div id="skyModal" class="sky-modal">
-    <span class="close-sky" id="closeBtn">&times;</span>
-    <div class="modal-container">
-        <img id="modalImg" src="" alt="Full Sky View">
-        <div class="modal-details">
-            <h3 id="modalCaption"></h3>
-            <a id="downloadLink" href="" download="MySky.jpg" class="download-btn">
-                📥 Download High-Res
-            </a>
-        </div>
+    <div class="menu-toggle" id="mobile-menu">
+        <span></span>
+        <span></span>
+        <span></span>
     </div>
-</div>
+    <nav class="nav-links" id="nav-list">
+        <a href="index.html">Home</a>
+        <a href="upload.html">Upload</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="about.html">About Me</a>
+    </nav>
+</header>
+
+<main>
+    <section class="gallery-header">
+        <h2>Community Sky Gallery ☁️</h2>
+    </section>
+
+    <div id="galleryContainer" class="gallery-container"></div>
+</main>
+
+<footer>
+    <p>© 2026 ShareTheSky — Created with love ♥</p>
+</footer>
 
 <script type="module">
-    // 1. Firebase Imports
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, onSnapshot, doc, updateDoc, increment, query, orderBy, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    // 2. Firebase Configuration
+    // 1. Your Firebase Configuration
     const firebaseConfig = {
         apiKey: "AIzaSyDxgtNzywhjYGR7R2XMVobR73-SioT6v98",
         authDomain: "sharethesky-a9c7d.firebaseapp.com",
@@ -65,113 +57,80 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const galleryDiv = document.getElementById("gallery");
-    const modal = document.getElementById("skyModal");
+    const galleryContainer = document.getElementById("galleryContainer");
 
-    // 🆔 Identify the User
-    const myId = localStorage.getItem("mySkyUserId");
+    // Get the unique ID for this browser to handle "Delete" permissions
+    const mySkyUserId = localStorage.getItem("mySkyUserId");
 
-    // 3. Listen for Data (Real-time)
+    // 2. Real-time Gallery Sync
     const q = query(collection(db, "photos"), orderBy("date", "desc"));
-    
+
     onSnapshot(q, (snapshot) => {
-        galleryDiv.innerHTML = "";
+        galleryContainer.innerHTML = ""; // Clear current view
         
-        // Fetch liked states
-        const likedIds = JSON.parse(localStorage.getItem("likedPhotos") || "[]");
-
         snapshot.forEach((docSnap) => {
-            const photo = docSnap.data();
+            const data = docSnap.data();
             const id = docSnap.id;
-            const isLiked = likedIds.includes(id);
-            const isOwner = (photo.uploaderId === myId);
 
+            // Create the Card
             const card = document.createElement("div");
             card.className = "photo-card";
-            card.innerHTML = `
-                <img src="${photo.url}" alt="Sky Photo" class="gallery-img">
-                <div style="padding: 15px;">
-                    <p style="margin: 5px 0;"><strong>${photo.caption || 'Beautiful Sky'}</strong></p>
-                    <p style="font-size:11px; color:#888;">${photo.date}</p>
-                    <p style="font-size:18px;">❤️ <span id="count-${id}">${photo.likes || 0}</span></p>
-                    
-                    <div class="btn-group">
-                        <button class="like-btn ${isLiked ? 'liked' : ''}" id="btn-${id}">
-                            ${isLiked ? '💖 Liked' : '🤍 Like'}
-                        </button>
 
-                        ${isOwner ? `<button class="delete-btn" id="del-${id}">🗑️ Delete My Photo</button>` : ''}
-                    </div>
+            // Determine if WE are the ones who uploaded this (to show delete button)
+            const isOwner = data.uploaderId === mySkyUserId;
+
+            card.innerHTML = `
+                <img src="${data.url}" class="gallery-img" alt="Sky">
+                <div class="photo-info">
+                    <h3>${data.caption}</h3>
+                    <p>${data.date}</p>
+                    <button class="like-btn ${localStorage.getItem('liked_'+id) ? 'liked' : ''}" id="btn-${id}">
+                        ❤️ <span id="count-${id}">${data.likes || 0}</span>
+                    </button>
+                    ${isOwner ? `<button class="delete-btn" id="del-${id}">Delete My Photo</button>` : ''}
                 </div>
             `;
 
-            galleryDiv.appendChild(card);
+            galleryContainer.appendChild(card);
 
-            // --- CLICK EVENTS ---
+            // --- Like Button Logic ---
+            const likeBtn = card.querySelector(`#btn-${id}`);
+            likeBtn.onclick = async () => {
+                const isLiked = likeBtn.classList.contains("liked");
+                const newCount = isLiked ? (data.likes - 1) : (data.likes + 1);
 
-            // A. Open Full Screen
-            card.querySelector(".gallery-img").addEventListener("click", () => {
-                document.getElementById("modalImg").src = photo.url;
-                document.getElementById("modalCaption").innerText = photo.caption || "Sky View";
-                document.getElementById("downloadLink").href = photo.url;
-                modal.style.display = "flex";
-            });
+                await updateDoc(doc(db, "photos", id), { likes: newCount });
 
-            // B. Like Logic
-            card.querySelector(".like-btn").addEventListener("click", (e) => {
-                handleToggleLike(id, e.target);
-            });
+                if (isLiked) {
+                    localStorage.removeItem('liked_'+id);
+                    likeBtn.classList.remove("liked");
+                } else {
+                    localStorage.setItem('liked_'+id, "true");
+                    likeBtn.classList.add("liked");
+                }
+            };
 
-            // C. Delete Logic
+            // --- Delete Button Logic ---
             if (isOwner) {
-                card.querySelector(".delete-btn").addEventListener("click", async () => {
-                    if (confirm("Delete this sky forever?")) {
+                card.querySelector(`#del-${id}`).onclick = async () => {
+                    if (confirm("Are you sure you want to remove your sky photo?")) {
                         await deleteDoc(doc(db, "photos", id));
                     }
-                });
+                };
             }
         });
     });
-
-    // 4. Modal Functions (Now inside the module so they work)
-    document.getElementById("closeBtn").addEventListener("click", () => {
-        modal.style.display = "none";
-    });
-
-    window.addEventListener("click", (event) => {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    });
-
-    // 5. Like/Unlike Logic
-    async function handleToggleLike(photoId, buttonElement) {
-        buttonElement.disabled = true; // Temporary disable to prevent double clicks
-        
-        const photoRef = doc(db, "photos", photoId);
-        let likedPhotos = JSON.parse(localStorage.getItem("likedPhotos") || "[]");
-        const alreadyLiked = likedPhotos.includes(photoId);
-
-        // Update LocalStorage
-        if (alreadyLiked) {
-            likedPhotos = likedPhotos.filter(id => id !== photoId);
-        } else {
-            likedPhotos.push(photoId);
-        }
-        localStorage.setItem("likedPhotos", JSON.stringify(likedPhotos));
-
-        // Update Firebase
-        try {
-            await updateDoc(photoRef, {
-                likes: increment(alreadyLiked ? -1 : 1)
-            });
-        } catch (err) {
-            console.error("Error updating like:", err);
-        } finally {
-            buttonElement.disabled = false;
-        }
-    }
 </script>
 
+<script>
+    // Mobile Menu Logic
+    const menuToggle = document.getElementById('mobile-menu');
+    const navList = document.getElementById('nav-list');
+    if (menuToggle) {
+        menuToggle.addEventListener('click', () => {
+            navList.classList.toggle('active');
+        });
+    }
+</script>
 </body>
 </html>
