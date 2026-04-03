@@ -1148,3 +1148,30 @@ header {
         margin: 10px 0;
     }
 }
+/* This part makes the menu actually show up when clicked */
+@media (max-width: 768px) {
+    .nav-links {
+        display: none; /* Keep it hidden by default on mobile */
+        flex-direction: column;
+        position: absolute;
+        top: 70px;
+        right: 5%;
+        background: white;
+        width: 200px;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        z-index: 1001;
+    }
+
+    /* When JavaScript adds the 'active' class, this makes it visible */
+    .nav-links.active {
+        display: flex !important;
+    }
+
+    .nav-links a {
+        margin: 10px 0;
+        color: #a18cd1; /* Matches your theme */
+        font-size: 18px;
+    }
+}
