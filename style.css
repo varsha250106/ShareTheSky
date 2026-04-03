@@ -1,4 +1,6 @@
-/* General Reset */
+/* =========================================
+   1. GLOBAL RESET & BASE STYLES
+   ========================================= */
 * {
     margin: 0;
     padding: 0;
@@ -7,157 +9,25 @@
 }
 
 body {
-    /* The signature background gradient from your screenshots */
+    /* The signature lavender-to-pink gradient */
     background: linear-gradient(135deg, #c2c2f0 0%, #f7c7db 100%);
-    min-height: 100vh;
-    color: #333;
-    display: flex;
-    flex-direction: column;
-}
-
-/* Header & Nav */
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 5%;
-    background: rgba(255, 255, 255, 0.2); /* Subtle glass effect */
-}
-
-.logo a {
-    text-decoration: none;
-    font-size: 24px;
-    font-weight: 700;
-    color: #1c1c8f; /* Dark blue from your logo */
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.nav-links a {
-    text-decoration: none;
-    color: #333;
-    margin-left: 25px;
-    font-weight: 600;
-    transition: color 0.3s;
-}
-
-.nav-links a:hover {
-    color: #1c1c8f;
-}
-
-/* Hero Section Alignment */
-.hero-section {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 60px 20px;
-}
-
-.hero-content h1 {
-    font-size: 42px;
-    color: #1c1c8f;
-    margin-bottom: 10px;
-}
-
-.hero-content p {
-    font-size: 18px;
-    color: #555;
-    margin-bottom: 30px;
-}
-
-/* The Exact Blue Button from your recording */
-.cta-button {
-    display: inline-block;
-    background-color: #3e3efc;
-    color: white;
-    padding: 12px 30px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 600;
-    box-shadow: 0 4px 15px rgba(62, 62, 252, 0.4);
-    transition: transform 0.2s, background-color 0.3s;
-}
-
-.cta-button:hover {
-    transform: translateY(-2px);
-    background-color: #2a2aff;
-}
-
-/* Features Section */
-.features {
-    margin-top: 80px;
-    max-width: 800px;
-    text-align: left;
-    width: 100%;
-}
-
-.feature-item {
-    margin-bottom: 40px;
-}
-
-.feature-item h3 {
-    font-size: 20px;
-    color: #1c1c8f;
-    margin-bottom: 10px;
-}
-
-.feature-item p {
-    font-size: 16px;
-    line-height: 1.6;
-    color: #444;
-}
-
-.feature-item span {
-    display: block;
-    margin-top: 10px;
-}
-
-/* Footer */
-footer {
-    text-align: center;
-    padding: 20px;
-    font-size: 14px;
-    color: #666;
-}
-
-/* Mobile Responsive */
-@media (max-width: 768px) {
-    header {
-        flex-direction: column;
-        gap: 15px;
-    }
-    
-    .hero-content h1 {
-        font-size: 32px;
-    }
-}
-/* General Reset to remove default margins */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
-}
-
-body {
-    /* The signature background gradient from your screenshots */
-    background: linear-gradient(135deg, #c2c2f0 0%, #f7c7db 100%);
+    background-attachment: fixed; /* Keeps gradient smooth during scroll */
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     color: #333;
 }
 
-/* Header & Navigation Alignment */
+/* =========================================
+   2. NAVIGATION HEADER
+   ========================================= */
 header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 20px 5%;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
 }
 
 .logo a {
@@ -175,37 +45,37 @@ header {
     color: #333;
     margin-left: 20px;
     font-weight: 600;
+    transition: 0.3s;
 }
 
-/* Hero Section (The "Capture the Sky" part) */
+.nav-links a:hover {
+    color: #3e3efc;
+}
+
+/* =========================================
+   3. HERO SECTION (Index Page)
+   ========================================= */
 .hero-section {
     flex: 1;
     display: flex;
     flex-direction: column;
-    align-items: center; /* Centers horizontally */
-    justify-content: center; /* Centers vertically */
+    align-items: center;
+    justify-content: center;
     text-align: center;
-    padding: 40px 20px;
+    padding: 60px 20px;
 }
 
 .hero-content h1 {
-    font-size: clamp(2rem, 5vw, 3rem); /* Responsive text size */
+    font-size: clamp(2rem, 5vw, 3rem);
     color: #1c1c8f;
     margin-bottom: 10px;
 }
 
-.hero-content p {
-    font-size: 1.1rem;
-    color: #555;
-    margin-bottom: 30px;
-}
-
-/* Blue Action Button */
 .cta-button {
     display: inline-block;
     background-color: #3e3efc;
     color: white;
-    padding: 12px 30px;
+    padding: 12px 35px;
     border-radius: 8px;
     text-decoration: none;
     font-weight: 600;
@@ -214,30 +84,98 @@ header {
 }
 
 .cta-button:hover {
-    transform: translateY(-2px);
-    background-color: #2a2aff;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(62, 62, 252, 0.6);
 }
 
-/* Feature Text Alignment */
-.features {
-    margin-top: 60px;
-    max-width: 800px;
+/* =========================================
+   4. UPLOAD PAGE STYLES (The Glass Card)
+   ========================================= */
+.upload-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+}
+
+.upload-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(15px);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.4);
     width: 100%;
-}
-
-.feature-item {
-    margin-bottom: 40px;
+    max-width: 450px;
     text-align: center;
 }
 
-.feature-item h3 {
-    color: #1c1c8f;
-    margin-bottom: 8px;
+.upload-box {
+    border: 2px dashed #3e3efc;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 15px;
+    padding: 30px;
+    margin: 20px 0;
+    cursor: pointer;
 }
 
+/* =========================================
+   5. GALLERY GRID STYLES
+   ========================================= */
+.gallery-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+    padding: 40px 5%;
+}
+
+.photo-card {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    transition: transform 0.3s;
+}
+
+.photo-card:hover {
+    transform: translateY(-5px);
+}
+
+.gallery-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.like-btn {
+    padding: 8px 20px;
+    border: 2px solid #ff4757;
+    background: white;
+    color: #ff4757;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.like-btn.liked {
+    background: #ff4757;
+    color: white;
+}
+
+/* =========================================
+   6. FOOTER & RESPONSIVE
+   ========================================= */
 footer {
     text-align: center;
     padding: 30px;
-    font-size: 0.9rem;
+    font-size: 14px;
     color: #666;
+}
+
+@media (max-width: 768px) {
+    .nav-links { display: none; } /* Add a mobile menu toggle if needed */
+    .hero-content h1 { font-size: 2.2rem; }
 }
