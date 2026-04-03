@@ -6,40 +6,97 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ShareTheSky</title>
 
-    <!-- Link to CSS -->
+    <!-- CSS -->
     <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-    <!-- HEADER / NAVBAR -->
+
+    <!-- HEADER -->
     <header>
         <h1 class="logo">ShareTheSky</h1>
         <nav>
             <a href="index.html">Home</a>
-    <a href="upload.html">Upload</a>
-    <a href="gallery.html">Gallery</a>
-    <a href="creator.html">Creator</a>
+            <a href="#">Upload</a>
+            <a href="#">Gallery</a>
+            <a href="#">Creator</a>
         </nav>
     </header>
-    
 
-    <!-- HERO SECTION -->
+    <!-- HERO -->
     <section class="hero">
         <h2>Capture the Sky. Share the Magic.</h2>
         <p>A community where everyone uploads their sky photos together.</p>
-        <a href="#" class="btn">Upload Your Sky</a>
     </section>
 
-    <!-- INFO SECTION -->
-    <section class="info">
-        <h3>Why ShareTheSky?</h3>
-        <p>Because every sky has a different story.  
-        Share your moment with others around the world.</p>
+    <!-- UPLOAD SECTION -->
+    <section>
+        <h2>Upload Your Sky 🌤️</h2>
+        <input type="file" id="fileInput">
+        <button onclick="uploadImage()">Upload</button>
+    </section>
+
+    <!-- GALLERY -->
+    <section>
+        <h2>Gallery</h2>
+        <div id="gallery"></div>
     </section>
 
     <!-- FOOTER -->
     <footer>
         <p>© 2026 ShareTheSky — Created with love ♥</p>
     </footer>
+
+    <!-- 🔥 Firebase Scripts (CORRECT PLACE) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+
+    <script>
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_DOMAIN",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_BUCKET"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const storage = firebase.storage();
+
+    function uploadImage() {
+        const file = document.getElementById("fileInput").files[0];
+
+        if (!file) {
+            alert("Please select a file");
+            return;
+        }
+
+        const storageRef = storage.ref("images/" + file.name);
+
+        storageRef.put(file).then(() => {
+            alert("Uploaded successfully!");
+            loadImages();
+        });
+    }
+
+    function loadImages() {
+        const listRef = storage.ref("images/");
+        listRef.listAll().then(res => {
+            document.getElementById("gallery").innerHTML = "";
+
+            res.items.forEach(item => {
+                item.getDownloadURL().then(url => {
+                    const img = document.createElement("img");
+                    img.src = url;
+                    img.width = 200;
+                    img.style.margin = "10px";
+                    document.getElementById("gallery").appendChild(img);
+                });
+            });
+        });
+    }
+
+    loadImages();
+    </script>
+
 </body>
 </html>
