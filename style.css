@@ -1,5 +1,6 @@
+
 /* =========================================
-   1. CORE STYLES (Restores Centering)
+   1. CORE STYLES (Restores Centering & Gradient)
    ========================================= */
 body {
     margin: 0;
@@ -7,11 +8,11 @@ body {
     background: linear-gradient(to bottom, #a8c0ff, #fbc2eb);
     color: #333;
     min-height: 100vh;
-    text-align: center; /* Keeps everything centered by default */
+    text-align: center; /* Keeps Home page text centered */
 }
 
 /* =========================================
-   2. HEADER & NAVIGATION (Original Glass Look)
+   2. HEADER (Original Glassmorphism)
    ========================================= */
 header {
     display: flex;
@@ -30,6 +31,9 @@ header {
     color: #1c1c8f;
     font-size: 24px;
     font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .nav-links {
@@ -49,7 +53,7 @@ header {
 }
 
 /* =========================================
-   3. HERO SECTION (Restores Spacing)
+   3. HERO SECTION (Home Page Spacing)
    ========================================= */
 .hero {
     padding: 100px 20px;
@@ -63,11 +67,11 @@ header {
     margin-bottom: 20px;
 }
 
-/* The Blue Button from your screenshots */
+/* The Solid Blue Button from your screenshots */
 .btn, .main-upload-btn {
     display: inline-block;
     padding: 14px 35px;
-    background: #2d2dff;
+    background: #2d2dff; /* Exact blue from your UI */
     color: white;
     border-radius: 8px;
     text-decoration: none;
@@ -78,7 +82,37 @@ header {
 }
 
 /* =========================================
-   4. GALLERY & CARDS
+   4. UPLOAD PAGE (Restored White Card)
+   ========================================= */
+.upload-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 20px;
+    min-height: 70vh;
+}
+
+.upload-card {
+    background: white; /* Matches your successful upload UI */
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    max-width: 500px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.upload-box {
+    border: 2px dashed #a18cd1;
+    padding: 40px 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    background: #fdfbff;
+    cursor: pointer;
+}
+
+/* =========================================
+   5. GALLERY GRID
    ========================================= */
 .gallery-container {
     display: grid;
@@ -92,33 +126,12 @@ header {
     border-radius: 15px;
     overflow: hidden;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    transition: 0.3s;
 }
 
 .photo-card img {
     width: 100%;
     height: 250px;
     object-fit: cover;
-}
-
-/* =========================================
-   5. UPLOAD & ABOUT CARDS (Centered)
-   ========================================= */
-.upload-container, .about-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 60px 20px;
-}
-
-.upload-card, .about-card {
-    background: rgba(255, 255, 255, 0.7);
-    padding: 40px;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    max-width: 500px;
-    width: 100%;
-    box-sizing: border-box;
 }
 
 /* =========================================
@@ -134,15 +147,17 @@ header {
 .menu-toggle span {
     width: 25px;
     height: 3px;
-    background: #2d2dff;
+    background: #1c1c8f;
     border-radius: 5px;
 }
 
 @media (max-width: 768px) {
-    .menu-toggle { display: flex; }
+    .menu-toggle { 
+        display: flex; /* Shows lines on mobile */
+    }
 
     .nav-links {
-        display: none;
+        display: none; /* Hidden until clicked */
         flex-direction: column;
         position: absolute;
         top: 70px;
@@ -152,15 +167,11 @@ header {
         padding: 20px;
         border-radius: 15px;
         box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        text-align: left; /* Menu items look better left-aligned */
+        text-align: left;
     }
 
+    /* Shown when 'active' class is added via JavaScript */
     .nav-links.active {
         display: flex !important;
     }
-}
-
-footer {
-    padding: 30px;
-    opacity: 0.8;
 }
