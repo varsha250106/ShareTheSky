@@ -456,3 +456,56 @@ footer {
     .pin-top-actions { opacity: 1; } /* Always show buttons on mobile */
     .action-btn { width: 40px; height: 40px; }
 }
+/* Container for top icons (Download/Zoom) */
+.pin-top-actions {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+    /* Visible by default on mobile, hover on desktop */
+    opacity: 1; 
+}
+
+/* Style for individual action buttons */
+.action-btn {
+    background: rgba(0, 0, 0, 0.6); /* Dark background for contrast */
+    color: white;
+    border: none;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 18px;
+    transition: 0.2s ease;
+    backdrop-filter: blur(4px); /* Glass effect */
+}
+
+.action-btn:hover {
+    background: rgba(0, 0, 0, 0.8);
+    transform: scale(1.1);
+}
+
+/* Ensure the image wrapper can contain absolute buttons */
+.pin-image-wrapper {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+/* Always show Like button with better shadow */
+.pin-like-btn {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    background: white;
+    padding: 8px 15px;
+    border-radius: 25px;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    z-index: 10;
+}
