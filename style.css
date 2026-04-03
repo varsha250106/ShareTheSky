@@ -424,3 +424,75 @@ footer {
     background-color: #6262e0;
     transform: translateY(-2px);
 }
+/* --- Exact Frame Alignment --- */
+.upload-card {
+    background: rgba(255, 255, 255, 0.85);
+    padding: 50px 40px; /* More vertical padding for that spacious look */
+    border-radius: 25px;
+    width: 100%;
+    max-width: 550px;
+    margin: 50px auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Keeps everything perfectly spaced apart */
+}
+
+.upload-card h2 {
+    font-size: 1.6rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+/* --- The Dashed Upload Box --- */
+.upload-box {
+    border: 2px dashed #d1c4f9; /* Soft purple dashed border */
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 18px;
+    padding: 50px 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.upload-box:hover {
+    border-color: #7b7bf5;
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.upload-icon img {
+    width: 50px;
+    opacity: 0.8;
+}
+
+/* --- Clean Input Field --- */
+#captionInput {
+    width: 100%;
+    padding: 14px 18px;
+    border: 1px solid #f0f0f0;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    background: #fff;
+    color: #555;
+    outline: none;
+}
+
+/* --- The Wide Purple Button --- */
+#uploadBtn {
+    width: 100%; /* Must be full width */
+    background-color: #8383f7; /* The exact shade of purple-blue */
+    color: white;
+    padding: 16px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    box-shadow: 0 6px 15px rgba(131, 131, 247, 0.3);
+    transition: 0.3s ease;
+}
+
+#uploadBtn:hover {
+    background-color: #6c6cf0;
+    transform: translateY(-2px);
+}
