@@ -43,20 +43,10 @@
     <p>© 2026 ShareTheSky — Created with love ♥</p>
 </footer>
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
-
+<!-- 🔥 Cloudinary Script -->
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyDxgtNzywhjYGR7R2XMVobR73-SioT6v98",
-  authDomain: "sharethesky-a9c7d.firebaseapp.com",
-  projectId: "sharethesky-a9c7d",
-  storageBucket: "sharethesky-a9c7d.appspot.com"   // ✅ FIXED
-};
-
-firebase.initializeApp(firebaseConfig);
-const storage = firebase.storage();
+const cloudName = "dqpmybazh";   // 🔴 replace this
+const uploadPreset = "sharethesky";    // ✅ your preset
 
 function uploadImage() {
     const file = document.getElementById("fileInput").files[0];
@@ -66,39 +56,28 @@ function uploadImage() {
         return;
     }
 
-    const storageRef = storage.ref("images/" + Date.now() + "_" + file.name);
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", uploadPreset);
 
-    storageRef.put(file)
-    .then(() => {
-        alert("Uploaded successfully!");
-        loadImages();
+    fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+        method: "POST",
+        body: formData
     })
-    .catch(error => {
-        alert("Error: " + error.message);
+    .then(res => res.json())
+    .then(data => {
+        const img = document.createElement("img");
+        img.src = data.secure_url;
+        img.style.width = "200px";
+        img.style.margin = "10px";
+        img.style.borderRadius = "10px";
+
+        document.getElementById("gallery").appendChild(img);
+    })
+    .catch(() => {
+        alert("Upload failed");
     });
 }
-
-function loadImages() {
-    const listRef = storage.ref("images/");
-
-    listRef.listAll().then(res => {
-        document.getElementById("gallery").innerHTML = "";
-
-        res.items.forEach(item => {
-            item.getDownloadURL().then(url => {
-                const img = document.createElement("img");
-                img.src = url;
-                img.style.width = "200px";
-                img.style.margin = "10px";
-                img.style.borderRadius = "10px";
-
-                document.getElementById("gallery").appendChild(img);
-            });
-        });
-    });
-}
-
-loadImages();
 </script>
 
 </body>
