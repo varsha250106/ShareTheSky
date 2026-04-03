@@ -41,42 +41,35 @@
         <p>Preview:</p>
         <img id="previewImage" style="display:none; width:200px; margin-top:10px;">
     </section>
-
 <script>
-const cloudName = "dqpmybazhE";   // 🔴 REPLACE THIS
-const uploadPreset = "sharethesky";    // ✅ your preset
+const cloudName = "dqpmybazh";   // ✅ FIXED (remove extra E)
+const uploadPreset = "sharethesky";
 
 const fileInput = document.getElementById("fileInput");
 const previewImage = document.getElementById("previewImage");
 const captionInput = document.getElementById("captionInput");
 const dropArea = document.getElementById("dropArea");
 
-// Drag over
+// Drag & Drop (same as yours)
 dropArea.addEventListener("dragover", (e) => {
     e.preventDefault();
     dropArea.classList.add("active");
 });
 
-// Drag leave
 dropArea.addEventListener("dragleave", () => {
     dropArea.classList.remove("active");
 });
 
-// Drop file
 dropArea.addEventListener("drop", (e) => {
     e.preventDefault();
     dropArea.classList.remove("active");
-
-    const file = e.dataTransfer.files[0];
-    handleFile(file);
+    handleFile(e.dataTransfer.files[0]);
 });
 
-// File input change
 fileInput.addEventListener("change", function () {
     handleFile(this.files[0]);
 });
 
-// Handle file preview
 function handleFile(file) {
     if (!file) return;
 
@@ -86,7 +79,7 @@ function handleFile(file) {
     fileInput.fileData = file;
 }
 
-// Upload to Cloudinary
+// 🔥 UPDATED UPLOAD FUNCTION
 function uploadImage() {
     const file = fileInput.fileData || fileInput.files[0];
 
@@ -96,6 +89,7 @@ function uploadImage() {
     }
 
     const captionText = captionInput.value.trim();
+    const date = new Date().toLocaleString(); // 📅 auto date
 
     const formData = new FormData();
     formData.append("file", file);
@@ -107,13 +101,21 @@ function uploadImage() {
     })
     .then(res => res.json())
     .then(data => {
-        alert(
-            captionText
-            ? "Photo uploaded successfully with caption!"
-            : "Photo uploaded successfully!"
-        );
 
-        // Reset fields
+        // ✅ SAVE EVERYTHING
+        const imageData = {
+            url: data.secure_url,
+            caption: captionText,
+            date: date
+        };
+
+        let images = JSON.parse(localStorage.getItem("images")) || [];
+        images.push(imageData);
+        localStorage.setItem("images", JSON.stringify(images));
+
+        alert("Upload successful!");
+
+        // Reset UI
         fileInput.value = "";
         fileInput.fileData = null;
         captionInput.value = "";
