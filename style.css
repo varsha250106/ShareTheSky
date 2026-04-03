@@ -840,3 +840,38 @@ footer {
     box-shadow: 0 8px 32px rgba(0,0,0,0.3);
     backdrop-filter: blur(5px);
 }
+.zoom-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10001; /* Higher than the image overlay */
+    background: rgba(255, 255, 255, 0.95);
+    padding: 12px 25px;
+    border-radius: 40px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5); /* Stronger shadow to stand out */
+    pointer-events: all; /* Ensures buttons remain clickable */
+}
+.zoom-overlay {
+    position: fixed;
+    top: 0; 
+    left: 0;
+    width: 100%; 
+    height: 100%;
+    background: rgba(0,0,0,0.9);
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: auto; /* Allows scrolling when the image is huge */
+}
+
+.zoom-content {
+    padding: 100px; /* Gives space so you can scroll to the edges of the photo */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
