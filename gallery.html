@@ -20,13 +20,29 @@
 
 <section>
     <h2 style="text-align:center; margin-top:30px;">Community Sky Gallery ☁️</h2>
-    <div id="gallery" class="gallery-container"></div>
+    <div id="gallery" class="gallery-container">
+        </div>
 </section>
 
+<div id="skyModal" class="sky-modal">
+    <span class="close-sky" onclick="closeSky()">&times;</span>
+    <div class="modal-container">
+        <img id="modalImg" src="" alt="Full Sky View">
+        <div class="modal-details">
+            <h3 id="modalCaption"></h3>
+            <a id="downloadLink" href="" download="MySky.jpg" class="download-btn">
+                📥 Download High-Res
+            </a>
+        </div>
+    </div>
+</div>
+
 <script type="module">
+    // 1. Firebase Imports
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, collection, onSnapshot, doc, updateDoc, increment, query, orderBy, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
+    // 2. Firebase Configuration
     const firebaseConfig = {
         apiKey: "AIzaSyDxgtNzywhjYGR7R2XMVobR73-SioT6v98",
         authDomain: "sharethesky-a9c7d.firebaseapp.com",
@@ -40,13 +56,16 @@
     const db = getFirestore(app);
     const galleryDiv = document.getElementById("gallery");
 
-    // 🆔 GET CURRENT USER ID
+    // 🆔 Get this browser's unique ID for ownership
     const myId = localStorage.getItem("mySkyUserId");
 
+    // 3. Listen for Data (Real-time)
     const q = query(collection(db, "photos"), orderBy("date", "desc"));
     
     onSnapshot(q, (snapshot) => {
         galleryDiv.innerHTML = "";
+        
+        // Fetch liked states from LocalStorage
         const likedIds = JSON.parse(localStorage.getItem("likedPhotos") || "[]");
 
         snapshot.forEach((docSnap) => {
@@ -54,42 +73,71 @@
             const id = docSnap.id;
             const isLiked = likedIds.includes(id);
             
-            // 🔒 OWNERSHIP CHECK
+            // 🔒 Ownership Check: Does this photo belong to this browser?
             const isOwner = (photo.uploaderId === myId);
 
             const card = document.createElement("div");
             card.className = "photo-card";
             card.innerHTML = `
-                <img src="${photo.url}" alt="Sky Photo">
+                <img src="${photo.url}" alt="Sky Photo" class="gallery-img">
                 <div style="padding: 15px;">
-                    <p><strong>${photo.caption || 'Sky'}</strong></p>
+                    <p style="margin: 5px 0;"><strong>${photo.caption || 'Beautiful Sky'}</strong></p>
                     <p style="font-size:11px; color:#888;">${photo.date}</p>
-                    <p>❤️ <span id="count-${id}">${photo.likes || 0}</span></p>
+                    <p style="font-size:18px;">❤️ <span id="count-${id}">${photo.likes || 0}</span></p>
                     
-                    <button class="like-btn ${isLiked ? 'liked' : ''}" id="btn-${id}">
-                        ${isLiked ? '💖 Liked' : '🤍 Like'}
-                    </button>
+                    <div class="btn-group">
+                        <button class="like-btn ${isLiked ? 'liked' : ''}" id="btn-${id}">
+                            ${isLiked ? '💖 Liked' : '🤍 Like'}
+                        </button>
 
-                    ${isOwner ? `<button class="delete-btn" id="del-${id}">🗑️ Delete My Photo</button>` : ''}
+                        ${isOwner ? `<button class="delete-btn" id="del-${id}">🗑️ Delete My Photo</button>` : ''}
+                    </div>
                 </div>
             `;
 
             galleryDiv.appendChild(card);
 
-            // LIKE LOGIC
-            card.querySelector(".like-btn").addEventListener("click", () => handleToggleLike(id));
+            // --- CLICK EVENTS ---
 
-            // DELETE LOGIC
+            // A. Open Full Screen
+            card.querySelector(".gallery-img").onclick = () => {
+                const modal = document.getElementById("skyModal");
+                document.getElementById("modalImg").src = photo.url;
+                document.getElementById("modalCaption").innerText = photo.caption || "Sky View";
+                document.getElementById("downloadLink").href = photo.url;
+                modal.style.display = "flex";
+            };
+
+            // B. Like Logic
+            card.querySelector(".like-btn").onclick = (e) => {
+                e.target.disabled = true; // Prevent spam
+                handleToggleLike(id);
+            };
+
+            // C. Delete Logic (If Owner)
             if (isOwner) {
-                card.querySelector(".delete-btn").addEventListener("click", async () => {
-                    if (confirm("Delete this photo permanently?")) {
+                card.querySelector(".delete-btn").onclick = async () => {
+                    if (confirm("Delete this sky forever?")) {
                         await deleteDoc(doc(db, "photos", id));
                     }
-                });
+                };
             }
         });
     });
 
+    // 4. Close Modal Functions
+    window.closeSky = function() {
+        document.getElementById("skyModal").style.display = "none";
+    };
+
+    window.onclick = function(event) {
+        const modal = document.getElementById("skyModal");
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    };
+
+    // 5. Like/Unlike Logic
     async function handleToggleLike(photoId) {
         const photoRef = doc(db, "photos", photoId);
         let likedPhotos = JSON.parse(localStorage.getItem("likedPhotos") || "[]");
@@ -103,9 +151,14 @@
         localStorage.setItem("likedPhotos", JSON.stringify(likedPhotos));
 
         try {
-            await updateDoc(photoRef, { likes: increment(alreadyLiked ? -1 : 1) });
-        } catch (err) { console.error(err); }
+            await updateDoc(photoRef, {
+                likes: increment(alreadyLiked ? -1 : 1)
+            });
+        } catch (err) {
+            console.error("Error updating like:", err);
+        }
     }
 </script>
+
 </body>
 </html>
