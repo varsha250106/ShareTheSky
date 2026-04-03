@@ -100,6 +100,13 @@
             margin-top: 25px;
             display: inline-block;
         }
+
+        /* Mobile Menu Fix for this page specifically */
+        @media (max-width: 768px) {
+            .nav-links.active {
+                display: flex !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -144,7 +151,7 @@
             
             <div class="contact-info">
                 <p>📧 <strong>Email:</strong> <a href="mailto:varshasv2516@gmail.com">varshasv2516@gmail.com</a></p>
-                <p>🔗 <strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/varsha-sv" target="_blank">www.linkedin.com/in/varsha-sv</a></p>
+                <p>🔗 <strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/varsha-sv" target="_blank">View Profile</a></p>
                 <p>💻 <strong>GitHub:</strong> <a href="https://github.com/varsha250106" target="_blank">varsha250106</a></p>
             </div>
 
@@ -158,6 +165,17 @@
         <a href="gallery.html" class="main-upload-btn" style="text-decoration:none;">Explore the Gallery</a>
     </section>
 </main>
+
+<script>
+    const menuToggle = document.getElementById('mobile-menu');
+    const navList = document.getElementById('nav-list');
+
+    if (menuToggle) {
+        menuToggle.addEventListener('click', () => {
+            navList.classList.toggle('active');
+        });
+    }
+</script>
 
 </body>
 </html>
