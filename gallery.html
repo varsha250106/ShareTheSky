@@ -20,39 +20,32 @@
 
 <section>
     <h2 style="text-align:center; margin-top:30px;">Community Sky Gallery ☁️</h2>
-    <div id="gallery" class="gallery-container">
-        <p id="loading-msg" style="text-align:center;">Looking at the clouds... (Loading photos)</p>
-    </div>
+    <div id="gallery" class="gallery-container"></div>
 </section>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, onSnapshot, doc, updateDoc, increment, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, collection, onSnapshot, doc, updateDoc, increment, query, orderBy, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    // 🔴 TRIPLE CHECK THIS CONFIG WITH YOUR FIREBASE CONSOLE
     const firebaseConfig = {
         apiKey: "AIzaSyDxgtNzywhjYGR7R2XMVobR73-SioT6v98",
         authDomain: "sharethesky-a9c7d.firebaseapp.com",
         projectId: "sharethesky-a9c7d",
         storageBucket: "sharethesky-a9c7d.firebasestorage.app",
         messagingSenderId: "1047232389865",
-        appId: "1:1047232389865:web:37694bf13bcef31f570678" // Ensure this is exactly what Firebase gives you!
+        appId: "1:1047232389865:web:37694bf13bcef31f570678"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const galleryDiv = document.getElementById("gallery");
-    const loadingMsg = document.getElementById("loading-msg");
 
-    // 3. Listen for Data
+    // 🆔 GET CURRENT USER ID
+    const myId = localStorage.getItem("mySkyUserId");
+
     const q = query(collection(db, "photos"), orderBy("date", "desc"));
     
     onSnapshot(q, (snapshot) => {
-        if (snapshot.empty) {
-            galleryDiv.innerHTML = "<p style='text-align:center;'>The sky is clear! No photos uploaded yet.</p>";
-            return;
-        }
-
         galleryDiv.innerHTML = "";
         const likedIds = JSON.parse(localStorage.getItem("likedPhotos") || "[]");
 
@@ -60,31 +53,41 @@
             const photo = docSnap.data();
             const id = docSnap.id;
             const isLiked = likedIds.includes(id);
+            
+            // 🔒 OWNERSHIP CHECK
+            const isOwner = (photo.uploaderId === myId);
 
             const card = document.createElement("div");
             card.className = "photo-card";
             card.innerHTML = `
-                <img src="${photo.url}" alt="Sky Photo" onerror="this.src='https://via.placeholder.com/300?text=Image+Error'">
+                <img src="${photo.url}" alt="Sky Photo">
                 <div style="padding: 15px;">
-                    <p style="margin: 5px 0;"><strong>${photo.caption || 'No Caption'}</strong></p>
+                    <p><strong>${photo.caption || 'Sky'}</strong></p>
                     <p style="font-size:11px; color:#888;">${photo.date}</p>
-                    <p style="font-size:18px;">❤️ <span id="count-${id}">${photo.likes || 0}</span></p>
+                    <p>❤️ <span id="count-${id}">${photo.likes || 0}</span></p>
+                    
                     <button class="like-btn ${isLiked ? 'liked' : ''}" id="btn-${id}">
                         ${isLiked ? '💖 Liked' : '🤍 Like'}
                     </button>
+
+                    ${isOwner ? `<button class="delete-btn" id="del-${id}">🗑️ Delete My Photo</button>` : ''}
                 </div>
             `;
 
             galleryDiv.appendChild(card);
 
-            card.querySelector(".like-btn").addEventListener("click", (e) => {
-                e.target.disabled = true;
-                handleToggleLike(id);
-            });
+            // LIKE LOGIC
+            card.querySelector(".like-btn").addEventListener("click", () => handleToggleLike(id));
+
+            // DELETE LOGIC
+            if (isOwner) {
+                card.querySelector(".delete-btn").addEventListener("click", async () => {
+                    if (confirm("Delete this photo permanently?")) {
+                        await deleteDoc(doc(db, "photos", id));
+                    }
+                });
+            }
         });
-    }, (error) => {
-        console.error("Firebase Error:", error);
-        galleryDiv.innerHTML = "<p style='color:red; text-align:center;'>Error loading photos. Check Console (F12).</p>";
     });
 
     async function handleToggleLike(photoId) {
@@ -100,14 +103,9 @@
         localStorage.setItem("likedPhotos", JSON.stringify(likedPhotos));
 
         try {
-            await updateDoc(photoRef, {
-                likes: increment(alreadyLiked ? -1 : 1)
-            });
-        } catch (err) {
-            console.error("Like error:", err);
-        }
+            await updateDoc(photoRef, { likes: increment(alreadyLiked ? -1 : 1) });
+        } catch (err) { console.error(err); }
     }
 </script>
-
 </body>
 </html>
