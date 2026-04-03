@@ -182,3 +182,83 @@ footer {
     font-size: 14px;
     color: #666;
 }
+/* =========================================
+   REFINED HERO SECTION
+   ========================================= */
+.hero-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    /* Changed from center to flex-start to allow natural scrolling */
+    justify-content: flex-start; 
+    text-align: center;
+    padding: 120px 20px; /* More room at the top */
+}
+
+.hero-content {
+    margin-bottom: 150px; /* Huge gap to match image 2 */
+}
+
+.hero-content h1 {
+    font-size: clamp(2.5rem, 7vw, 4.5rem);
+    color: #1c1c8f;
+    margin-bottom: 25px;
+    font-weight: 800;
+    line-height: 1.1;
+}
+
+.hero-content p {
+    font-size: 1.3rem;
+    color: #4a4a8a;
+    margin-bottom: 45px;
+    max-width: 650px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+}
+
+/* =========================================
+   FEATURES & AI SAFETY SECTION
+   ========================================= */
+.features {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 100px; /* Big space between each "Why" point */
+    padding-bottom: 100px;
+}
+
+.feature-item {
+    background: rgba(255, 255, 255, 0.3); /* Very subtle glass effect */
+    padding: 40px;
+    border-radius: 20px;
+    backdrop-filter: blur(5px);
+}
+
+.feature-item h3 {
+    font-size: 28px;
+    color: #1c1c8f;
+    margin-bottom: 20px;
+}
+
+.feature-item p {
+    font-size: 18px;
+    line-height: 1.8;
+    color: #333;
+}
+
+/* AI Badge Style */
+.ai-badge {
+    display: inline-block;
+    background: #3e3efc;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
