@@ -8,86 +8,87 @@
 </head>
 
 <body>
-    <header>
-        <h1 class="logo">ShareTheSky</h1>
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="upload.html">Upload</a>
-            <a href="gallery.html">Gallery</a>
-            <a href="creator.html">Creator</a>
-        </nav>
-    </header>
 
-    <section class="gallery">
-        <h2>Sky Gallery</h2>
-        <div class="grid" id="galleryGrid"></div>
-    </section>
+<header>
+    <h1 class="logo">ShareTheSky</h1>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="upload.html">Upload</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="creator.html">Creator</a>
+    </nav>
+</header>
 
-<script>
+<section class="gallery">
+    <h2>Sky Gallery 🌤️</h2>
+    <div class="grid" id="galleryGrid"></div>
+</section>
+
+<!-- 🔥 FINAL SCRIPT -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, getDocs, updateDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// ✅ SAME Firebase config (must match upload page)
+const firebaseConfig = {
+  apiKey: "AIzaSyDxgtNzywhjYGR7R2XMVobR73-SioT6v98",
+  authDomain: "sharethesky-a9c7d.firebaseapp.com",
+  projectId: "sharethesky-a9c7d",
+  storageBucket: "sharethesky-a9c7d.firebasestorage.app",
+  messagingSenderId: "1047232389865",
+  appId: "1:1047232389865:web:37694bf13bcef31f570678",
+  measurementId: "G-QLMFRX48Q9"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 const galleryContainer = document.getElementById("galleryGrid");
 
-function loadGallery() {
+// 🔥 LOAD ALL IMAGES (GLOBAL)
+async function loadGallery() {
     galleryContainer.innerHTML = "";
 
-    let storedImages = JSON.parse(localStorage.getItem("images")) || [];
+    const snapshot = await getDocs(collection(db, "photos"));
 
-    storedImages.forEach((photo, index) => {
+    snapshot.forEach((docSnap) => {
+        const photo = docSnap.data();
+        const id = docSnap.id;
+
         const box = document.createElement("div");
         box.classList.add("photoBox");
 
-        // Check like state
-        const liked = photo.liked || false;
-
         box.innerHTML = `
-            <img src="${photo.url}">
-            <p class="caption">${photo.caption || "No Caption"}</p>
-            <p class="date">Uploaded on: ${photo.date}</p>
+            <img src="${photo.url}" style="width:200px; border-radius:10px;">
+            <p><strong>${photo.caption || "No Caption"}</strong></p>
+            <p style="font-size:12px;">${photo.date}</p>
 
-            <button class="likeBtn" onclick="toggleLike(${index})">
-                ${liked ? "💔 Unlike" : "❤️ Like"} (${photo.likes || 0})
+            <button onclick="likePhoto('${id}', ${photo.likes || 0})">
+                ❤️ Like (${photo.likes || 0})
             </button>
 
-            <button class="deleteBtn" onclick="deletePhoto(${index})">
-                Delete
-            </button>
+            
         `;
 
         galleryContainer.appendChild(box);
     });
 }
 
-// 🔥 TOGGLE LIKE / UNLIKE
-function toggleLike(index) {
-    let photos = JSON.parse(localStorage.getItem("images")) || [];
-
-    if (!photos[index].likes) {
-        photos[index].likes = 0;
-    }
-
-    // Toggle logic
-    if (photos[index].liked) {
-        photos[index].liked = false;
-        photos[index].likes -= 1;
-    } else {
-        photos[index].liked = true;
-        photos[index].likes += 1;
-    }
-
-    localStorage.setItem("images", JSON.stringify(photos));
+// ❤️ LIKE
+window.likePhoto = async function(id, currentLikes) {
+    await updateDoc(doc(db, "photos", id), {
+        likes: currentLikes + 1
+    });
     loadGallery();
-}
+};
 
-// Delete
-function deletePhoto(index) {
-    let photos = JSON.parse(localStorage.getItem("images")) || [];
-
-    photos.splice(index, 1);
-
-    localStorage.setItem("images", JSON.stringify(photos));
+// ❌ DELETE (optional – remove if you don’t want users deleting)
+window.deletePhoto = async function(id) {
+    await deleteDoc(doc(db, "photos", id));
     loadGallery();
-}
+};
 
-// Load on start
+// 🚀 INITIAL LOAD
 loadGallery();
 </script>
 
