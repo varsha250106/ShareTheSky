@@ -998,3 +998,52 @@ footer {
     min-width: 50px;
     text-align: center;
 }
+/* --- Centering the Header correctly --- */
+.gallery-header {
+    width: 100%;
+    text-align: center;
+    padding: 50px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers title and subtitle horizontally */
+}
+
+/* --- Ensuring the Gallery Grid is visible --- */
+.pinterest-grid {
+    column-count: 3;
+    column-gap: 20px;
+    padding: 20px 5%;
+    width: 100%;
+    display: block; /* Ensures it doesn't stay hidden */
+}
+/* The Zoom Button Circle */
+.zoom-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: none;
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centers + and - perfectly */
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: #6c5ce7;
+}
+
+/* The Bottom Control Pill */
+.zoom-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10001;
+    background: white;
+    height: 60px; /* Prevents the stretching white bar */
+    padding: 0 20px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
