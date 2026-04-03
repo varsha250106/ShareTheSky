@@ -19,6 +19,7 @@
         <a href="index.html">Home</a>
         <a href="upload.html">Upload</a>
         <a href="gallery.html">Gallery</a>
+        <a href="creator.html">Creator</a>
     </nav>
 </header>
 
@@ -29,7 +30,7 @@
 </section>
 
 <div id="skyModal" class="sky-modal">
-    <span class="close-sky" onclick="closeSky()">&times;</span>
+    <span class="close-sky" id="closeBtn">&times;</span>
     <div class="modal-container">
         <img id="modalImg" src="" alt="Full Sky View">
         <div class="modal-details">
@@ -59,8 +60,9 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const galleryDiv = document.getElementById("gallery");
+    const modal = document.getElementById("skyModal");
 
-    // 🆔 Get this browser's unique ID for ownership
+    // 🆔 Identify the User
     const myId = localStorage.getItem("mySkyUserId");
 
     // 3. Listen for Data (Real-time)
@@ -69,15 +71,13 @@
     onSnapshot(q, (snapshot) => {
         galleryDiv.innerHTML = "";
         
-        // Fetch liked states from LocalStorage
+        // Fetch liked states
         const likedIds = JSON.parse(localStorage.getItem("likedPhotos") || "[]");
 
         snapshot.forEach((docSnap) => {
             const photo = docSnap.data();
             const id = docSnap.id;
             const isLiked = likedIds.includes(id);
-            
-            // 🔒 Ownership Check: Does this photo belong to this browser?
             const isOwner = (photo.uploaderId === myId);
 
             const card = document.createElement("div");
@@ -104,49 +104,49 @@
             // --- CLICK EVENTS ---
 
             // A. Open Full Screen
-            card.querySelector(".gallery-img").onclick = () => {
-                const modal = document.getElementById("skyModal");
+            card.querySelector(".gallery-img").addEventListener("click", () => {
                 document.getElementById("modalImg").src = photo.url;
                 document.getElementById("modalCaption").innerText = photo.caption || "Sky View";
                 document.getElementById("downloadLink").href = photo.url;
                 modal.style.display = "flex";
-            };
+            });
 
             // B. Like Logic
-            card.querySelector(".like-btn").onclick = (e) => {
-                e.target.disabled = true; // Prevent spam
-                handleToggleLike(id);
-            };
+            card.querySelector(".like-btn").addEventListener("click", (e) => {
+                handleToggleLike(id, e.target);
+            });
 
-            // C. Delete Logic (If Owner)
+            // C. Delete Logic
             if (isOwner) {
-                card.querySelector(".delete-btn").onclick = async () => {
+                card.querySelector(".delete-btn").addEventListener("click", async () => {
                     if (confirm("Delete this sky forever?")) {
                         await deleteDoc(doc(db, "photos", id));
                     }
-                };
+                });
             }
         });
     });
 
-    // 4. Close Modal Functions
-    window.closeSky = function() {
-        document.getElementById("skyModal").style.display = "none";
-    };
+    // 4. Modal Functions (Now inside the module so they work)
+    document.getElementById("closeBtn").addEventListener("click", () => {
+        modal.style.display = "none";
+    });
 
-    window.onclick = function(event) {
-        const modal = document.getElementById("skyModal");
+    window.addEventListener("click", (event) => {
         if (event.target == modal) {
             modal.style.display = "none";
         }
-    };
+    });
 
     // 5. Like/Unlike Logic
-    async function handleToggleLike(photoId) {
+    async function handleToggleLike(photoId, buttonElement) {
+        buttonElement.disabled = true; // Temporary disable to prevent double clicks
+        
         const photoRef = doc(db, "photos", photoId);
         let likedPhotos = JSON.parse(localStorage.getItem("likedPhotos") || "[]");
         const alreadyLiked = likedPhotos.includes(photoId);
 
+        // Update LocalStorage
         if (alreadyLiked) {
             likedPhotos = likedPhotos.filter(id => id !== photoId);
         } else {
@@ -154,12 +154,15 @@
         }
         localStorage.setItem("likedPhotos", JSON.stringify(likedPhotos));
 
+        // Update Firebase
         try {
             await updateDoc(photoRef, {
                 likes: increment(alreadyLiked ? -1 : 1)
             });
         } catch (err) {
             console.error("Error updating like:", err);
+        } finally {
+            buttonElement.disabled = false;
         }
     }
 </script>
