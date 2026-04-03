@@ -368,3 +368,91 @@ footer {
 @media (max-width: 500px) {
     .pinterest-grid { column-count: 1; }
 }
+/* Better Visibility for Buttons */
+.pin-top-actions {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: flex;
+    gap: 8px;
+    opacity: 0;
+    transition: 0.3s;
+}
+
+.pin-card:hover .pin-top-actions {
+    opacity: 1;
+}
+
+.action-btn {
+    background: rgba(0, 0, 0, 0.5); /* Dark semi-transparent background */
+    color: white;
+    border: none;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 16px;
+    backdrop-filter: blur(5px);
+}
+
+/* Like Button visibility fix */
+.pin-like-btn {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0,0,0,0.1);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2) !important;
+    opacity: 1 !important; /* Always visible on mobile */
+}
+
+/* Delete Button Visibility */
+.pin-delete {
+    color: #ff4d4d;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 8px;
+    background: rgba(255, 77, 77, 0.1);
+    border: 1px solid rgba(255, 77, 77, 0.2);
+}
+
+/* =========================================
+   FULL SCREEN ZOOM MODAL
+   ========================================= */
+#zoomOverlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.zoom-container {
+    position: relative;
+    max-width: 90%;
+    max-height: 90%;
+}
+
+.zoomed-image {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+}
+
+.close-zoom {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    color: white;
+    font-size: 40px;
+    cursor: pointer;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 600px) {
+    .pin-top-actions { opacity: 1; } /* Always show buttons on mobile */
+    .action-btn { width: 40px; height: 40px; }
+}
