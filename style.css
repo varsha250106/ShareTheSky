@@ -887,3 +887,28 @@ footer {
     font-size: 13px;
     color: #7b1fa2;
 }
+/* Styling for the Contact Box */
+.contact-info {
+    background: #fdf6ff; /* Very light purple tint */
+    padding: 15px;
+    border-radius: 12px;
+    margin: 20px 0;
+    border-left: 5px solid #a18cd1; /* Matches your theme */
+    text-align: left;
+}
+
+.contact-info p {
+    margin: 10px 0;
+    font-size: 15px;
+}
+
+.contact-info a {
+    color: #a18cd1;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.contact-info a:hover {
+    color: #ff9a9e; /* Pinkish-orange hover from your gradient */
+    text-decoration: underline;
+}
