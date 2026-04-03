@@ -63,52 +63,77 @@
             const isOwner = data.uploaderId === mySkyUserId;
 
             const card = document.createElement("div");
-            card.className = "photo-card"; // This matches the Pinterest CSS
+            card.className = "pin-card"; // Using pin-card for Pinterest styling
 
             card.innerHTML = `
-                <div class="photo-wrapper">
-                    <img src="${data.url}" alt="Sky" onclick="openZoom('${data.url}')">
-                    <div class="photo-overlay">
-                        <button class="like-btn ${localStorage.getItem('liked_'+id) ? 'liked' : ''}" data-id="${id}">
-                            ❤️ <span>${data.likes || 0}</span>
-                        </button>
+                <div class="pin-image-wrapper">
+                    <img src="${data.url}" class="pin-img" alt="Sky" onclick="openZoom('${data.url}')">
+                    
+                    <div class="pin-top-actions">
+                        <a href="${data.url}" download="SkyPhoto.jpg" target="_blank" class="action-btn" title="Download">📥</a>
+                        <button class="action-btn" onclick="openZoom('${data.url}')" title="Zoom">🔍</button>
                     </div>
+
+                    <button class="pin-like-overlay ${localStorage.getItem('liked_'+id) ? 'liked' : ''}" id="like-${id}">
+                        ❤️ <span>${data.likes || 0}</span>
+                    </button>
                 </div>
-                <div class="photo-info">
+                
+                <div class="pin-content">
                     <h3>${data.caption}</h3>
-                    <div class="photo-meta">
+                    <div class="pin-footer">
                         <span>${data.date.split(',')[0]}</span>
-                        ${isOwner ? `<button class="delete-btn" data-id="${id}">🗑️</button>` : ''}
+                        ${isOwner ? `<button class="pin-delete" id="del-${id}">🗑️ Remove</button>` : ''}
                     </div>
                 </div>
             `;
 
             galleryContainer.appendChild(card);
 
-            // Like Event
-            card.querySelector('.like-btn').onclick = async (e) => {
+            // Like Logic
+            card.querySelector(`#like-${id}`).onclick = async (e) => {
+                e.stopPropagation();
                 const btn = e.currentTarget;
                 const isLiked = btn.classList.contains("liked");
                 const newCount = isLiked ? (data.likes - 1) : (data.likes + 1);
+
                 await updateDoc(doc(db, "photos", id), { likes: newCount });
-                isLiked ? localStorage.removeItem('liked_'+id) : localStorage.setItem('liked_'+id, "true");
+
+                if (isLiked) {
+                    localStorage.removeItem('liked_'+id);
+                } else {
+                    localStorage.setItem('liked_'+id, "true");
+                }
             };
 
-            // Delete Event
+            // Delete Logic
             if (isOwner) {
-                card.querySelector('.delete-btn').onclick = async () => {
-                    if (confirm("Remove this sky?")) await deleteDoc(doc(db, "photos", id));
+                card.querySelector(`#del-${id}`).onclick = async () => {
+                    if (confirm("Delete your sky photo?")) {
+                        await deleteDoc(doc(db, "photos", id));
+                    }
                 };
             }
         });
     });
 
+    // Global Zoom Function with Close Overlay
     window.openZoom = (url) => {
         const overlay = document.createElement('div');
         overlay.className = 'zoom-overlay';
-        overlay.innerHTML = `<img src="${url}" class="zoomed-img" onclick="this.parentElement.remove()">`;
+        overlay.id = 'activeZoom';
+        overlay.innerHTML = `
+            <div class="zoom-content">
+                <span class="close-zoom" onclick="document.getElementById('activeZoom').remove()">×</span>
+                <img src="${url}" class="zoomed-img">
+            </div>
+        `;
         document.body.appendChild(overlay);
-        overlay.onclick = () => overlay.remove();
+        
+        // Close on clicking the dark background
+        overlay.onclick = (e) => {
+            if (e.target.id === 'activeZoom') overlay.remove();
+        };
     };
 </script>
 </body>
