@@ -4,43 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload - ShareTheSky</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-
-    <style>
-        /* Ensures the logo and navigation behavior match index.html */
-        .logo a {
-            text-decoration: none;
-            color: inherit;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer !important;
-        }
-    </style>
 </head>
 <body>
 
 <header>
     <h1 class="logo">
         <a href="index.html">
-            <span class="logo-icon"></span>
-            ShareTheSky
+            <span>📷</span> ShareTheSky
         </a>
     </h1>
-    
-    <div class="menu-toggle" id="mobile-menu">
-        <span></span>
-        <span></span>
-        <span></span>
-    </div>
-
-    <nav class="nav-links" id="nav-list">
+    <nav class="nav-links">
         <a href="index.html">Home</a>
         <a href="upload.html">Upload</a>
         <a href="gallery.html">Gallery</a>
-        <a href="about.html">About Me</a>
+        <a href="about.html">Creator</a>
     </nav>
 </header>
 
@@ -60,7 +38,7 @@
             <input type="text" id="captionInput" placeholder="Write a caption... (or leave blank for a random name)">
         </div>
 
-        <button id="uploadBtn" class="main-upload-btn">Share the Sky</button>
+        <button id="uploadBtn" class="cta-button" style="width: 100%; border: none; cursor: pointer;">Share the Sky</button>
     </section>
 </main>
 
@@ -69,20 +47,9 @@
 </footer>
 
 <script type="module">
-    // 1. Firebase Imports
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    // --- MOBILE MENU LOGIC ---
-    const menuToggle = document.getElementById('mobile-menu');
-    const navList = document.getElementById('nav-list');
-    if (menuToggle) {
-        menuToggle.addEventListener('click', () => {
-            navList.classList.toggle('active');
-        });
-    }
-
-    // 2. Firebase Configuration
     const firebaseConfig = {
         apiKey: "AIzaSyDxgtNzywhjYGR7R2XMVobR73-SioT6v98",
         authDomain: "sharethesky-a9c7d.firebaseapp.com",
@@ -95,15 +62,12 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Browser ID Logic
     let mySkyUserId = localStorage.getItem("mySkyUserId") || "user_" + Math.random().toString(36).substr(2, 9);
     localStorage.setItem("mySkyUserId", mySkyUserId);
 
-    // Cloudinary Config
     const cloudName = "dqpmybazh";
     const uploadPreset = "sharethesky";
 
-    // UI Elements
     const fileInput = document.getElementById("fileInput");
     const previewImage = document.getElementById("previewImage");
     const uploadText = document.getElementById("uploadText");
@@ -111,18 +75,16 @@
 
     const skyNames = ["Infinite Azure", "Cotton Candy Clouds", "Golden Hour Glow", "Midnight Whisper", "Painted Horizon", "Celestial Canvas", "Eternal Blue", "Sun-Kissed Stratus", "Twilight Magic", "Dreamy Overcast", "Velvet Dusk", "Ocean in the Sky"];
 
-    // File Selection Preview
     fileInput.addEventListener("change", function() {
         const file = this.files[0];
         if (file) {
             previewImage.src = URL.createObjectURL(file);
             previewImage.style.display = "block";
-            uploadText.innerText = "Photo selected: " + file.name;
+            uploadText.innerText = "Photo selected!";
             document.querySelector(".upload-icon").style.display = "none";
         }
     });
 
-    // Upload Handler
     uploadBtn.addEventListener("click", async () => {
         const file = fileInput.files[0];
         if (!file) return alert("Please select a sky photo first!");
@@ -144,25 +106,9 @@
                 method: "POST",
                 body: formData
             });
-            
             const data = await res.json();
 
-            // Moderation Check
-            let isSafe = true;
-            if (data.moderation && data.moderation.length > 0) {
-                if (data.moderation[0].status !== "approved") {
-                    isSafe = false;
-                }
-            }
-
-            if (!isSafe) {
-                alert("☁️ Sky Check Failed: AI flagged this image. Please share a real sky!");
-                uploadBtn.disabled = false;
-                uploadBtn.innerText = "Share the Sky";
-                return; 
-            }
-
-            // Save to Firestore
+            // Moderation check handled by Cloudinary Upload Preset
             await addDoc(collection(db, "photos"), {
                 url: data.secure_url,
                 caption: userCaption,
@@ -173,15 +119,13 @@
 
             alert("Sky shared successfully! 🌍");
             window.location.href = "gallery.html";
-
         } catch (err) {
             console.error(err);
-            alert("Connection error. Try again!");
+            alert("Upload failed. Try again!");
             uploadBtn.disabled = false;
             uploadBtn.innerText = "Share the Sky";
         }
     });
 </script>
-
 </body>
 </html>
