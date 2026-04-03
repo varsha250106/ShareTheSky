@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,107 +6,173 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Me - ShareTheSky</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        /* Internal CSS to ensure the card looks perfect immediately */
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            /* Ensuring the background matches your gallery theme */
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        /* Glassmorphism Container */
         .about-container {
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 60px 20px;
-            min-height: 80vh;
+            padding: 80px 20px;
+            min-height: 85vh;
         }
 
         .about-card {
-            background: white;
-            padding: 40px;
-            border-radius: 25px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            max-width: 550px;
+            background: rgba(255, 255, 255, 0.75); /* Translucent white */
+            backdrop-filter: blur(15px); /* Frost effect */
+            -webkit-backdrop-filter: blur(15px);
+            padding: 50px 40px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.08);
+            max-width: 580px;
             width: 100%;
             text-align: center;
-            animation: fadeIn 0.8s ease;
+            animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         .profile-pic {
-            font-size: 50px;
-            background: #f3f3f3;
-            width: 100px;
-            height: 100px;
-            line-height: 100px;
+            font-size: 55px;
+            background: #ffffff;
+            width: 110px;
+            height: 110px;
+            line-height: 110px;
             border-radius: 50%;
-            margin: 0 auto 20px;
+            margin: 0 auto 25px;
+            box-shadow: 0 10px 20px rgba(161, 140, 209, 0.15);
+            border: 4px solid #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .about-card h2 {
+            color: #2d3436;
+            font-size: 2rem;
+            margin-bottom: 5px;
         }
 
         .subtitle {
             color: #a18cd1;
-            font-weight: bold;
-            margin-top: -10px;
-            margin-bottom: 25px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-size: 0.85rem;
+            margin-bottom: 30px;
+            display: block;
         }
 
         .about-content {
             text-align: left;
-            line-height: 1.7;
-            color: #333;
+            line-height: 1.8;
+            color: #444;
         }
 
+        /* Interactive Contact Section */
         .contact-info {
-            background: #f8f6ff;
-            padding: 15px;
-            border-radius: 12px;
-            margin: 20px 0;
-            border-left: 5px solid #a18cd1;
+            background: rgba(255, 255, 255, 0.5);
+            padding: 20px;
+            border-radius: 20px;
+            margin: 25px 0;
+            border-left: 6px solid #a18cd1;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            transition: all 0.3s ease;
+        }
+
+        .contact-info:hover {
+            transform: translateX(10px);
+            background: white;
+            box-shadow: 0 10px 25px rgba(161, 140, 209, 0.12);
         }
 
         .contact-info p {
-            margin: 10px 0;
+            margin: 12px 0;
             font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .contact-info a {
-            color: #a18cd1;
+            color: #6c5ce7;
             text-decoration: none;
-            font-weight: bold;
+            font-weight: 600;
+            transition: 0.2s;
         }
 
+        .contact-info a:hover {
+            color: #a18cd1;
+            text-decoration: underline;
+        }
+
+        /* Pill-style Skills Tags */
         .skills-tag {
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
-            margin-top: 20px;
+            margin-top: 25px;
         }
 
         .skills-tag span {
-            background: #eee;
-            padding: 6px 15px;
-            border-radius: 20px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            padding: 8px 18px;
+            border-radius: 50px;
             font-size: 13px;
+            font-weight: 600;
             color: #666;
-        }
-        
-        .main-upload-btn {
-            background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
-            color: white;
-            padding: 12px 25px;
-            border-radius: 30px;
-            border: none;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-top: 25px;
-            display: inline-block;
+            transition: all 0.3s ease;
+            cursor: default;
         }
 
-        /* Mobile Menu Fix for this page specifically */
-        @media (max-width: 768px) {
-            .nav-links.active {
-                display: flex !important;
-            }
+        .skills-tag span:hover {
+            background: #a18cd1;
+            color: white;
+            border-color: #a18cd1;
+            transform: translateY(-4px);
+            box-shadow: 0 5px 15px rgba(161, 140, 209, 0.3);
+        }
+        
+        /* Modernized Button */
+        .main-upload-btn {
+            background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+            color: white !important;
+            padding: 16px 45px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.05rem;
+            display: inline-block;
+            margin-top: 35px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(161, 140, 209, 0.3);
+        }
+
+        .main-upload-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(161, 140, 209, 0.5);
+            filter: brightness(1.05);
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 600px) {
+            .about-card { padding: 30px 20px; }
+            .about-container { padding: 40px 15px; }
         }
     </style>
 </head>
@@ -113,24 +180,21 @@
 
 <header>
     <h1 class="logo">
-        <a href="index.html">
-            <span class="logo-icon"></span>
-            ShareTheSky
-        </a>
+        <a href="index.html">ShareTheSky</a>
     </h1>
     
     <div class="menu-toggle" id="mobile-menu">
-    <span></span>
-    <span></span>
-    <span></span>
-</div>
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
 
-<nav class="nav-links" id="nav-list">
-    <a href="index.html">Home</a>
-    <a href="upload.html">Upload</a>
-    <a href="gallery.html">Gallery</a>
-    <a href="about.html">About Me</a>
-</nav>
+    <nav class="nav-links" id="nav-list">
+        <a href="index.html">Home</a>
+        <a href="upload.html">Upload</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="about.html">About Me</a>
+    </nav>
 </header>
 
 <main class="about-container">
@@ -138,7 +202,7 @@
         <div class="profile-pic">👩‍💻</div> 
         
         <h2>Hi, I'm Varsha 👋</h2>
-        <p class="subtitle">Creator of ShareTheSky</p>
+        <span class="subtitle">Creator of ShareTheSky</span>
         
         <div class="about-content">
             <p>
@@ -147,7 +211,6 @@
             </p>
             
             <h3>Get in Touch 📩</h3>
-            <p>For any enquiries or collaborations, feel free to reach out:</p>
             
             <div class="contact-info">
                 <p>📧 <strong>Email:</strong> <a href="mailto:varshasv2516@gmail.com">varshasv2516@gmail.com</a></p>
@@ -162,7 +225,7 @@
             </div>
         </div>
 
-        <a href="gallery.html" class="main-upload-btn" style="text-decoration:none;">Explore the Gallery</a>
+        <a href="gallery.html" class="main-upload-btn">Explore the Gallery</a>
     </section>
 </main>
 
