@@ -931,3 +931,39 @@ footer {
     border-radius: 15px;
     transition: transform 0.2s ease;
 }
+/* Full screen background */
+.zoom-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 10000;
+    display: flex;
+    flex-direction: column; /* Stacks image and controls vertically */
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Fixes the white bar into a small pill shape */
+.zoom-controls {
+    background: white;
+    height: 60px; /* STRICT HEIGHT: Prevents the vertical bar stretching */
+    padding: 0 25px;
+    border-radius: 50px;
+    display: flex;
+    flex-direction: row; /* Keeps buttons side-by-side */
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    width: auto; /* Prevents it from stretching horizontally */
+}
+
+/* Ensure the image doesn't get too big and cover everything */
+.zoomed-img {
+    max-width: 90%;
+    max-height: 75vh;
+    border-radius: 12px;
+    transition: transform 0.2s ease;
+}
