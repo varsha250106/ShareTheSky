@@ -245,3 +245,126 @@ footer {
     transform: none;
     box-shadow: none;
 }
+/* =========================================
+   PINTEREST STYLE GALLERY
+   ========================================= */
+.gallery-page {
+    padding: 40px 5%;
+    flex: 1;
+}
+
+.gallery-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.gallery-header h2 {
+    font-size: 32px;
+    color: #1c1c8f;
+    font-weight: 800;
+}
+
+/* The Pinterest Columns */
+.pinterest-grid {
+    column-count: 4; /* 4 columns on desktop */
+    column-gap: 20px;
+    width: 100%;
+}
+
+/* Individual Card */
+.pin-card {
+    break-inside: avoid; /* Prevents card from splitting across columns */
+    margin-bottom: 20px;
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease;
+}
+
+.pin-card:hover {
+    transform: translateY(-5px);
+}
+
+.pin-image-wrapper {
+    position: relative;
+    cursor: pointer;
+}
+
+.pin-img {
+    width: 100%;
+    display: block;
+    border-radius: 20px 20px 0 0;
+}
+
+/* Floating Like Button */
+.pin-like-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    padding: 8px 12px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    opacity: 0; /* Hidden until hover */
+    transition: 0.3s;
+}
+
+.pin-card:hover .pin-like-btn {
+    opacity: 1;
+}
+
+.pin-like-btn.liked {
+    background: #ff4d4d;
+    color: white;
+    opacity: 1;
+}
+
+/* Content Section */
+.pin-content {
+    padding: 15px;
+}
+
+.pin-content h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.pin-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    color: #888;
+}
+
+.pin-delete {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    opacity: 0.6;
+}
+
+.pin-delete:hover {
+    opacity: 1;
+}
+
+/* RESPONSIVE FIXES */
+@media (max-width: 1100px) {
+    .pinterest-grid { column-count: 3; }
+}
+
+@media (max-width: 800px) {
+    .pinterest-grid { column-count: 2; }
+}
+
+@media (max-width: 500px) {
+    .pinterest-grid { column-count: 1; }
+}
