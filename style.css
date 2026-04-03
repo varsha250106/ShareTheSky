@@ -135,3 +135,109 @@ footer {
         font-size: 32px;
     }
 }
+/* General Reset to remove default margins */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    /* The signature background gradient from your screenshots */
+    background: linear-gradient(135deg, #c2c2f0 0%, #f7c7db 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    color: #333;
+}
+
+/* Header & Navigation Alignment */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 5%;
+}
+
+.logo a {
+    text-decoration: none;
+    font-size: 24px;
+    font-weight: 700;
+    color: #1c1c8f;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #333;
+    margin-left: 20px;
+    font-weight: 600;
+}
+
+/* Hero Section (The "Capture the Sky" part) */
+.hero-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers horizontally */
+    justify-content: center; /* Centers vertically */
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.hero-content h1 {
+    font-size: clamp(2rem, 5vw, 3rem); /* Responsive text size */
+    color: #1c1c8f;
+    margin-bottom: 10px;
+}
+
+.hero-content p {
+    font-size: 1.1rem;
+    color: #555;
+    margin-bottom: 30px;
+}
+
+/* Blue Action Button */
+.cta-button {
+    display: inline-block;
+    background-color: #3e3efc;
+    color: white;
+    padding: 12px 30px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(62, 62, 252, 0.4);
+    transition: 0.3s;
+}
+
+.cta-button:hover {
+    transform: translateY(-2px);
+    background-color: #2a2aff;
+}
+
+/* Feature Text Alignment */
+.features {
+    margin-top: 60px;
+    max-width: 800px;
+    width: 100%;
+}
+
+.feature-item {
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.feature-item h3 {
+    color: #1c1c8f;
+    margin-bottom: 8px;
+}
+
+footer {
+    text-align: center;
+    padding: 30px;
+    font-size: 0.9rem;
+    color: #666;
+}
