@@ -20,7 +20,7 @@ body {
 }
 
 /* =========================================
-   2. NAVIGATION (Neat & Transparent)
+   2. NAVIGATION
    ========================================= */
 header {
     display: flex;
@@ -49,36 +49,8 @@ header {
 }
 
 /* =========================================
-   3. HERO SECTION (Spaced & Tall)
+   3. BUTTONS (Standardized)
    ========================================= */
-.hero-section {
-    display: block; /* Allows natural scrolling flow */
-    text-align: center;
-    padding: 120px 20px;
-}
-
-.hero-content {
-    margin-bottom: 180px; /* Massive gap to prevent cramping */
-}
-
-.hero-content h1 {
-    font-size: clamp(2.8rem, 8vw, 4.8rem);
-    color: #1c1c8f;
-    margin-bottom: 25px;
-    font-weight: 800;
-    line-height: 1.1;
-}
-
-.hero-content p {
-    font-size: 1.3rem;
-    color: #4a4a8a;
-    margin-bottom: 45px;
-    max-width: 700px;
-    margin-left: auto;
-    margin-right: auto;
-    line-height: 1.6;
-}
-
 .cta-button {
     display: inline-block;
     background-color: #3e3efc;
@@ -89,6 +61,8 @@ header {
     font-weight: 600;
     box-shadow: 0 10px 25px rgba(62, 62, 252, 0.4);
     transition: 0.3s;
+    border: none;
+    cursor: pointer;
 }
 
 .cta-button:hover {
@@ -97,79 +71,24 @@ header {
 }
 
 /* =========================================
-   4. FEATURES (Neat Stack)
-   ========================================= */
-.features {
-    width: 100%;
-    max-width: 850px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 120px; /* Space between points */
-    padding-bottom: 100px;
-}
-
-.feature-item {
-    background: rgba(255, 255, 255, 0.25);
-    padding: 50px;
-    border-radius: 25px;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.ai-badge {
-    display: inline-block;
-    background: #1c1c8f;
-    color: white;
-    padding: 6px 16px;
-    border-radius: 50px;
-    font-size: 11px;
-    font-weight: 800;
-    margin-bottom: 15px;
-    letter-spacing: 1px;
-}
-
-.feature-item h3 {
-    font-size: 30px;
-    color: #1c1c8f;
-    margin-bottom: 20px;
-}
-
-.feature-item p {
-    font-size: 18px;
-    line-height: 1.8;
-    color: #333;
-}
-
-/* =========================================
-   5. FOOTER
-   ========================================= */
-footer {
-    text-align: center;
-    padding: 50px;
-    margin-top: auto;
-    font-size: 14px;
-    color: #666;
-}
-/* =========================================
-   UPLOAD PAGE SPECIFIC STYLES
+   4. UPLOAD PAGE (Clean & Centered)
    ========================================= */
 .upload-container {
-    padding: 60px 20px;
+    flex: 1; /* Pushes footer down */
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: calc(100vh - 200px);
+    padding: 40px 20px;
 }
 
 .upload-card {
-    background: rgba(255, 255, 255, 0.6); /* Glass effect */
+    background: rgba(255, 255, 255, 0.8); /* Neat White Glass */
     backdrop-filter: blur(15px);
-    padding: 40px;
-    border-radius: 25px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+    padding: 50px;
+    border-radius: 30px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.4);
-    max-width: 500px;
+    max-width: 500px; /* STOPS THE STRETCHING */
     width: 100%;
     text-align: center;
 }
@@ -178,11 +97,12 @@ footer {
     color: #1c1c8f;
     margin-bottom: 25px;
     font-size: 24px;
+    font-weight: 700;
 }
 
 .upload-box {
-    border: 2px dashed #3e3efc; /* The dashed line from the image */
-    background: rgba(255, 255, 255, 0.4);
+    border: 2px dashed #3e3efc; /* The neat dashed border */
+    background: rgba(62, 62, 252, 0.03);
     padding: 40px 20px;
     border-radius: 20px;
     cursor: pointer;
@@ -191,142 +111,43 @@ footer {
 }
 
 .upload-box:hover {
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.9);
     border-color: #1c1c8f;
 }
 
 .upload-icon {
-    font-size: 40px;
+    font-size: 50px;
     margin-bottom: 15px;
-}
-
-#uploadText {
-    color: #4a4a8a;
-    font-weight: 500;
-}
-
-.preview-img {
-    max-width: 100%;
-    max-height: 200px;
-    border-radius: 12px;
-    margin-top: 10px;
 }
 
 .input-group input {
     width: 100%;
     padding: 15px;
     border-radius: 12px;
-    border: 1px solid rgba(0,0,0,0.1);
-    margin-bottom: 20px;
-    font-size: 15px;
+    border: 1px solid #ddd;
+    margin-bottom: 25px;
+    font-size: 16px;
     outline: none;
+    transition: 0.3s;
 }
 
 .input-group input:focus {
     border-color: #3e3efc;
-}
-/* Centers the card on the screen */
-.upload-container {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 20px;
+    box-shadow: 0 0 10px rgba(62, 62, 252, 0.1);
 }
 
-/* The White Glass Card */
-.upload-card {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(20px);
-    padding: 50px;
-    border-radius: 30px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    max-width: 550px;
-    width: 100%;
-    text-align: center;
-}
-
-/* The Dashed Upload Box inside the card */
-.upload-box {
-    border: 2px dashed #3e3efc;
-    background: rgba(255, 255, 255, 0.5);
-    padding: 40px 20px;
-    border-radius: 20px;
-    margin-bottom: 25px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.upload-box:hover {
-    background: rgba(255, 255, 255, 0.8);
-}
-
-.upload-icon {
-    font-size: 50px;
-    margin-bottom: 10px;
-}
-
-/* The Caption Input */
-.input-group input {
+/* Fix for the button inside the card */
+.upload-card .cta-button {
     width: 100%;
     padding: 15px;
-    border-radius: 12px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    margin-bottom: 25px;
-    font-size: 16px;
-    outline: none;
-}
-/* 1. Center the entire container */
-.upload-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 80vh; /* Keeps it centered vertically */
-    padding: 20px;
 }
 
-/* 2. Create the neat centered box (Image 2 style) */
-.upload-card {
-    background: rgba(255, 255, 255, 0.8); /* White glass look */
-    backdrop-filter: blur(10px);
+/* =========================================
+   5. FOOTER
+   ========================================= */
+footer {
+    text-align: center;
     padding: 40px;
-    border-radius: 24px;
-    width: 100%;
-    max-width: 500px; /* THIS stops the button/box from being too long */
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-/* 3. Style the dashed upload area */
-.upload-box {
-    border: 2px dashed #3e3efc;
-    border-radius: 15px;
-    padding: 30px;
-    margin-bottom: 20px;
-    cursor: pointer;
-    background: rgba(62, 62, 252, 0.05);
-}
-
-/* 4. Fix the long button */
-.cta-button {
-    width: 100%; /* Fills the 500px box, NOT the whole screen */
-    background-color: #3e3efc;
-    color: white;
-    padding: 15px;
-    border-radius: 12px;
-    font-weight: 600;
-    border: none;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.input-group input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 20px;
-    border-radius: 10px;
-    border: 1px solid #ddd;
-    outline: none;
+    font-size: 14px;
+    color: #666;
 }
