@@ -471,3 +471,74 @@ footer {
 .main-upload-btn:hover {
     transform: translateY(-2px);
 }
+/* Gallery Image Hover */
+.gallery-img {
+    width: 100%;
+    cursor: zoom-in;
+    transition: transform 0.3s ease;
+}
+
+.gallery-img:hover {
+    transform: scale(1.02);
+}
+
+/* Full Screen Modal */
+.sky-modal {
+    display: none; 
+    position: fixed;
+    z-index: 9999;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(8px);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-container {
+    text-align: center;
+    max-width: 90%;
+}
+
+#modalImg {
+    max-height: 80vh;
+    max-width: 100%;
+    border-radius: 12px;
+}
+
+.modal-details {
+    margin-top: 15px;
+    color: white;
+}
+
+/* Download Button */
+.download-btn {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 12px 25px;
+    background-color: #6c5ce7;
+    color: white;
+    text-decoration: none;
+    border-radius: 30px;
+    font-weight: bold;
+}
+
+/* Delete Button */
+.delete-btn {
+    background: none;
+    border: none;
+    color: #ff7675;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 13px;
+    margin-top: 10px;
+}
+
+/* Close Modal X */
+.close-sky {
+    position: absolute;
+    top: 20px; right: 35px;
+    color: white;
+    font-size: 50px;
+    cursor: pointer;
+}
