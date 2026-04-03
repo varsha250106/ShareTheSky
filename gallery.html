@@ -4,8 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gallery - ShareTheSky</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    
+    <style>
+        /* Essential Dropdown & Mobile CSS (Same as Index/Upload) */
+        body { font-family: 'Inter', sans-serif; margin: 0; }
+
+        .dropdown { position: relative; display: inline-block; }
+        .dropbtn {
+            background: none; border: none; color: #4a4a8a;
+            font-size: 16px; font-weight: 600; cursor: pointer;
+            padding: 10px 15px; font-family: inherit;
+        }
+        .dropdown-content {
+            display: none; position: absolute; background-color: white;
+            min-width: 180px; box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
+            border-radius: 12px; z-index: 100; top: 100%; overflow: hidden;
+        }
+        .dropdown-content a {
+            color: #333; padding: 12px 16px; text-decoration: none;
+            display: block; font-size: 14px; transition: background 0.2s;
+        }
+        .dropdown-content a:hover { background-color: #f8f6ff; color: #a18cd1; }
+        .dropdown:hover .dropdown-content { display: block; }
+
+        .menu-toggle {
+            display: none; flex-direction: column; gap: 5px; cursor: pointer;
+        }
+        .menu-toggle span {
+            width: 25px; height: 3px; background-color: #a18cd1; border-radius: 3px;
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle { display: flex; }
+            .nav-links {
+                display: none; flex-direction: column; position: absolute;
+                top: 70px; right: 20px; background: white; width: 200px;
+                padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                z-index: 1000;
+            }
+            .nav-links.active { display: flex; }
+            .dropdown-content {
+                position: static; box-shadow: none; background: #f9f9f9; margin-top: 10px;
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -13,11 +57,23 @@
     <h1 class="logo">
         <a href="index.html"><span>📷</span> ShareTheSky</a>
     </h1>
-    <nav class="nav-links">
+    
+    <div class="menu-toggle" id="mobile-menu">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
+    <nav class="nav-links" id="nav-list">
         <a href="index.html">Home</a>
-        <a href="upload.html">Upload</a>
-        <a href="gallery.html">Gallery</a>
-        <a href="about.html">About me</a>
+        <div class="dropdown">
+            <button class="dropbtn">Explore ▾</button>
+            <div class="dropdown-content">
+                <a href="gallery.html">Gallery</a>
+                <a href="upload.html">Upload</a>
+                <a href="about.html">About Me</a>
+            </div>
+        </div>
     </nav>
 </header>
 
@@ -38,6 +94,16 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
+    // --- MOBILE MENU LOGIC ---
+    const menuToggle = document.getElementById('mobile-menu');
+    const navList = document.getElementById('nav-list');
+    if (menuToggle) {
+        menuToggle.addEventListener('click', () => {
+            navList.classList.toggle('active');
+        });
+    }
+
+    // --- FIREBASE CONFIG ---
     const firebaseConfig = {
         apiKey: "AIzaSyDxgtNzywhjYGR7R2XMVobR73-SioT6v98",
         authDomain: "sharethesky-a9c7d.firebaseapp.com",
@@ -52,6 +118,7 @@
     const galleryContainer = document.getElementById("photoGallery");
     const mySkyUserId = localStorage.getItem("mySkyUserId");
 
+    // Fetch photos ordered by date
     const q = query(collection(db, "photos"), orderBy("date", "desc"));
 
     onSnapshot(q, (snapshot) => {
@@ -119,7 +186,7 @@
         });
     });
 
-    // Integrated Zoom Function with centered controls
+    // --- INTEGRATED ZOOM FUNCTION ---
     window.openZoom = (url) => {
         let currentScale = 1;
 
@@ -143,7 +210,6 @@
         
         document.body.appendChild(overlay);
 
-        // Global functions for the buttons
         window.changeZoom = (amount) => {
             const img = document.getElementById('zoomedImage');
             const zoomText = document.getElementById('zoomLevel');
