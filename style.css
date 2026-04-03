@@ -1,379 +1,4 @@
 /* =========================================
-   1. GLOBAL SETTINGS & NAVIGATION
-   ========================================= */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap');
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
-}
-
-body {
-    background: linear-gradient(135deg, #c2c2f0 0%, #f7c7db 100%);
-    background-attachment: fixed;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    color: #333;
-}
-
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 25px 8%;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-}
-
-.logo a {
-    text-decoration: none;
-    font-size: 26px;
-    font-weight: 700;
-    color: #1c1c8f;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.nav-links a {
-    text-decoration: none;
-    color: #333;
-    margin-left: 30px;
-    font-weight: 600;
-}
-
-/* =========================================
-   2. HOME PAGE (Hero Section)
-   ========================================= */
-.hero-section {
-    padding: 80px 8%;
-    max-width: 1200px;
-}
-
-.hero-content h1 {
-    font-size: clamp(2.5rem, 6vw, 4rem);
-    color: #1c1c8f;
-    margin-bottom: 20px;
-    font-weight: 800;
-}
-
-.hero-content p {
-    font-size: 1.1rem;
-    color: #4a4a8a;
-    margin-bottom: 30px;
-    max-width: 600px;
-}
-
-/* =========================================
-   3. UPLOAD PAGE & UI COMPONENTS
-   ========================================= */
-.upload-page {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 40px 20px;
-}
-
-.upload-card {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(15px);
-    padding: 40px;
-    border-radius: 30px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
-    max-width: 500px;
-    width: 100%;
-    text-align: center;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-}
-
-.upload-box {
-    border: 2px dashed #3e3efc;
-    background: rgba(62, 62, 252, 0.05);
-    padding: 40px 20px;
-    border-radius: 20px;
-    cursor: pointer;
-    margin-bottom: 25px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.cta-button {
-    display: inline-block;
-    background-color: #3e3efc;
-    color: white;
-    padding: 15px 35px;
-    border-radius: 12px;
-    text-decoration: none;
-    font-weight: 600;
-    box-shadow: 0 10px 25px rgba(62, 62, 252, 0.3);
-    transition: 0.3s;
-    border: none;
-    cursor: pointer;
-    width: 100%; /* Full width for upload card */
-}
-
-/* AI Error Message Style */
-.error-box {
-    background: rgba(255, 77, 77, 0.12); 
-    color: #d63031;
-    padding: 15px;
-    border-radius: 15px;
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 20px;
-    border: 1px solid rgba(214, 48, 49, 0.2);
-    animation: shake 0.4s ease-in-out;
-}
-
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
-}
-
-/* =========================================
-   4. GALLERY PAGE (Pinterest Grid)
-   ========================================= */
-.gallery-page {
-    padding: 40px 5%;
-}
-
-.pinterest-grid {
-    column-count: 4;
-    column-gap: 20px;
-    width: 100%;
-}
-
-.pin-card {
-    break-inside: avoid;
-    margin-bottom: 20px;
-    background: white;
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-}
-
-.pin-image-wrapper { position: relative; overflow: hidden; cursor: pointer; }
-.pin-img { width: 100%; display: block; }
-
-.pin-top-actions {
-    position: absolute;
-    top: 15px; left: 15px;
-    display: flex; gap: 10px;
-    opacity: 0;
-    transition: 0.3s;
-}
-
-.pin-card:hover .pin-top-actions { opacity: 1; }
-
-.action-btn {
-    background: rgba(0, 0, 0, 0.6);
-    color: white;
-    width: 38px; height: 38px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    backdrop-filter: blur(4px);
-}
-
-/* =========================================
-   5. FOOTER & RESPONSIVE
-   ========================================= */
-footer { text-align: center; padding: 30px; font-size: 13px; color: #666; margin-top: auto; }
-
-@media (max-width: 1100px) { .pinterest-grid { column-count: 3; } }
-@media (max-width: 800px) { .pinterest-grid { column-count: 2; } }
-@media (max-width: 600px) {
-    .pinterest-grid { column-count: 1; }
-    .pin-top-actions { opacity: 1; }
-    header { padding: 20px 5%; }
-}
-/* Ensure the body takes up full height and allows centering */
-body {
-    background: linear-gradient(135deg, #c2c2f0 0%, #f7c7db 100%);
-    background-attachment: fixed;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
-
-/* THE CENTERING MAGIC: This targets the wrapper around your content */
-.center-wrapper {
-    flex: 1;
-    display: flex;
-    justify-content: center; /* Horizontal center */
-    align-items: center;     /* Vertical center */
-    padding: 40px 20px;
-}
-
-/* Home Page Specific: Text alignment */
-.hero-content {
-    text-align: center;
-    max-width: 800px;
-}
-
-/* Upload Page Card: Returns to the original 'Card' look */
-.upload-card {
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(15px);
-    padding: 50px;
-    border-radius: 30px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
-    max-width: 500px;
-    width: 100%;
-    text-align: center;
-}
-
-/* Reset buttons and inputs for your 'First Style' */
-.cta-button {
-    background-color: #3e3efc;
-    color: white;
-    padding: 15px 35px;
-    border-radius: 12px;
-    text-decoration: none;
-    font-weight: 600;
-    border: none;
-    cursor: pointer;
-    transition: 0.3s;
-}
-/* =========================================
-   1. GLOBAL & NAVIGATION
-   ========================================= */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap');
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
-}
-
-body {
-    background: linear-gradient(135deg, #c2c2f0 0%, #f7c7db 100%);
-    background-attachment: fixed;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    color: #333;
-}
-
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 25px 8%;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-}
-
-.logo a {
-    text-decoration: none;
-    font-size: 26px;
-    font-weight: 700;
-    color: #1c1c8f;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.nav-links a {
-    text-decoration: none;
-    color: #333;
-    margin-left: 30px;
-    font-weight: 600;
-}
-
-/* =========================================
-   2. CENTERING LOGIC (The Fix)
-   ========================================= */
-.center-wrapper {
-    flex: 1;
-    display: flex;
-    justify-content: center; /* Centers horizontally */
-    align-items: center;     /* Centers vertically */
-    padding: 40px 20px;
-    text-align: center;
-}
-
-.hero-content {
-    max-width: 900px;
-    width: 100%;
-}
-
-.hero-content h1 {
-    font-size: clamp(2.5rem, 6vw, 4.5rem);
-    color: #1c1c8f;
-    margin-bottom: 20px;
-    font-weight: 800;
-    line-height: 1.1;
-}
-
-.hero-subtitle {
-    font-size: 1.2rem;
-    color: #4a4a8a;
-    margin-bottom: 40px;
-}
-
-/* =========================================
-   3. COMPONENTS (Buttons & Features)
-   ========================================= */
-.cta-button {
-    display: inline-block;
-    background-color: #3e3efc;
-    color: white;
-    padding: 18px 45px;
-    border-radius: 15px;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 1.1rem;
-    box-shadow: 0 10px 25px rgba(62, 62, 252, 0.3);
-    transition: 0.3s transform ease;
-}
-
-.cta-button:hover {
-    transform: translateY(-3px);
-}
-
-.features {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
-    margin-top: 60px;
-}
-
-.feature-item {
-    background: rgba(255, 255, 255, 0.4);
-    padding: 30px;
-    border-radius: 20px;
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.ai-badge {
-    background: #1c1c8f;
-    color: white;
-    padding: 4px 10px;
-    border-radius: 8px;
-    font-size: 10px;
-    font-weight: 800;
-    display: inline-block;
-    margin-bottom: 10px;
-}
-
-/* =========================================
-   4. FOOTER
-   ========================================= */
-footer {
-    text-align: center;
-    padding: 30px;
-    font-size: 14px;
-    color: #555;
-}
-/* =========================================
    1. GLOBAL SETTINGS
    ========================================= */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap');
@@ -386,6 +11,7 @@ footer {
 }
 
 body {
+    /* Fixed gradient background for a modern look */
     background: linear-gradient(135deg, #c2c2f0 0%, #f7c7db 100%);
     background-attachment: fixed;
     min-height: 100vh;
@@ -424,24 +50,24 @@ header {
 }
 
 /* =========================================
-   3. THE CENTERING ENGINE
+   3. THE CENTERING ENGINE (Hero Section)
    ========================================= */
 .center-wrapper {
     flex: 1;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: center; /* Horizontally centered */
+    align-items: center;     /* Vertically centered */
     padding: 60px 20px;
-    text-align: center;
 }
 
 .hero-content {
-    max-width: 1100px;
+    max-width: 900px;
     width: 100%;
+    text-align: center; /* Centers all text, subtitle, and button container */
 }
 
 .hero-content h1 {
-    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-size: clamp(2.5rem, 6vw, 4.2rem);
     color: #1c1c8f;
     margin-bottom: 20px;
     font-weight: 800;
@@ -449,40 +75,49 @@ header {
 }
 
 .hero-subtitle {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     color: #4a4a8a;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
+    line-height: 1.6;
+    text-align: center; /* Explicitly centered */
 }
 
 /* =========================================
-   4. BUTTONS & UI
+   4. BUTTONS (Small & Centered)
    ========================================= */
-.cta-button {
-    display: inline-block;
-    background-color: #3e3efc;
-    color: white;
-    padding: 18px 45px;
-    border-radius: 15px;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 1.1rem;
-    box-shadow: 0 10px 25px rgba(62, 62, 252, 0.3);
-    transition: 0.3s transform ease;
+.button-container {
+    display: flex;
+    justify-content: center;
     margin-bottom: 60px;
 }
 
+.cta-button {
+    background-color: #3e3efc;
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(62, 62, 252, 0.3);
+    transition: 0.3s transform ease;
+}
+
+.small-btn {
+    padding: 12px 30px; /* Reduced size as requested */
+    font-size: 0.95rem;
+}
+
 .cta-button:hover {
-    transform: translateY(-5px);
+    transform: translateY(-3px);
 }
 
 /* =========================================
-   5. NEATLY ARRANGED FEATURES (3-Columns)
+   5. FEATURE GRID (Neat 2x2 Arrangement)
    ========================================= */
 .features {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr); /* 2x2 Grid */
     gap: 25px;
-    margin-top: 20px;
+    text-align: center;
 }
 
 .feature-item {
@@ -491,5 +126,52 @@ header {
     border-radius: 25px;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    transition: 0.3s;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: 0.3s ease;
+}
+
+.feature-item:hover {
+    background: rgba(255, 255, 255, 0.7);
+    transform: scale(1.02);
+}
+
+.feature-item h3 {
+    color: #1c1c8f;
+    margin-bottom: 10px;
+}
+
+.ai-badge {
+    background: #1c1c8f;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 800;
+    display: inline-block;
+    margin: 0 auto 10px auto; /* Centers the badge inside the box */
+    width: fit-content;
+}
+
+/* =========================================
+   6. FOOTER & RESPONSIVENESS
+   ========================================= */
+footer {
+    text-align: center;
+    padding: 30px;
+    font-size: 14px;
+    color: #666;
+    margin-top: auto;
+}
+
+@media (max-width: 768px) {
+    .features {
+        grid-template-columns: 1fr; /* Stacks 1-by-1 on mobile for neatness */
+    }
+    
+    .hero-content h1 {
+        font-size: 2.8rem;
+    }
+}
