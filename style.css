@@ -240,3 +240,136 @@ body {
     cursor: pointer;
     transition: 0.3s;
 }
+/* =========================================
+   1. GLOBAL & NAVIGATION
+   ========================================= */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #c2c2f0 0%, #f7c7db 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    color: #333;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 8%;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.logo a {
+    text-decoration: none;
+    font-size: 26px;
+    font-weight: 700;
+    color: #1c1c8f;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #333;
+    margin-left: 30px;
+    font-weight: 600;
+}
+
+/* =========================================
+   2. CENTERING LOGIC (The Fix)
+   ========================================= */
+.center-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center; /* Centers horizontally */
+    align-items: center;     /* Centers vertically */
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.hero-content {
+    max-width: 900px;
+    width: 100%;
+}
+
+.hero-content h1 {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    color: #1c1c8f;
+    margin-bottom: 20px;
+    font-weight: 800;
+    line-height: 1.1;
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    color: #4a4a8a;
+    margin-bottom: 40px;
+}
+
+/* =========================================
+   3. COMPONENTS (Buttons & Features)
+   ========================================= */
+.cta-button {
+    display: inline-block;
+    background-color: #3e3efc;
+    color: white;
+    padding: 18px 45px;
+    border-radius: 15px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+    box-shadow: 0 10px 25px rgba(62, 62, 252, 0.3);
+    transition: 0.3s transform ease;
+}
+
+.cta-button:hover {
+    transform: translateY(-3px);
+}
+
+.features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 60px;
+}
+
+.feature-item {
+    background: rgba(255, 255, 255, 0.4);
+    padding: 30px;
+    border-radius: 20px;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.ai-badge {
+    background: #1c1c8f;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 800;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+/* =========================================
+   4. FOOTER
+   ========================================= */
+footer {
+    text-align: center;
+    padding: 30px;
+    font-size: 14px;
+    color: #555;
+}
