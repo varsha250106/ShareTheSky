@@ -117,24 +117,46 @@
         });
     });
 
-    // Global Zoom Function with Close Overlay
-    window.openZoom = (url) => {
-        const overlay = document.createElement('div');
-        overlay.className = 'zoom-overlay';
-        overlay.id = 'activeZoom';
-        overlay.innerHTML = `
-            <div class="zoom-content">
-                <span class="close-zoom" onclick="document.getElementById('activeZoom').remove()">×</span>
-                <img src="${url}" class="zoomed-img">
-            </div>
-        `;
-        document.body.appendChild(overlay);
+  window.openZoom = (url) => {
+    let currentScale = 1; // Default zoom level (100%)
+
+    const overlay = document.createElement('div');
+    overlay.className = 'zoom-overlay';
+    overlay.id = 'activeZoom';
+    
+    overlay.innerHTML = `
+        <div class="zoom-controls">
+            <button onclick="changeZoom(0.25)">➕ Zoom In</button>
+            <button onclick="changeZoom(-0.25)">➖ Zoom Out</button>
+            <button onclick="document.getElementById('activeZoom').remove()">Close</button>
+            <span id="zoomLevel">100%</span>
+        </div>
+        <div class="zoom-content">
+            <img src="${url}" id="zoomedImage" class="zoomed-img">
+        </div>
+    `;
+    
+    document.body.appendChild(overlay);
+
+    // Function to handle manual scaling
+    window.changeZoom = (amount) => {
+        const img = document.getElementById('zoomedImage');
+        const zoomText = document.getElementById('zoomLevel');
         
-        // Close on clicking the dark background
-        overlay.onclick = (e) => {
-            if (e.target.id === 'activeZoom') overlay.remove();
-        };
+        currentScale += amount;
+        
+        // Prevent zooming out too far (min 25%) or too much (max 300%)
+        if (currentScale < 0.25) currentScale = 0.25;
+        if (currentScale > 3) currentScale = 3;
+
+        img.style.transform = `scale(${currentScale})`;
+        zoomText.innerText = `${Math.round(currentScale * 100)}%`;
     };
+
+    overlay.onclick = (e) => {
+        if (e.target.id === 'activeZoom') overlay.remove();
+    };
+};
 </script>
 </body>
 </html>
