@@ -1,48 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Upload Sky Photo – ShareTheSky</title>
-    <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload - ShareTheSky</title>
+
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <header>
-        <h1 class="logo">ShareTheSky</h1>
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="upload.html">Upload</a>
-            <a href="gallery.html">Gallery</a>
-            <a href="creator.html">Creator</a>
-        </nav>
-    </header>
 
-    <section class="upload-section">
-        <h2>Upload Your Sky Photo</h2>
-        <p>Select or drag your favourite sky moment and share it.</p>
+<header>
+    <h1 class="logo">ShareTheSky</h1>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="upload.html">Upload</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="creator.html">Creator</a>
+    </nav>
+</header>
 
-        <!-- DRAG & DROP -->
-        <div id="dropArea" class="drop-area">
-            <p>Drag & Drop your sky photo here</p>
-        </div>
+<section class="upload-section">
+    <h2>Upload Your Sky Photo 🌤️</h2>
 
-        <!-- File input -->
-        <input type="file" id="fileInput" accept="image/*">
+    <!-- Drag & Drop -->
+    <div id="dropArea" class="drop-area">
+        <p>Drag & Drop your sky photo here</p>
+    </div>
 
-        <!-- Caption -->
-        <label>Caption:</label>
-        <input type="text" id="captionInput">
+    <!-- File input -->
+    <input type="file" id="fileInput" accept="image/*"><br><br>
 
-        <!-- Upload button -->
-        <button onclick="uploadImage()">Upload</button>
+    <!-- Caption -->
+    <input type="text" id="captionInput" placeholder="Write a caption..."><br><br>
 
-        <!-- Preview -->
-        <p>Preview:</p>
-        <img id="previewImage" style="display:none; width:200px; margin-top:10px;">
-    </section>
-<script>
-const cloudName = "dqpmybazh";   // ✅ FIXED (remove extra E)
+    <!-- Upload button -->
+    <button onclick="uploadImage()">Upload</button>
+
+    <!-- Preview -->
+    <img id="previewImage" style="display:none; width:200px; margin-top:10px;">
+</section>
+
+<!-- 🔥 FINAL SCRIPT -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// ✅ Your Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyDxgtNzywhjYGR7R2XMVobR73-SioT6v98",
+  authDomain: "sharethesky-a9c7d.firebaseapp.com",
+  projectId: "sharethesky-a9c7d",
+  storageBucket: "sharethesky-a9c7d.firebasestorage.app",
+  messagingSenderId: "1047232389865",
+  appId: "1:1047232389865:web:37694bf13bcef31f570678",
+  measurementId: "G-QLMFRX48Q9"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// ☁️ Cloudinary config
+const cloudName = "dqpmybazh";
 const uploadPreset = "sharethesky";
 
 const fileInput = document.getElementById("fileInput");
@@ -50,7 +69,7 @@ const previewImage = document.getElementById("previewImage");
 const captionInput = document.getElementById("captionInput");
 const dropArea = document.getElementById("dropArea");
 
-// Drag & Drop (same as yours)
+// Drag & Drop
 dropArea.addEventListener("dragover", (e) => {
     e.preventDefault();
     dropArea.classList.add("active");
@@ -66,10 +85,12 @@ dropArea.addEventListener("drop", (e) => {
     handleFile(e.dataTransfer.files[0]);
 });
 
+// File input
 fileInput.addEventListener("change", function () {
     handleFile(this.files[0]);
 });
 
+// Preview
 function handleFile(file) {
     if (!file) return;
 
@@ -79,41 +100,38 @@ function handleFile(file) {
     fileInput.fileData = file;
 }
 
-// 🔥 UPDATED UPLOAD FUNCTION
-function uploadImage() {
+// 🔥 FINAL UPLOAD FUNCTION
+window.uploadImage = function () {
     const file = fileInput.fileData || fileInput.files[0];
 
     if (!file) {
-        alert("Please select or drag an image first.");
+        alert("Please select an image");
         return;
     }
 
-    const captionText = captionInput.value.trim();
-    const date = new Date().toLocaleString(); // 📅 auto date
+    const caption = captionInput.value.trim();
 
     const formData = new FormData();
     formData.append("file", file);
     formData.append("upload_preset", uploadPreset);
 
+    // Upload to Cloudinary
     fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
         method: "POST",
         body: formData
     })
     .then(res => res.json())
-    .then(data => {
+    .then(async data => {
 
-        // ✅ SAVE EVERYTHING
-        const imageData = {
+        // 🔥 Save to Firebase (GLOBAL)
+        await addDoc(collection(db, "photos"), {
             url: data.secure_url,
-            caption: captionText,
-            date: date
-        };
+            caption: caption,
+            date: new Date().toLocaleString(),
+            likes: 0
+        });
 
-        let images = JSON.parse(localStorage.getItem("images")) || [];
-        images.push(imageData);
-        localStorage.setItem("images", JSON.stringify(images));
-
-        alert("Upload successful!");
+        alert("Uploaded successfully 🌍");
 
         // Reset UI
         fileInput.value = "";
@@ -124,7 +142,7 @@ function uploadImage() {
     .catch(() => {
         alert("Upload failed");
     });
-}
+};
 </script>
 
 </body>
