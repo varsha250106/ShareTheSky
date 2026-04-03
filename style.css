@@ -752,3 +752,21 @@ footer {
 .logo a:hover {
     transform: scale(1.05); /* Slight zoom when hovered */
 }
+.logo a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none !important;
+    color: inherit !important;
+    
+    /* This makes the cursor change to a hand */
+    cursor: pointer !important; 
+    
+    /* This prevents the "text line" selection cursor */
+    user-select: none; 
+}
+
+/* Ensure the camera icon also shows the hand cursor */
+.logo-icon {
+    cursor: pointer !important;
+}
