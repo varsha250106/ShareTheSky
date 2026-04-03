@@ -42,6 +42,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
+    // Your Firebase Configuration
     const firebaseConfig = {
         apiKey: "AIzaSyDxgtNzywhjYGR7R2XMVobR73-SioT6v98",
         authDomain: "sharethesky-a9c7d.firebaseapp.com",
@@ -54,9 +55,11 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    // User ID setup
     let mySkyUserId = localStorage.getItem("mySkyUserId") || "user_" + Math.random().toString(36).substr(2, 9);
     localStorage.setItem("mySkyUserId", mySkyUserId);
 
+    // Cloudinary Configuration
     const cloudName = "dqpmybazh";
     const uploadPreset = "sharethesky";
 
@@ -76,6 +79,7 @@
         }
     });
 
+    // Upload Logic
     uploadBtn.addEventListener("click", async () => {
         const file = fileInput.files[0];
         if (!file) return alert("Please select a sky photo first!");
@@ -86,14 +90,33 @@
         const formData = new FormData();
         formData.append("file", file);
         formData.append("upload_preset", uploadPreset);
+        
+        // --- AI MODERATION ACTIVATION ---
+        // This triggers the Amazon Rekognition tool you set to "Reject" in Cloudinary
+        formData.append("moderation", "aws_rek"); 
 
         try {
             const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
                 method: "POST",
                 body: formData
             });
+            
             const data = await res.json();
 
+            // --- AI REJECTION CHECK ---
+            if (data.error) {
+                // If the AI rejects it, Cloudinary returns a message containing "moderation"
+                if (data.error.message.toLowerCase().includes("moderation")) {
+                    alert("☁️ Sky Check: Our AI flagged this image as inappropriate for our gallery. Please only share beautiful skies!");
+                } else {
+                    alert("Upload Error: " + data.error.message);
+                }
+                uploadBtn.disabled = false;
+                uploadBtn.innerText = "Share the Sky";
+                return; // Stops the code so it isn't saved to Firebase
+            }
+
+            // --- SAVE TO FIREBASE (Only if AI allows it) ---
             await addDoc(collection(db, "photos"), {
                 url: data.secure_url,
                 caption: document.getElementById("captionInput").value.trim(),
@@ -104,8 +127,10 @@
 
             alert("Sky shared successfully! 🌍");
             window.location.href = "gallery.html";
+
         } catch (err) {
-            alert("Upload failed. Try again!");
+            console.error(err);
+            alert("Oops! Something went wrong. Check your connection and try again.");
             uploadBtn.disabled = false;
             uploadBtn.innerText = "Share the Sky";
         }
