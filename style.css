@@ -1,5 +1,5 @@
 /* =========================================
-   1. CORE STYLES 
+   1. CORE STYLES (Restores Centering)
    ========================================= */
 body {
     margin: 0;
@@ -7,10 +7,11 @@ body {
     background: linear-gradient(to bottom, #a8c0ff, #fbc2eb);
     color: #333;
     min-height: 100vh;
+    text-align: center; /* Keeps everything centered by default */
 }
 
 /* =========================================
-   2. HEADER & NAVIGATION (FIXED)
+   2. HEADER & NAVIGATION (Original Glass Look)
    ========================================= */
 header {
     display: flex;
@@ -22,7 +23,6 @@ header {
     position: sticky;
     top: 0;
     z-index: 1000;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
 .logo a {
@@ -30,15 +30,11 @@ header {
     color: #1c1c8f;
     font-size: 24px;
     font-weight: bold;
-    display: flex;
-    align-items: center;
-    gap: 10px;
 }
 
-/* Desktop Menu Styles */
 .nav-links {
     display: flex;
-    gap: 20px;
+    gap: 25px;
 }
 
 .nav-links a {
@@ -49,12 +45,87 @@ header {
 }
 
 .nav-links a:hover {
-    color: #6c5ce7;
+    color: #2d2dff;
 }
 
-/* Three-Line Menu Icon (Hidden on Desktop) */
+/* =========================================
+   3. HERO SECTION (Restores Spacing)
+   ========================================= */
+.hero {
+    padding: 100px 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.hero h2 {
+    font-size: 42px;
+    color: #1c1c8f;
+    margin-bottom: 20px;
+}
+
+/* The Blue Button from your screenshots */
+.btn, .main-upload-btn {
+    display: inline-block;
+    padding: 14px 35px;
+    background: #2d2dff;
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(45, 45, 255, 0.3);
+}
+
+/* =========================================
+   4. GALLERY & CARDS
+   ========================================= */
+.gallery-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 40px 5%;
+}
+
+.photo-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: 0.3s;
+}
+
+.photo-card img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+}
+
+/* =========================================
+   5. UPLOAD & ABOUT CARDS (Centered)
+   ========================================= */
+.upload-container, .about-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 20px;
+}
+
+.upload-card, .about-card {
+    background: rgba(255, 255, 255, 0.7);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    max-width: 500px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* =========================================
+   6. MOBILE MENU (The 3 Lines Fix)
+   ========================================= */
 .menu-toggle {
-    display: none; 
+    display: none;
     flex-direction: column;
     gap: 5px;
     cursor: pointer;
@@ -63,110 +134,33 @@ header {
 .menu-toggle span {
     width: 25px;
     height: 3px;
-    background: #6c5ce7;
+    background: #2d2dff;
     border-radius: 5px;
 }
 
-/* --- MOBILE RESPONSIVE LOGIC --- */
 @media (max-width: 768px) {
-    .menu-toggle {
-        display: flex; /* Show icon on mobile */
-    }
+    .menu-toggle { display: flex; }
 
     .nav-links {
-        display: none; /* Hide links by default */
+        display: none;
         flex-direction: column;
         position: absolute;
-        top: 60px; /* Adjusted to fit your header height */
+        top: 70px;
         right: 5%;
         background: white;
-        width: 180px;
+        width: 200px;
         padding: 20px;
         border-radius: 15px;
         box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        z-index: 1001;
+        text-align: left; /* Menu items look better left-aligned */
     }
 
-    /* THIS MAKES IT WORK: Shown when JS adds 'active' class */
     .nav-links.active {
         display: flex !important;
     }
-
-    .nav-links a {
-        margin: 10px 0;
-        font-size: 18px;
-        border-bottom: 1px solid #eee;
-        padding-bottom: 5px;
-    }
-}
-
-/* =========================================
-   3. HERO, GALLERY & ABOUT SECTIONS
-   ========================================= */
-.hero {
-    text-align: center;
-    padding: 80px 20px;
-}
-
-.hero h2 {
-    font-size: 40px;
-    color: #1c1c8f;
-    margin-bottom: 10px;
-}
-
-.main-upload-btn {
-    display: inline-block;
-    padding: 15px 35px;
-    background: linear-gradient(135deg, #6c5ce7, #a29bfe);
-    color: white;
-    border-radius: 30px;
-    text-decoration: none;
-    font-weight: bold;
-    box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3);
-    transition: 0.3s;
-}
-
-.gallery-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
-    padding: 20px;
-}
-
-.photo-card {
-    background: white;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    text-align: center;
-}
-
-.photo-card img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-}
-
-.about-card {
-    background: white;
-    padding: 40px;
-    border-radius: 25px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-    max-width: 550px;
-    width: 90%;
-    margin: 40px auto;
-}
-
-.contact-info {
-    background: #f8f6ff;
-    padding: 15px;
-    border-radius: 12px;
-    margin: 20px 0;
-    border-left: 5px solid #a18cd1;
 }
 
 footer {
-    text-align: center;
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.5);
+    padding: 30px;
+    opacity: 0.8;
 }
