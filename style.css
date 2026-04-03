@@ -810,3 +810,33 @@ footer {
     max-width: 90%;
     max-height: 80vh;
 }
+/* --- Centering the Header Text --- */
+.gallery-header {
+    text-align: center; 
+    padding: 60px 20px 20px; /* Added more top padding for a clean look */
+    width: 100%;
+}
+
+.gallery-header h2, 
+.gallery-header p {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+/* --- Positioning Zoom Controls at Bottom Middle --- */
+.zoom-controls {
+    position: fixed;
+    bottom: 30px; /* Moved from top to bottom */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10000;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 12px 25px;
+    border-radius: 40px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    backdrop-filter: blur(5px);
+}
