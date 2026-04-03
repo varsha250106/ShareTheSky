@@ -5,64 +5,150 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ShareTheSky - Home</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Essential CSS for the Dropdown & Mobile Menu */
+        body { font-family: 'Inter', sans-serif; margin: 0; }
+
+        /* Dropdown Desktop Logic */
+        .dropdown { position: relative; display: inline-block; }
+        
+        .dropbtn {
+            background: none;
+            border: none;
+            color: #4a4a8a;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 10px 15px;
+            font-family: inherit;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 180px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            z-index: 100;
+            top: 100%;
+            overflow: hidden;
+        }
+
+        .dropdown-content a {
+            color: #333;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        .dropdown-content a:hover { background-color: #f8f6ff; color: #a18cd1; }
+        .dropdown:hover .dropdown-content { display: block; }
+
+        /* Mobile Menu (Three Lines) */
+        .menu-toggle {
+            display: none; /* Hidden on desktop */
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .menu-toggle span {
+            width: 25px;
+            height: 3px;
+            background-color: #a18cd1;
+            border-radius: 3px;
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle { display: flex; }
+            
+            .nav-links {
+                display: none; /* Hidden by default on mobile */
+                flex-direction: column;
+                position: absolute;
+                top: 70px;
+                right: 20px;
+                background: white;
+                width: 200px;
+                padding: 20px;
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                z-index: 1000;
+            }
+
+            .nav-links.active { display: flex; } /* Toggled by JS */
+            
+            .dropdown-content {
+                position: static;
+                box-shadow: none;
+                background: #f9f9f9;
+                margin-top: 10px;
+            }
+        }
+    </style>
 </head>
 <body>
 
 <header>
     <h1 class="logo">
-        <a href="index.html">
-            <span>📷</span> ShareTheSky
-        </a>
+        <a href="index.html">ShareTheSky</a>
     </h1>
-    <nav class="nav-links">
+    
+    <div class="menu-toggle" id="mobile-menu">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
+    <nav class="nav-links" id="nav-list">
         <a href="index.html">Home</a>
-        <a href="upload.html">Upload</a>
-        <a href="gallery.html">Gallery</a>
-        <a href="about.html">About me</a>
+        
+        <div class="dropdown">
+            <button class="dropbtn">Explore ▾</button>
+            <div class="dropdown-content">
+                <a href="gallery.html">Gallery</a>
+                <a href="upload.html">Upload</a>
+                <a href="about.html">About Me</a>
+            </div>
+        </div>
     </nav>
 </header>
 
-<main class="center-wrapper">
-    <div class="content-box hero-content">
-        <h1>Capture the Sky. <br> Share the Magic.</h1>
-        
-        <p class="hero-subtitle">
-            A community where everyone uploads their sky photos together. <br> 
-            Simple, beautiful, and connected. 🌤️
-        </p>
-        
-        <div class="button-container">
-            <a href="upload.html" class="cta-button small-btn">Upload Your Sky</a>
-        </div>
-
-        <section class="features">
-            <div class="feature-item">
-                <h3>Why ShareTheSky?</h3>
-                <p>Every sky tells a different story. Share your moments with a world that appreciates beauty 🌍</p>
-            </div>
-
-            <div class="feature-item">
-                <span class="ai-badge">AI PROTECTED</span>
-                <h3>Safe Community</h3>
-                <p>Our advanced AI moderation works around the clock to keep our gallery clean and safe for everyone ☁️</p>
-            </div>
-
-            <div class="feature-item">
-                <h3>Spread the Love</h3>
-                <p>Connect with other sky-gazers! Browse the gallery and leave a heart on the photos that inspire you ❤️</p>
-            </div>
-
-            <div class="feature-item">
-                <h3>Global Perspectives</h3>
-                <p>Discover how the sky looks from the other side of the world. Experience different horizons from your screen ✈️</p>
-            </div>
-        </section>
+<main class="hero-section">
+    <div class="hero-content">
+        <h1>Community Sky Gallery</h1>
+        <p>Explore the beauty of the world, one sky at a time.</p>
+        <a href="gallery.html" class="main-upload-btn">View Gallery</a>
     </div>
 </main>
 
 <footer>
-    <p>© 2026 ShareTheSky — Created with love ♥</p>
+    <p>&copy; 2026 ShareTheSky — Created with love ♥</p>
 </footer>
+
+<script>
+    // Script to handle the mobile menu toggle
+    const menuToggle = document.getElementById('mobile-menu');
+    const navList = document.getElementById('nav-list');
+
+    if (menuToggle) {
+        menuToggle.addEventListener('click', () => {
+            navList.classList.toggle('active');
+        });
+    }
+
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!menuToggle.contains(e.target) && !navList.contains(e.target)) {
+            navList.classList.remove('active');
+        }
+    });
+</script>
 
 </body>
 </html>
