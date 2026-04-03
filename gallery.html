@@ -37,24 +37,7 @@
 </footer>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyDxgtNzywhjYGR7R2XMVobR73-SioT6v98",
-        authDomain: "sharethesky-a9c7d.firebaseapp.com",
-        projectId: "sharethesky-a9c7d",
-        storageBucket: "sharethesky-a9c7d.firebasestorage.app",
-        messagingSenderId: "1047232389865",
-        appId: "1:1047232389865:web:37694bf13bcef31f570678"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const galleryContainer = document.getElementById("galleryContainer");
-    const mySkyUserId = localStorage.getItem("mySkyUserId");
-
-    const q = query(collection(db, "photos"), orderBy("date", "desc"));
+    // ... (Keep your existing Firebase imports and config)
 
     onSnapshot(q, (snapshot) => {
         galleryContainer.innerHTML = ""; 
@@ -69,43 +52,45 @@
 
             card.innerHTML = `
                 <div class="pin-image-wrapper">
-                    <img src="${data.url}" class="pin-img" alt="Sky">
+                    <img src="${data.url}" class="pin-img" alt="Sky" onclick="openZoom('${data.url}')">
+                    
+                    <div class="pin-top-actions">
+                        <a href="${data.url}" download="SkyPhoto.jpg" target="_blank" class="action-btn download-btn">📥</a>
+                        <button class="action-btn zoom-btn" onclick="openZoom('${data.url}')">🔍</button>
+                    </div>
+
                     <button class="pin-like-btn ${localStorage.getItem('liked_'+id) ? 'liked' : ''}" id="btn-${id}">
                         ❤️ <span>${data.likes || 0}</span>
                     </button>
                 </div>
+                
                 <div class="pin-content">
                     <h3>${data.caption}</h3>
                     <div class="pin-footer">
                         <span>${data.date.split(',')[0]}</span>
-                        ${isOwner ? `<button class="pin-delete" id="del-${id}">🗑️</button>` : ''}
+                        ${isOwner ? `<button class="pin-delete" id="del-${id}">🗑️ Remove</button>` : ''}
                     </div>
                 </div>
             `;
 
             galleryContainer.appendChild(card);
 
-            // Like Logic
-            const likeBtn = card.querySelector(`#btn-${id}`);
-            likeBtn.onclick = async (e) => {
-                e.stopPropagation();
-                const isLiked = likeBtn.classList.contains("liked");
-                const newCount = isLiked ? (data.likes - 1) : (data.likes + 1);
-                await updateDoc(doc(db, "photos", id), { likes: newCount });
-                if (isLiked) { localStorage.removeItem('liked_'+id); } 
-                else { localStorage.setItem('liked_'+id, "true"); }
-            };
-
-            // Delete Logic
-            if (isOwner) {
-                card.querySelector(`#del-${id}`).onclick = async () => {
-                    if (confirm("Delete your sky photo?")) {
-                        await deleteDoc(doc(db, "photos", id));
-                    }
-                };
-            }
+            // ... (Keep your Like and Delete event listener logic from previous code)
         });
     });
+
+    // ZOOM FEATURE FUNCTION
+    window.openZoom = (url) => {
+        const overlay = document.createElement('div');
+        overlay.id = 'zoomOverlay';
+        overlay.innerHTML = `
+            <div class="zoom-container">
+                <span class="close-zoom" onclick="document.getElementById('zoomOverlay').remove()">×</span>
+                <img src="${url}" class="zoomed-image">
+            </div>
+        `;
+        document.body.appendChild(overlay);
+    };
 </script>
 </body>
 </html>
