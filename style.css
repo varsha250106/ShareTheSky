@@ -752,3 +752,61 @@ footer {
     border-radius: 10px;
     box-shadow: 0 0 30px rgba(255,255,255,0.1);
 }
+.gallery-header {
+    text-align: center; /* Centers all text */
+    padding: 40px 20px;
+    max-width: 800px;
+    margin: 0 auto; /* Centers the container itself */
+}
+
+.gallery-header h2 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.gallery-header p {
+    font-size: 1.1rem;
+    color: #666;
+}
+.zoom-controls {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10000;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px 20px;
+    border-radius: 30px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.zoom-controls button {
+    background: #6c5ce7;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.zoom-controls button:hover {
+    background: #a29bfe;
+}
+
+#zoomLevel {
+    font-weight: bold;
+    color: #333;
+    min-width: 50px;
+    text-align: center;
+}
+
+.zoomed-img {
+    transition: transform 0.2s ease-out; /* Makes the zoom look smooth */
+    max-width: 90%;
+    max-height: 80vh;
+}
