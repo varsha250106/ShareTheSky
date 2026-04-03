@@ -15,70 +15,31 @@
     <h1 class="logo">ShareTheSky</h1>
     <nav>
         <a href="index.html">Home</a>
-        <a href="#">Upload</a>
-        <a href="#">Gallery</a>
-        <a href="#">Creator</a>
+        <a href="upload.html">Upload</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="creator.html">Creator</a>
     </nav>
 </header>
 
 <section class="hero">
     <h2>Capture the Sky. Share the Magic.</h2>
     <p>A community where everyone uploads their sky photos together.</p>
+
+    <!-- 🔥 Upload Button -->
+    <a href="upload.html" class="btn">Upload Your Sky</a>
 </section>
 
-<!-- UPLOAD -->
-<section>
-    <h2>Upload Your Sky 🌤️</h2>
-    <input type="file" id="fileInput">
-    <button onclick="uploadImage()">Upload</button>
-</section>
-
-<!-- GALLERY -->
-<section>
-    <h2>Gallery</h2>
-    <div id="gallery"></div>
+<section class="info">
+    <h3>Why ShareTheSky?</h3>
+    <p>
+        Because every sky has a different story.  
+        Share your moment with others around the world.
+    </p>
 </section>
 
 <footer>
     <p>© 2026 ShareTheSky — Created with love ♥</p>
 </footer>
-
-<!-- 🔥 Cloudinary Script -->
-<script>
-const cloudName = "dqpmybazh";   // 🔴 replace this
-const uploadPreset = "sharethesky";    // ✅ your preset
-
-function uploadImage() {
-    const file = document.getElementById("fileInput").files[0];
-
-    if (!file) {
-        alert("Please select a file");
-        return;
-    }
-
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", uploadPreset);
-
-    fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-        method: "POST",
-        body: formData
-    })
-    .then(res => res.json())
-    .then(data => {
-        const img = document.createElement("img");
-        img.src = data.secure_url;
-        img.style.width = "200px";
-        img.style.margin = "10px";
-        img.style.borderRadius = "10px";
-
-        document.getElementById("gallery").appendChild(img);
-    })
-    .catch(() => {
-        alert("Upload failed");
-    });
-}
-</script>
 
 </body>
 </html>
