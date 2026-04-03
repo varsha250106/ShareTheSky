@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Upload Sky Photo – ShareTheSky</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <header>
+        <h1 class="logo">ShareTheSky</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="upload.html">Upload</a>
+            <a href="gallery.html">Gallery</a>
+            <a href="creator.html">Creator</a>
+        </nav>
+    </header>
+
+    <section class="upload-section">
+        <h2>Upload Your Sky Photo</h2>
+        <p>Select or drag your favourite sky moment and share it.</p>
+
+        <!-- ⭐ DRAG & DROP BOX -->
+        <div id="dropArea" class="drop-area">
+            <p>Drag & Drop your sky photo here</p>
+        </div>
+
+        <!-- Click-to-upload -->
+        <input type="file" id="fileInput" accept="image/*">
+
+        <!-- Caption -->
+        <label>Caption:</label>
+        <input type="text" id="captionInput">
+
+        <!-- Upload button -->
+        <button onclick="uploadImage()">Upload</button>
+
+        <!-- Preview -->
+        <p>Preview:</p>
+        <img id="previewImage" style="display:none; width:200px; margin-top:10px;">
+    </section>
+
+<script>
+    const fileInput = document.getElementById("fileInput");
+    const previewImage = document.getElementById("previewImage");
+    const captionInput = document.getElementById("captionInput");
+
+    // ⭐ DRAG & DROP ELEMENT
+    const dropArea = document.getElementById("dropArea");
+
+    // Highlight when dragging
+    dropArea.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dropArea.classList.add("active");
+    });
+
+    dropArea.addEventListener("dragleave", () => {
+        dropArea.classList.remove("active");
+    });
+
+    dropArea.addEventListener("drop", (e) => {
+        e.preventDefault();
+        dropArea.classList.remove("active");
+
+        const file = e.dataTransfer.files[0];
+        handleFile(file);
+    });
+
+    // Handle normal file input
+    fileInput.addEventListener("change", function () {
+        handleFile(this.files[0]);
+    });
+
+    // COMMON FUNCTION FOR BOTH METHODS
+    function handleFile(file) {
+        if (!file) return;
+
+        previewImage.src = URL.createObjectURL(file);
+        previewImage.style.display = "block";
+
+        // Save file for uploadImage()
+        fileInput.fileData = file;
+    }
+
+    // Upload to localStorage
+    function uploadImage() {
+        const file = fileInput.fileData || fileInput.files[0];
+
+        if (!file) {
+            alert("Please select or drag an image first.");
+            return;
+        }
+
+        const captionText = captionInput.value.trim();
+        const reader = new FileReader();
+
+        reader.onload = function () {
+            let photos = JSON.parse(localStorage.getItem("skyPhotos")) || [];
+
+            const photoData = {
+                image: reader.result,
+                caption: captionText || "No Caption",
+                date: new Date().toLocaleDateString(),
+                likes: 0
+            };
+
+            photos.push(photoData);
+            localStorage.setItem("skyPhotos", JSON.stringify(photos));
+
+            alert(
+                captionText
+                ? "Photo uploaded successfully with caption!"
+                : "Photo uploaded successfully (no caption)."
+            );
+
+            // Reset fields
+            fileInput.value = "";
+            fileInput.fileData = null;
+            captionInput.value = "";
+            previewImage.style.display = "none";
+        };
+
+        reader.readAsDataURL(file);
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,294 @@
+/* GENERAL */
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: linear-gradient(to bottom, #a8c0ff, #fbc2eb); /* sky colors */
+    color: #333;
+}
+
+/* HEADER */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(5px);
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: bold;
+    color: #2d2dff;
+}
+
+nav a {
+    margin: 0 10px;
+    text-decoration: none;
+    font-weight: 600;
+    color: #000;
+}
+
+nav a:hover {
+    color: #2d2dff;
+}
+
+/* HERO */
+.hero {
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.hero h2 {
+    font-size: 40px;
+    margin-bottom: 10px;
+    color: #1c1c8f;
+}
+
+.btn {
+    display: inline-block;
+    padding: 12px 25px;
+    margin-top: 15px;
+    background: #2d2dff;
+    color: #fff;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.btn:hover {
+    background: #1b1bac;
+}
+
+/* INFO SECTION */
+.info {
+    padding: 40px;
+    text-align: center;
+}
+
+/* FOOTER */
+footer {
+    text-align: center;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.6);
+    margin-top: 40px;
+}
+.upload-section {
+    text-align: center;
+    padding: 50px 20px;
+}
+
+.upload-section input[type="file"] {
+    margin: 20px 0;
+    padding: 10px;
+}
+
+.preview-box {
+    margin-top: 20px;
+}
+
+#previewImage {
+    width: 300px;
+    border-radius: 10px;
+    margin-top: 10px;
+    display: none;
+}
+.gallery {
+    padding: 40px;
+    text-align: center;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.grid img {
+    width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+/* UPLOAD PAGE STYLE */
+.upload-section {
+    text-align: center;
+    padding: 50px 20px;
+}
+
+.upload-section input[type="file"] {
+    margin: 20px 0;
+    padding: 12px;
+    border: 2px solid #4a4aff;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+}
+
+.preview-box {
+    margin-top: 30px;
+    padding: 20px;
+    width: 320px;
+    margin-left: auto;
+    margin-right: auto;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 12px;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.preview-box p {
+    font-weight: bold;
+    color: #1b1bac;
+    margin-bottom: 10px;
+}
+
+#previewImage {
+    width: 100%;
+    border-radius: 12px;
+    display: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.gallery img {
+    width: 100%;
+    max-width: 400px;   /* Use bigger number if needed */
+    height: auto;
+    object-fit: cover;
+    border-radius: 10px;
+}
+.photoBox {
+    background: white;
+    padding: 10px;
+    margin: 15px;
+    border-radius: 12px;
+    width: 250px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.photoBox img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+.caption {
+    font-weight: bold;
+    margin-top: 8px;
+}
+
+.date {
+    font-size: 12px;
+    color: gray;
+}
+.photoBox {
+    background: white;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.photoBox img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+.deleteBtn {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    margin-top: 8px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.deleteBtn:hover {
+    background-color: darkred;
+}
+.likeBtn {
+    background-color: #ff4081;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    margin-top: 8px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.likeBtn:hover {
+    background-color: #e91e63;
+}
+.grid {
+    column-count: 3;        /* number of columns */
+    column-gap: 15px;       /* space between columns */
+}
+
+.photoBox {
+    break-inside: avoid;    /* prevent breaking images */
+    margin-bottom: 15px;
+    background: white;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.photoBox img {
+    width: 100%;
+    border-radius: 10px;
+    display: block;
+}
+@media (max-width: 800px) {
+    .grid {
+        column-count: 2;
+    }
+}
+
+@media (max-width: 500px) {
+    .grid {
+        column-count: 1;
+    }
+}
+/* ------ Creator Profile Page ------ */
+
+.creatorHeader {
+    text-align: center;
+    padding: 30px;
+    background: linear-gradient(#87CEEB, #ffffff);
+}
+
+.profilePic {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #fff;
+}
+
+.bio {
+    max-width: 500px;
+    margin: 10px auto;
+    color: #444;
+}
+
+.stats span {
+    margin: 10px;
+    font-weight: bold;
+}
+
+.creatorGallery {
+    padding: 20px;
+}
+
+.likeBtn {
+    margin-top: 8px;
+    padding: 5px 10px;
+    background: #ff7f7f;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.likeBtn:hover {
+    background: #ff5c5c;
+}

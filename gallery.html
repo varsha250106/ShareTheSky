@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gallery – ShareTheSky</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <header>
+        <h1 class="logo">ShareTheSky</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="upload.html">Upload</a>
+            <a href="gallery.html">Gallery</a>
+            <a href="creator.html">Creator</a>
+        </nav>
+    </header>
+
+    <section class="gallery">
+        <h2>Sky Gallery</h2>
+
+        <!-- FIXED: Your gallery container ID -->
+        <div class="grid" id="galleryGrid"></div>
+    </section>
+
+<script>
+// FIXED: Correct reference to galleryGrid
+const galleryContainer = document.getElementById("galleryGrid");
+
+// Load gallery function
+function loadGallery() {
+    galleryContainer.innerHTML = ""; // Clear grid
+
+    const storedImages = JSON.parse(localStorage.getItem("skyPhotos")) || [];
+
+    storedImages.forEach((photo, index) => {
+        const box = document.createElement("div");
+        box.classList.add("photoBox");
+
+        box.innerHTML = `
+    <img src="${photo.image}">
+    <p class="caption">${photo.caption || "No Caption"}</p>
+    <p class="date">Uploaded on: ${photo.date}</p>
+
+    <button class="likeBtn" onclick="likePhoto(${index})">
+        ❤️ Like (${photo.likes || 0})
+    </button>
+
+    <button class="deleteBtn" onclick="deletePhoto(${index})">Delete</button>
+`;
+
+        galleryContainer.appendChild(box);
+    });
+}
+
+// Delete function
+function deletePhoto(index) {
+    let photos = JSON.parse(localStorage.getItem("skyPhotos")) || [];
+
+    photos.splice(index, 1); // Remove selected photo
+
+    localStorage.setItem("skyPhotos", JSON.stringify(photos)); // Save new list
+
+    loadGallery(); // Refresh gallery
+}
+// Like function
+function likePhoto(index) {
+    let photos = JSON.parse(localStorage.getItem("skyPhotos")) || [];
+
+    if (!photos[index].likes) {
+        photos[index].likes = 0;
+    }
+
+    photos[index].likes += 1;
+
+    localStorage.setItem("skyPhotos", JSON.stringify(photos));
+
+    loadGallery(); // refresh grid
+}
+// First load
+loadGallery();
+</script>
+
+</body>
+</html>

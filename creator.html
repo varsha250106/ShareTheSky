@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Creator – ShareTheSky</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <header>
+        <h1 class="logo">ShareTheSky</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="upload.html">Upload</a>
+            <a href="gallery.html">Gallery</a>
+            <a href="creator.html" class="active">Creator</a>
+        </nav>
+    </header>
+
+    <section class="creatorHeader">
+        <img src="assets/creator/profile.jpeg" class="profilePic">
+        <h2>Varsha – Sky Photographer</h2>
+        <p class="bio">I capture the sky because every cloud has its own story. Welcome to my personal sky gallery.</p>
+        <div class="stats">
+            <span id="totalPhotos">0 Photos</span>
+            <span id="totalLikes">0 Likes</span>
+        </div>
+    </section>
+
+    <section class="creatorGallery">
+        <h2>My Sky Collection</h2>
+        <div class="grid" id="creatorGrid"></div>
+    </section>
+
+<script>
+// Load images from localStorage (same as gallery)
+function loadCreatorGallery() {
+    const grid = document.getElementById("creatorGrid");
+    const photos = JSON.parse(localStorage.getItem("skyPhotos")) || [];
+
+    let likeCount = 0;
+    grid.innerHTML = "";
+
+    photos.forEach((img, index) => {
+        likeCount += img.likes || 0;
+
+        const box = document.createElement("div");
+        box.classList.add("photoBox");
+
+        box.innerHTML = `
+            <img src="${img.image}">
+            <p class="caption">${img.caption || "No Caption"}</p>
+            <p class="date">${img.date}</p>
+            <button class="likeBtn" onclick="likePhoto(${index})">
+                ❤️ ${img.likes || 0}
+            </button>
+        `;
+
+        grid.appendChild(box);
+    });
+
+    document.getElementById("totalPhotos").textContent = photos.length + " Photos";
+    document.getElementById("totalLikes").textContent = likeCount + " Likes";
+}
+
+function likePhoto(index) {
+    let photos = JSON.parse(localStorage.getItem("skyPhotos")) || [];
+
+    photos[index].likes = (photos[index].likes || 0) + 1;
+
+    localStorage.setItem("skyPhotos", JSON.stringify(photos));
+
+    loadCreatorGallery();
+}
+
+loadCreatorGallery();
+</script>
+
+</body>
+</html>
