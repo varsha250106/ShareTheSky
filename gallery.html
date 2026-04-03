@@ -4,32 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gallery - ShareTheSky</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header>
     <h1 class="logo">
-        <a href="index.html">
-            <span>📷</span> ShareTheSky
-        </a>
+        <a href="index.html"><span>📷</span> ShareTheSky</a>
     </h1>
-    <nav class="nav-links" id="nav-list">
+    <nav class="nav-links">
         <a href="index.html">Home</a>
         <a href="upload.html">Upload</a>
         <a href="gallery.html">Gallery</a>
-        <a href="about.html">About Me</a>
+        <a href="about.html">About me</a>
     </nav>
 </header>
 
-<main class="gallery-page">
+<main class="gallery-container">
     <section class="gallery-header">
         <h2>Community Sky Gallery ☁️</h2>
         <p>Explore the beauty of the world, one sky at a time.</p>
     </section>
 
-    <div id="galleryContainer" class="pinterest-grid"></div>
+    <div id="photoGallery" class="pinterest-grid"></div>
 </main>
 
 <footer>
@@ -37,11 +35,9 @@
 </footer>
 
 <script type="module">
-    // 1. Firebase Imports
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    // 2. Firebase Configuration
     const firebaseConfig = {
         apiKey: "AIzaSyDxgtNzywhjYGR7R2XMVobR73-SioT6v98",
         authDomain: "sharethesky-a9c7d.firebaseapp.com",
@@ -53,13 +49,11 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const galleryContainer = document.getElementById("galleryContainer");
+    const galleryContainer = document.getElementById("photoGallery");
     const mySkyUserId = localStorage.getItem("mySkyUserId");
 
-    // 3. Define the Query (The missing 'q')
     const q = query(collection(db, "photos"), orderBy("date", "desc"));
 
-    // 4. Real-time Listener
     onSnapshot(q, (snapshot) => {
         galleryContainer.innerHTML = ""; 
         
@@ -69,76 +63,52 @@
             const isOwner = data.uploaderId === mySkyUserId;
 
             const card = document.createElement("div");
-            card.className = "pin-card";
+            card.className = "photo-card"; // This matches the Pinterest CSS
 
             card.innerHTML = `
-                <div class="pin-image-wrapper">
-                    <img src="${data.url}" class="pin-img" alt="Sky" onclick="openZoom('${data.url}')">
-                    
-                    <div class="pin-top-actions">
-                        <a href="${data.url}" download="SkyPhoto.jpg" target="_blank" class="action-btn download-btn" title="Download">📥</a>
-                        <button class="action-btn zoom-btn" onclick="openZoom('${data.url}')" title="Zoom">🔍</button>
+                <div class="photo-wrapper">
+                    <img src="${data.url}" alt="Sky" onclick="openZoom('${data.url}')">
+                    <div class="photo-overlay">
+                        <button class="like-btn ${localStorage.getItem('liked_'+id) ? 'liked' : ''}" data-id="${id}">
+                            ❤️ <span>${data.likes || 0}</span>
+                        </button>
                     </div>
-
-                    <button class="pin-like-btn ${localStorage.getItem('liked_'+id) ? 'liked' : ''}" id="btn-${id}">
-                        ❤️ <span>${data.likes || 0}</span>
-                    </button>
                 </div>
-                
-                <div class="pin-content">
+                <div class="photo-info">
                     <h3>${data.caption}</h3>
-                    <div class="pin-footer">
+                    <div class="photo-meta">
                         <span>${data.date.split(',')[0]}</span>
-                        ${isOwner ? `<button class="pin-delete" id="del-${id}">🗑️ Remove</button>` : ''}
+                        ${isOwner ? `<button class="delete-btn" data-id="${id}">🗑️</button>` : ''}
                     </div>
                 </div>
             `;
 
             galleryContainer.appendChild(card);
 
-            // Like Logic (Restored)
-            const likeBtn = card.querySelector(`#btn-${id}`);
-            likeBtn.onclick = async (e) => {
-                e.stopPropagation(); // Prevents zoom from opening when clicking like
-                const isLiked = likeBtn.classList.contains("liked");
+            // Like Event
+            card.querySelector('.like-btn').onclick = async (e) => {
+                const btn = e.currentTarget;
+                const isLiked = btn.classList.contains("liked");
                 const newCount = isLiked ? (data.likes - 1) : (data.likes + 1);
-
                 await updateDoc(doc(db, "photos", id), { likes: newCount });
-
-                if (isLiked) {
-                    localStorage.removeItem('liked_'+id);
-                } else {
-                    localStorage.setItem('liked_'+id, "true");
-                }
+                isLiked ? localStorage.removeItem('liked_'+id) : localStorage.setItem('liked_'+id, "true");
             };
 
-            // Delete Logic (Restored)
+            // Delete Event
             if (isOwner) {
-                card.querySelector(`#del-${id}`).onclick = async () => {
-                    if (confirm("Are you sure you want to remove your sky photo?")) {
-                        await deleteDoc(doc(db, "photos", id));
-                    }
+                card.querySelector('.delete-btn').onclick = async () => {
+                    if (confirm("Remove this sky?")) await deleteDoc(doc(db, "photos", id));
                 };
             }
         });
     });
 
-    // 5. Zoom Function (Now accessible globally)
     window.openZoom = (url) => {
         const overlay = document.createElement('div');
-        overlay.id = 'zoomOverlay';
-        overlay.innerHTML = `
-            <div class="zoom-container">
-                <span class="close-zoom" onclick="document.getElementById('zoomOverlay').remove()">×</span>
-                <img src="${url}" class="zoomed-image">
-            </div>
-        `;
+        overlay.className = 'zoom-overlay';
+        overlay.innerHTML = `<img src="${url}" class="zoomed-img" onclick="this.parentElement.remove()">`;
         document.body.appendChild(overlay);
-        
-        // Close on clicking the dark background
-        overlay.onclick = (e) => {
-            if(e.target.id === 'zoomOverlay') overlay.remove();
-        };
+        overlay.onclick = () => overlay.remove();
     };
 </script>
 </body>
