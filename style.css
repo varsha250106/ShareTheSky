@@ -170,6 +170,144 @@ footer {
     .features {
         grid-template-columns: 1fr; /* Stacks 1-by-1 on mobile for neatness */
     }
+   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+html {
+    /* Prevents the layout from shifting when a scrollbar appears/disappears */
+    overflow-y: scroll; 
+}
+
+body {
+    background: linear-gradient(135deg, #c2c2f0 0%, #f7c7db 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    color: #333;
+}
+
+/* --- Navigation (Must be identical on all pages) --- */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 8%;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    width: 100%;
+}
+
+.logo a {
+    text-decoration: none;
+    font-size: 26px;
+    font-weight: 700;
+    color: #1c1c8f;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #333;
+    margin-left: 30px;
+    font-weight: 600;
+    white-space: nowrap; /* Prevents text from wrapping and shaking menu */
+}
+
+/* --- Centering Engine --- */
+.center-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+}
+
+.content-box {
+    width: 100%;
+    max-width: 1000px;
+    text-align: center;
+}
+
+/* --- Home Page Specifics --- */
+.hero-content h1 {
+    font-size: clamp(2.5rem, 6vw, 4.2rem);
+    color: #1c1c8f;
+    margin-bottom: 20px;
+    font-weight: 800;
+}
+
+.hero-subtitle {
+    font-size: 1.1rem;
+    color: #4a4a8a;
+    margin-bottom: 30px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 50px;
+}
+
+.cta-button {
+    background-color: #3e3efc;
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: 12px;
+    padding: 12px 30px;
+    font-size: 0.95rem;
+    transition: 0.3s;
+}
+
+.features {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.feature-item {
+    background: rgba(255, 255, 255, 0.5);
+    padding: 25px;
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* --- Upload Card Specifics --- */
+.upload-card {
+    background: rgba(255, 255, 255, 0.85);
+    padding: 40px;
+    border-radius: 30px;
+    max-width: 500px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+/* --- Footer --- */
+footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 13px;
+    color: #666;
+    margin-top: auto;
+}
+
+@media (max-width: 768px) {
+    .features { grid-template-columns: 1fr; }
+}
     
     .hero-content h1 {
         font-size: 2.8rem;
