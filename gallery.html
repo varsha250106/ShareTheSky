@@ -21,35 +21,39 @@
 <section>
     <h2 style="text-align:center; margin-top:30px;">Community Sky Gallery ☁️</h2>
     <div id="gallery" class="gallery-container">
-        </div>
+        <p id="loading-msg" style="text-align:center;">Looking at the clouds... (Loading photos)</p>
+    </div>
 </section>
 
 <script type="module">
-    // 1. Firebase Imports
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, collection, onSnapshot, doc, updateDoc, increment, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    // 2. Firebase Configuration
+    // 🔴 TRIPLE CHECK THIS CONFIG WITH YOUR FIREBASE CONSOLE
     const firebaseConfig = {
         apiKey: "AIzaSyDxgtNzywhjYGR7R2XMVobR73-SioT6v98",
         authDomain: "sharethesky-a9c7d.firebaseapp.com",
         projectId: "sharethesky-a9c7d",
         storageBucket: "sharethesky-a9c7d.firebasestorage.app",
         messagingSenderId: "1047232389865",
-        appId: "1:1047232389865:web:37694bf13bcef31f570678"
+        appId: "1:1047232389865:web:37694bf13bcef31f570678" // Ensure this is exactly what Firebase gives you!
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const galleryDiv = document.getElementById("gallery");
+    const loadingMsg = document.getElementById("loading-msg");
 
-    // 3. Listen for Data (Real-time)
+    // 3. Listen for Data
     const q = query(collection(db, "photos"), orderBy("date", "desc"));
     
     onSnapshot(q, (snapshot) => {
+        if (snapshot.empty) {
+            galleryDiv.innerHTML = "<p style='text-align:center;'>The sky is clear! No photos uploaded yet.</p>";
+            return;
+        }
+
         galleryDiv.innerHTML = "";
-        
-        // Fetch current likes from LocalStorage to maintain button state
         const likedIds = JSON.parse(localStorage.getItem("likedPhotos") || "[]");
 
         snapshot.forEach((docSnap) => {
@@ -60,9 +64,9 @@
             const card = document.createElement("div");
             card.className = "photo-card";
             card.innerHTML = `
-                <img src="${photo.url}" alt="Sky Photo">
+                <img src="${photo.url}" alt="Sky Photo" onerror="this.src='https://via.placeholder.com/300?text=Image+Error'">
                 <div style="padding: 15px;">
-                    <p style="margin: 5px 0;"><strong>${photo.caption}</strong></p>
+                    <p style="margin: 5px 0;"><strong>${photo.caption || 'No Caption'}</strong></p>
                     <p style="font-size:11px; color:#888;">${photo.date}</p>
                     <p style="font-size:18px;">❤️ <span id="count-${id}">${photo.likes || 0}</span></p>
                     <button class="like-btn ${isLiked ? 'liked' : ''}" id="btn-${id}">
@@ -73,23 +77,21 @@
 
             galleryDiv.appendChild(card);
 
-            // Button Event Listener
             card.querySelector(".like-btn").addEventListener("click", (e) => {
-                // Disable button briefly to prevent spam-clicking
                 e.target.disabled = true;
                 handleToggleLike(id);
             });
         });
+    }, (error) => {
+        console.error("Firebase Error:", error);
+        galleryDiv.innerHTML = "<p style='color:red; text-align:center;'>Error loading photos. Check Console (F12).</p>";
     });
 
-    // 4. Like/Unlike Logic
     async function handleToggleLike(photoId) {
         const photoRef = doc(db, "photos", photoId);
         let likedPhotos = JSON.parse(localStorage.getItem("likedPhotos") || "[]");
         const alreadyLiked = likedPhotos.includes(photoId);
 
-        // 🔥 STEP A: Update LocalStorage FIRST
-        // This ensures the next "onSnapshot" refresh sees the new state immediately
         if (alreadyLiked) {
             likedPhotos = likedPhotos.filter(id => id !== photoId);
         } else {
@@ -97,15 +99,12 @@
         }
         localStorage.setItem("likedPhotos", JSON.stringify(likedPhotos));
 
-        // 🔥 STEP B: Update Firestore
         try {
             await updateDoc(photoRef, {
                 likes: increment(alreadyLiked ? -1 : 1)
             });
         } catch (err) {
-            console.error("Firestore Update Error:", err);
-            // If cloud update fails, roll back the local change
-            alert("Connection error. Like not saved.");
+            console.error("Like error:", err);
         }
     }
 </script>
