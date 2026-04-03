@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Gallery – ShareTheSky</title>
-    <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery - ShareTheSky</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
 <header>
@@ -19,77 +18,88 @@
     </nav>
 </header>
 
-<section class="gallery">
-    <h2>Sky Gallery 🌤️</h2>
-    <div class="grid" id="galleryGrid"></div>
+<section>
+    <h2 style="text-align:center; margin-top:30px;">Community Sky Gallery ☁️</h2>
+    <div id="gallery" class="gallery-container">
+        </div>
 </section>
 
-<!-- 🔥 FINAL SCRIPT -->
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, getDocs, updateDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, onSnapshot, doc, updateDoc, increment, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-// ✅ SAME Firebase config (must match upload page)
-const firebaseConfig = {
-  apiKey: "AIzaSyDxgtNzywhjYGR7R2XMVobR73-SioT6v98",
-  authDomain: "sharethesky-a9c7d.firebaseapp.com",
-  projectId: "sharethesky-a9c7d",
-  storageBucket: "sharethesky-a9c7d.firebasestorage.app",
-  messagingSenderId: "1047232389865",
-  appId: "1:1047232389865:web:37694bf13bcef31f570678",
-  measurementId: "G-QLMFRX48Q9"
-};
+    const firebaseConfig = {
+        apiKey: "AIzaSyDxgtNzywhjYGR7R2XMVobR73-SioT6v98",
+        authDomain: "sharethesky-a9c7d.firebaseapp.com",
+        projectId: "sharethesky-a9c7d",
+        storageBucket: "sharethesky-a9c7d.firebasestorage.app",
+        messagingSenderId: "1047232389865",
+        appId: "1:1047232389865:web:37694bf13bcef31f570678"
+    };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const galleryDiv = document.getElementById("gallery");
 
-const galleryContainer = document.getElementById("galleryGrid");
+    // 1. Listen for data changes in real-time
+    const q = query(collection(db, "photos"), orderBy("date", "desc"));
+    
+    onSnapshot(q, (snapshot) => {
+        galleryDiv.innerHTML = "";
+        
+        // Check browser memory for what THIS user has liked
+        const likedIds = JSON.parse(localStorage.getItem("likedPhotos") || "[]");
 
-// 🔥 LOAD ALL IMAGES (GLOBAL)
-async function loadGallery() {
-    galleryContainer.innerHTML = "";
+        snapshot.forEach((docSnap) => {
+            const photo = docSnap.data();
+            const id = docSnap.id;
+            const isLiked = likedIds.includes(id);
 
-    const snapshot = await getDocs(collection(db, "photos"));
+            const card = document.createElement("div");
+            card.className = "photo-card";
+            card.innerHTML = `
+                <img src="${photo.url}" alt="Sky Photo">
+                <div style="padding: 15px;">
+                    <p style="margin: 5px 0;"><strong>${photo.caption}</strong></p>
+                    <p style="font-size:11px; color:#888;">${photo.date}</p>
+                    <p style="font-size:18px;">❤️ <span id="count-${id}">${photo.likes || 0}</span></p>
+                    <button class="like-btn ${isLiked ? 'liked' : ''}" id="btn-${id}">
+                        ${isLiked ? '💖 Liked' : '🤍 Like'}
+                    </button>
+                </div>
+            `;
 
-    snapshot.forEach((docSnap) => {
-        const photo = docSnap.data();
-        const id = docSnap.id;
+            galleryDiv.appendChild(card);
 
-        const box = document.createElement("div");
-        box.classList.add("photoBox");
+            // Attach toggle logic to button
+            card.querySelector(".like-btn").addEventListener("click", () => handleToggleLike(id));
+        });
+    });
 
-        box.innerHTML = `
-            <img src="${photo.url}" style="width:200px; border-radius:10px;">
-            <p><strong>${photo.caption || "No Caption"}</strong></p>
-            <p style="font-size:12px;">${photo.date}</p>
+    // 2. Logic to Like or Unlike
+    async function handleToggleLike(photoId) {
+        const photoRef = doc(db, "photos", photoId);
+        let likedPhotos = JSON.parse(localStorage.getItem("likedPhotos") || "[]");
+        const alreadyLiked = likedPhotos.includes(photoId);
 
-            <button onclick="likePhoto('${id}', ${photo.likes || 0})">
-                ❤️ Like (${photo.likes || 0})
-            </button>
+        try {
+            if (alreadyLiked) {
+                // --- UNLIKE PATH ---
+                await updateDoc(photoRef, { likes: increment(-1) });
+                likedPhotos = likedPhotos.filter(id => id !== photoId);
+            } else {
+                // --- LIKE PATH ---
+                await updateDoc(photoRef, { likes: increment(1) });
+                likedPhotos.push(photoId);
+            }
 
+            // Save choice to this browser's memory
+            localStorage.setItem("likedPhotos", JSON.stringify(likedPhotos));
             
-        `;
-
-        galleryContainer.appendChild(box);
-    });
-}
-
-// ❤️ LIKE
-window.likePhoto = async function(id, currentLikes) {
-    await updateDoc(doc(db, "photos", id), {
-        likes: currentLikes + 1
-    });
-    loadGallery();
-};
-
-// ❌ DELETE (optional – remove if you don’t want users deleting)
-window.deletePhoto = async function(id) {
-    await deleteDoc(doc(db, "photos", id));
-    loadGallery();
-};
-
-// 🚀 INITIAL LOAD
-loadGallery();
+        } catch (err) {
+            console.error("Firestore Update Error:", err);
+        }
+    }
 </script>
 
 </body>
