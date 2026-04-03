@@ -188,3 +188,60 @@ footer {
     color: #666;
     margin-top: auto;
 }
+/* =========================================
+   UPLOAD PAGE - ERROR & PREVIEW STYLES
+   ========================================= */
+
+/* The Error Message Box */
+#errorMessage {
+    background: rgba(255, 77, 77, 0.12); /* Light red glass effect */
+    color: #d63031;
+    padding: 15px;
+    border-radius: 15px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    border: 1px solid rgba(214, 48, 49, 0.2);
+    animation: shake 0.4s ease-in-out; /* Attention grabber */
+}
+
+/* Animation to make the error shake slightly when it appears */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* The Preview Image inside the dashed box */
+#previewImage {
+    width: 100%;
+    max-height: 250px;
+    object-fit: cover; /* Keeps the sky looking natural, not squashed */
+    border-radius: 12px;
+    margin-top: 5px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Adjust the upload box when an image is inside */
+.upload-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+}
+
+/* Input field focus effect */
+#captionInput:focus {
+    border-color: #3e3efc;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 0 15px rgba(62, 62, 252, 0.1);
+}
+
+/* Button loading state style */
+#uploadBtn:disabled {
+    background-color: #a0a0ff;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
