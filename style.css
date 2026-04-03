@@ -361,3 +361,66 @@ footer {
     box-shadow: none;
     transform: none;
 }
+/* --- Exact Glass Frame --- */
+.upload-card {
+    background: rgba(255, 255, 255, 0.8); /* Higher white opacity for that clean look */
+    padding: 40px;
+    border-radius: 25px;
+    width: 100%;
+    max-width: 550px;
+    margin: 40px auto;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+    text-align: center;
+}
+
+.upload-card h2 {
+    color: #333;
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+}
+
+/* --- The Dashed Drop Zone --- */
+.upload-box {
+    border: 2px dashed #b194f1; /* Specific purple dashed border */
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 15px;
+    padding: 60px 20px;
+    cursor: pointer;
+    margin-bottom: 25px;
+    transition: 0.3s;
+}
+
+.upload-box:hover {
+    background: rgba(255, 255, 255, 0.8);
+    border-color: #3e3efc;
+}
+
+/* --- Exact Input & Button Styling --- */
+#captionInput {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    font-size: 1rem;
+    margin-bottom: 25px;
+    background: white;
+}
+
+#uploadBtn {
+    width: 100%; /* Makes the button full width like the image */
+    background-color: #7b7bf5; /* The specific soft purple-blue color */
+    color: white;
+    padding: 18px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(123, 123, 245, 0.3);
+    transition: 0.3s;
+}
+
+#uploadBtn:hover {
+    background-color: #6262e0;
+    transform: translateY(-2px);
+}
