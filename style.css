@@ -1,7 +1,7 @@
 /* =========================================
-   1. GLOBAL RESET & FONTS
+   1. GLOBAL SETTINGS & BACKGROUND
    ========================================= */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap');
 
 * {
     margin: 0;
@@ -17,11 +17,10 @@ body {
     display: flex;
     flex-direction: column;
     color: #333;
-    overflow-x: hidden;
 }
 
 /* =========================================
-   2. NAVIGATION BAR
+   2. NAVIGATION (Neat & Transparent)
    ========================================= */
 header {
     display: flex;
@@ -47,161 +46,23 @@ header {
     color: #333;
     margin-left: 30px;
     font-weight: 600;
-    transition: 0.3s;
-    font-size: 15px;
-}
-
-.nav-links a:hover {
-    color: #3e3efc;
 }
 
 /* =========================================
-   3. INDEX PAGE (Hero & Features)
+   3. HERO SECTION (Spaced & Tall)
    ========================================= */
 .hero-section {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    display: block; /* Allows natural scrolling flow */
     text-align: center;
-    padding: 100px 20px; /* Big spacing at top/bottom */
+    padding: 120px 20px;
 }
 
 .hero-content {
-    margin-bottom: 100px; /* Huge gap between hero and "Why" section */
+    margin-bottom: 180px; /* Massive gap to prevent cramping */
 }
 
 .hero-content h1 {
-    font-size: clamp(2.5rem, 6vw, 4rem);
-    color: #1c1c8f;
-    margin-bottom: 20px;
-    line-height: 1.1;
-}
-
-.hero-content p {
-    font-size: 1.2rem;
-    color: #555;
-    margin-bottom: 40px;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.cta-button {
-    display: inline-block;
-    background-color: #3e3efc;
-    color: white;
-    padding: 16px 40px;
-    border-radius: 12px;
-    text-decoration: none;
-    font-weight: 600;
-    box-shadow: 0 10px 20px rgba(62, 62, 252, 0.3);
-    transition: all 0.3s ease;
-}
-
-.cta-button:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 30px rgba(62, 62, 252, 0.5);
-}
-
-.features {
-    max-width: 800px;
-    width: 100%;
-}
-
-.feature-item {
-    margin-bottom: 60px; /* Space between each point */
-}
-
-.feature-item h3 {
-    font-size: 26px;
-    color: #1c1c8f;
-    margin-bottom: 15px;
-}
-
-.feature-item p {
-    font-size: 17px;
-    line-height: 1.8;
-    color: #444;
-}
-
-/* =========================================
-   4. UPLOAD & GALLERY (Glass Cards)
-   ========================================= */
-.upload-container, .gallery-container {
-    padding: 50px 5%;
-}
-
-.upload-card {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(20px);
-    padding: 50px;
-    border-radius: 30px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    max-width: 550px;
-    margin: 0 auto;
-    text-align: center;
-}
-
-.gallery-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 30px;
-}
-
-.photo-card {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    overflow: hidden;
-    transition: 0.3s;
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    text-align: center;
-    padding-bottom: 20px;
-}
-
-.photo-card:hover {
-    transform: translateY(-10px);
-}
-
-.gallery-img {
-    width: 100%;
-    height: 220px;
-    object-fit: cover;
-}
-
-/* =========================================
-   5. FOOTER
-   ========================================= */
-footer {
-    text-align: center;
-    padding: 40px;
-    margin-top: auto;
-    font-size: 14px;
-    color: #666;
-}
-/* =========================================
-   REFINED HERO SECTION
-   ========================================= */
-.hero-section {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center; 
-    /* Changed from center to flex-start to allow natural scrolling */
-    justify-content: flex-start; 
-    text-align: center;
-    padding: 120px 20px; /* More room at the top */
-}
-
-.hero-content {
-    margin-bottom: 150px; /* Huge gap to match image 2 */
-}
-
-.hero-content h1 {
-    font-size: clamp(2.5rem, 7vw, 4.5rem);
+    font-size: clamp(2.8rem, 8vw, 4.8rem);
     color: #1c1c8f;
     margin-bottom: 25px;
     font-weight: 800;
@@ -212,34 +73,64 @@ footer {
     font-size: 1.3rem;
     color: #4a4a8a;
     margin-bottom: 45px;
-    max-width: 650px;
+    max-width: 700px;
     margin-left: auto;
     margin-right: auto;
     line-height: 1.6;
 }
 
+.cta-button {
+    display: inline-block;
+    background-color: #3e3efc;
+    color: white;
+    padding: 18px 45px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    box-shadow: 0 10px 25px rgba(62, 62, 252, 0.4);
+    transition: 0.3s;
+}
+
+.cta-button:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(62, 62, 252, 0.6);
+}
+
 /* =========================================
-   FEATURES & AI SAFETY SECTION
+   4. FEATURES (Neat Stack)
    ========================================= */
 .features {
     width: 100%;
-    max-width: 800px;
+    max-width: 850px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 100px; /* Big space between each "Why" point */
+    gap: 120px; /* Space between points */
     padding-bottom: 100px;
 }
 
 .feature-item {
-    background: rgba(255, 255, 255, 0.3); /* Very subtle glass effect */
-    padding: 40px;
-    border-radius: 20px;
-    backdrop-filter: blur(5px);
+    background: rgba(255, 255, 255, 0.25);
+    padding: 50px;
+    border-radius: 25px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.ai-badge {
+    display: inline-block;
+    background: #1c1c8f;
+    color: white;
+    padding: 6px 16px;
+    border-radius: 50px;
+    font-size: 11px;
+    font-weight: 800;
+    margin-bottom: 15px;
+    letter-spacing: 1px;
 }
 
 .feature-item h3 {
-    font-size: 28px;
+    font-size: 30px;
     color: #1c1c8f;
     margin-bottom: 20px;
 }
@@ -250,15 +141,13 @@ footer {
     color: #333;
 }
 
-/* AI Badge Style */
-.ai-badge {
-    display: inline-block;
-    background: #3e3efc;
-    color: white;
-    padding: 5px 15px;
-    border-radius: 50px;
-    font-size: 12px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    text-transform: uppercase;
+/* =========================================
+   5. FOOTER
+   ========================================= */
+footer {
+    text-align: center;
+    padding: 50px;
+    margin-top: auto;
+    font-size: 14px;
+    color: #666;
 }
