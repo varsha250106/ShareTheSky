@@ -46,38 +46,90 @@ header {
 }
 
 /* =========================================
-   2. BUTTONS & UI COMPONENTS
+   2. HOME PAGE (Hero Section)
    ========================================= */
+.hero-section {
+    padding: 80px 8%;
+    max-width: 1200px;
+}
+
+.hero-content h1 {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    color: #1c1c8f;
+    margin-bottom: 20px;
+    font-weight: 800;
+}
+
+.hero-content p {
+    font-size: 1.1rem;
+    color: #4a4a8a;
+    margin-bottom: 30px;
+    max-width: 600px;
+}
+
 .cta-button {
     display: inline-block;
     background-color: #3e3efc;
     color: white;
-    padding: 15px 40px;
+    padding: 15px 35px;
     border-radius: 12px;
     text-decoration: none;
     font-weight: 600;
-    box-shadow: 0 10px 25px rgba(62, 62, 252, 0.4);
+    box-shadow: 0 10px 25px rgba(62, 62, 252, 0.3);
     transition: 0.3s;
     border: none;
     cursor: pointer;
 }
 
-.cta-button:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 30px rgba(62, 62, 252, 0.6);
+/* =========================================
+   3. UPLOAD PAGE (Centered Card)
+   ========================================= */
+.upload-page {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+}
+
+.upload-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(15px);
+    padding: 40px;
+    border-radius: 30px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.upload-box {
+    border: 2px dashed #3e3efc;
+    background: rgba(62, 62, 252, 0.05);
+    padding: 40px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-bottom: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+    outline: none;
 }
 
 /* =========================================
-   3. PINTEREST STYLE GALLERY
+   4. GALLERY PAGE (Pinterest Grid)
    ========================================= */
 .gallery-page {
     padding: 40px 5%;
-    flex: 1;
-}
-
-.gallery-header {
-    text-align: center;
-    margin-bottom: 40px;
 }
 
 .pinterest-grid {
@@ -93,33 +145,19 @@ header {
     border-radius: 20px;
     overflow: hidden;
     box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-    transition: transform 0.3s ease;
+    transition: 0.3s;
 }
 
-.pin-card:hover { transform: translateY(-5px); }
+.pin-image-wrapper { position: relative; overflow: hidden; cursor: pointer; }
+.pin-img { width: 100%; display: block; }
 
-.pin-image-wrapper {
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-}
-
-.pin-img {
-    width: 100%;
-    display: block;
-    border-radius: 20px 20px 0 0;
-}
-
-/* Action Buttons (Zoom & Download) */
+/* Overlay Action Buttons (Zoom/Download) */
 .pin-top-actions {
     position: absolute;
-    top: 15px;
-    left: 15px;
-    display: flex;
-    gap: 10px;
-    z-index: 10;
-    opacity: 0; /* Hidden on desktop until hover */
-    transition: 0.3s ease;
+    top: 15px; left: 15px;
+    display: flex; gap: 10px;
+    opacity: 0;
+    transition: 0.3s;
 }
 
 .pin-card:hover .pin-top-actions { opacity: 1; }
@@ -127,92 +165,46 @@ header {
 .action-btn {
     background: rgba(0, 0, 0, 0.6);
     color: white;
-    border: none;
-    width: 38px;
-    height: 38px;
+    width: 38px; height: 38px;
     border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     text-decoration: none;
-    font-size: 18px;
     backdrop-filter: blur(4px);
-    transition: 0.2s;
 }
 
-.action-btn:hover {
-    background: rgba(0, 0, 0, 0.8);
-    transform: scale(1.1);
-}
-
-/* Like Button */
 .pin-like-btn {
     position: absolute;
-    bottom: 15px;
-    right: 15px;
+    bottom: 15px; right: 15px;
     background: white;
-    border: 1px solid rgba(0,0,0,0.1);
     padding: 8px 15px;
     border-radius: 25px;
     font-weight: 600;
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    z-index: 10;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.pin-like-btn.liked {
-    background: #ff4d4d;
-    color: white;
-}
-
-/* Content & Footer */
-.pin-content { padding: 15px; }
-.pin-content h3 { font-size: 15px; color: #333; margin-bottom: 8px; }
-
-.pin-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 11px;
-    color: #888;
-}
-
-.pin-delete {
-    color: #ff4d4d;
-    font-weight: 600;
-    background: rgba(255, 77, 77, 0.1);
-    border: 1px solid rgba(255, 77, 77, 0.2);
-    padding: 5px 10px;
-    border-radius: 8px;
-    cursor: pointer;
 }
 
 /* =========================================
-   4. FULL SCREEN ZOOM MODAL
+   5. ZOOM OVERLAY
    ========================================= */
 #zoomOverlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0, 0, 0, 0.9);
     z-index: 9999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
 }
 
-.zoom-container { position: relative; max-width: 90%; max-height: 90%; }
-.zoomed-image { width: 100%; border-radius: 10px; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
-.close-zoom { position: absolute; top: -40px; right: 0; color: white; font-size: 40px; cursor: pointer; }
+.zoomed-image { max-width: 90%; max-height: 90%; border-radius: 12px; }
 
 /* =========================================
-   5. RESPONSIVE DESIGN
+   6. FOOTER & RESPONSIVE
    ========================================= */
+footer { text-align: center; padding: 30px; font-size: 13px; color: #666; margin-top: auto; }
+
 @media (max-width: 1100px) { .pinterest-grid { column-count: 3; } }
 @media (max-width: 800px) { .pinterest-grid { column-count: 2; } }
-
 @media (max-width: 600px) {
     .pinterest-grid { column-count: 1; }
-    .pin-top-actions { opacity: 1; } /* Always show buttons on mobile */
-    .action-btn { width: 42px; height: 42px; }
+    .pin-top-actions { opacity: 1; }
+    header { padding: 20px 5%; }
 }
+
