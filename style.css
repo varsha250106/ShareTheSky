@@ -912,3 +912,85 @@ footer {
     color: #ff9a9e; /* Pinkish-orange hover from your gradient */
     text-decoration: underline;
 }
+/* --- ABOUT ME PAGE LAYOUT --- */
+
+.about-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 80px 20px; /* Space from top and bottom */
+    min-height: 80vh;
+}
+
+.about-card {
+    background: white;
+    padding: 40px;
+    border-radius: 25px; /* Rounded corners */
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1); /* Soft shadow */
+    max-width: 550px; /* Limits width so it doesn't stretch */
+    width: 100%;
+    text-align: center;
+}
+
+.profile-pic {
+    font-size: 50px;
+    background: #f3f3f3;
+    width: 100px;
+    height: 100px;
+    line-height: 100px;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+}
+
+.subtitle {
+    color: #a18cd1;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+.about-content {
+    text-align: left; /* Text is easier to read left-aligned */
+    line-height: 1.7;
+    color: #333;
+}
+
+/* --- CONTACT INFO BOX --- */
+
+.contact-info {
+    background: #f8f6ff;
+    padding: 20px;
+    border-radius: 15px;
+    margin: 20px 0;
+    border-left: 6px solid #a18cd1;
+}
+
+.contact-info p {
+    margin: 12px 0;
+}
+
+.contact-info a {
+    color: #a18cd1;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.contact-info a:hover {
+    color: #ff9a9e;
+    text-decoration: underline;
+}
+
+/* --- SKILLS TAGS --- */
+
+.skills-tag {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 25px;
+}
+
+.skills-tag span {
+    background: #eee;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 13px;
+}
