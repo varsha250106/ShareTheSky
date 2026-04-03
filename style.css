@@ -1,6 +1,5 @@
-
 /* =========================================
-   1. CORE STYLES (Restores Centering & Gradient)
+   1. CORE & GLOBAL CENTERING
    ========================================= */
 body {
     margin: 0;
@@ -8,11 +7,13 @@ body {
     background: linear-gradient(to bottom, #a8c0ff, #fbc2eb);
     color: #333;
     min-height: 100vh;
-    text-align: center; /* Keeps Home page text centered */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Forces everything to center horizontally */
 }
 
 /* =========================================
-   2. HEADER (Original Glassmorphism)
+   2. HEADER (Stays Full Width)
    ========================================= */
 header {
     display: flex;
@@ -23,6 +24,8 @@ header {
     backdrop-filter: blur(10px);
     position: sticky;
     top: 0;
+    width: 100%; /* Ensures header spans the top */
+    box-sizing: border-box;
     z-index: 1000;
 }
 
@@ -31,9 +34,6 @@ header {
     color: #1c1c8f;
     font-size: 24px;
     font-weight: bold;
-    display: flex;
-    align-items: center;
-    gap: 10px;
 }
 
 .nav-links {
@@ -45,97 +45,68 @@ header {
     text-decoration: none;
     color: #333;
     font-weight: 600;
-    transition: 0.3s;
-}
-
-.nav-links a:hover {
-    color: #2d2dff;
 }
 
 /* =========================================
-   3. HERO SECTION (Home Page Spacing)
+   3. THE UPLOAD GLASS CARD (The Center Fix)
+   ========================================= */
+.upload-container {
+    flex: 1; /* Takes up remaining space to center vertically */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 40px 20px;
+}
+
+.upload-card {
+    background: rgba(255, 255, 255, 0.7); /* The Glass Effect */
+    backdrop-filter: blur(15px);
+    padding: 40px;
+    border-radius: 25px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    max-width: 500px;
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    text-align: center;
+}
+
+.upload-box {
+    border: 2px dashed #a18cd1;
+    padding: 50px 20px;
+    border-radius: 15px;
+    margin: 20px 0;
+    background: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+}
+
+/* =========================================
+   4. BUTTONS & HERO
    ========================================= */
 .hero {
-    padding: 100px 20px;
-    max-width: 800px;
-    margin: 0 auto;
+    padding: 80px 20px;
+    text-align: center;
 }
 
 .hero h2 {
     font-size: 42px;
     color: #1c1c8f;
-    margin-bottom: 20px;
 }
 
-/* The Solid Blue Button from your screenshots */
-.btn, .main-upload-btn {
+.main-upload-btn, .btn {
     display: inline-block;
     padding: 14px 35px;
-    background: #2d2dff; /* Exact blue from your UI */
+    background: #2d2dff;
     color: white;
-    border-radius: 8px;
+    border-radius: 10px;
     text-decoration: none;
     font-weight: bold;
     border: none;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(45, 45, 255, 0.3);
 }
 
 /* =========================================
-   4. UPLOAD PAGE (Restored White Card)
-   ========================================= */
-.upload-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 60px 20px;
-    min-height: 70vh;
-}
-
-.upload-card {
-    background: white; /* Matches your successful upload UI */
-    padding: 40px;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    max-width: 500px;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.upload-box {
-    border: 2px dashed #a18cd1;
-    padding: 40px 20px;
-    border-radius: 15px;
-    margin-bottom: 20px;
-    background: #fdfbff;
-    cursor: pointer;
-}
-
-/* =========================================
-   5. GALLERY GRID
-   ========================================= */
-.gallery-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
-    padding: 40px 5%;
-}
-
-.photo-card {
-    background: white;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-
-.photo-card img {
-    width: 100%;
-    height: 250px;
-    object-fit: cover;
-}
-
-/* =========================================
-   6. MOBILE MENU (The 3 Lines Fix)
+   5. MOBILE MENU
    ========================================= */
 .menu-toggle {
     display: none;
@@ -152,26 +123,43 @@ header {
 }
 
 @media (max-width: 768px) {
-    .menu-toggle { 
-        display: flex; /* Shows lines on mobile */
-    }
-
+    .menu-toggle { display: flex; }
     .nav-links {
-        display: none; /* Hidden until clicked */
+        display: none;
         flex-direction: column;
         position: absolute;
         top: 70px;
         right: 5%;
         background: white;
-        width: 200px;
+        width: 180px;
         padding: 20px;
         border-radius: 15px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        text-align: left;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
     }
+    .nav-links.active { display: flex !important; }
+}
+/* =========================================
+   6. GALLERY GRID (Add this to the bottom)
+   ========================================= */
+.gallery-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 40px 5%;
+    width: 100%; /* Important for centering */
+    box-sizing: border-box;
+}
 
-    /* Shown when 'active' class is added via JavaScript */
-    .nav-links.active {
-        display: flex !important;
-    }
+.photo-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.photo-card img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
 }
