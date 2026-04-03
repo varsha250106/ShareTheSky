@@ -313,3 +313,51 @@ footer {
         font-size: 2.8rem;
     }
 }
+/* =========================================
+   RESTORING THE UPLOAD CARD GLASS EFFECT
+   ========================================= */
+.upload-card {
+    background: rgba(255, 255, 255, 0.4); /* Glass transperancy */
+    padding: 50px;
+    border-radius: 30px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08); /* Soft shadow */
+    backdrop-filter: blur(15px); /* Crucial glass effect */
+    max-width: 500px;
+    width: 100%;
+    margin: 60px auto; /* Moves the card down, preventing the centering jump */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Thin glass border */
+    display: flex; /* Centers the elements INSIDE the card for a neat look */
+    flex-direction: column;
+    align-items: center; 
+}
+
+/* =========================================
+   CLEANING UP THE 'SHARE THE SKY' BUTTON
+   ========================================= */
+#uploadBtn {
+    background-color: #3e3efc;
+    color: white;
+    padding: 12px 30px; /* Specific sizing for a neat look */
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(62, 62, 252, 0.3);
+    transition: 0.3s transform ease, 0.3s background-color ease;
+    width: fit-content; /* Prevents the button from stretching too wide */
+    align-self: center; /* Ensures the button is centered inside the flex-container (upload-card) */
+    margin-top: 10px; /* Adds spacing above the button */
+}
+
+#uploadBtn:hover {
+    transform: translateY(-2px);
+    background-color: #2c2cff;
+}
+
+#uploadBtn:disabled {
+    background-color: #888;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
