@@ -26,10 +26,14 @@
     <section class="upload-card">
         <h2>Upload Your Sky Photo 🌤️</h2>
         
+        <div id="errorMessage" style="display: none; color: #ff4d4d; background: rgba(255, 77, 77, 0.1); padding: 12px; border-radius: 10px; margin-bottom: 15px; font-size: 14px; font-weight: 600; border: 1px solid rgba(255, 77, 77, 0.3);">
+            ❌ Not a sky! Please upload a clear photo of the sky to keep our community beautiful.
+        </div>
+        
         <div id="dropArea" class="upload-box" onclick="document.getElementById('fileInput').click()">
             <div class="upload-icon">☁️</div>
             <p id="uploadText">Click to select or drag your sky here</p>
-            <img id="previewImage" class="preview-img" style="display:none;">
+            <img id="previewImage" class="preview-img" style="display:none; max-width: 100%; border-radius: 10px;">
         </div>
 
         <input type="file" id="fileInput" accept="image/*" style="display: none;">
@@ -72,6 +76,7 @@
     const previewImage = document.getElementById("previewImage");
     const uploadText = document.getElementById("uploadText");
     const uploadBtn = document.getElementById("uploadBtn");
+    const errorMessage = document.getElementById("errorMessage"); // Error Box Reference
 
     const skyNames = ["Infinite Azure", "Cotton Candy Clouds", "Golden Hour Glow", "Midnight Whisper", "Painted Horizon", "Celestial Canvas", "Eternal Blue", "Sun-Kissed Stratus", "Twilight Magic", "Dreamy Overcast", "Velvet Dusk", "Ocean in the Sky"];
 
@@ -82,6 +87,7 @@
             previewImage.style.display = "block";
             uploadText.innerText = "Photo selected!";
             document.querySelector(".upload-icon").style.display = "none";
+            errorMessage.style.display = "none"; // Hide error when new file picked
         }
     });
 
@@ -91,6 +97,7 @@
 
         uploadBtn.disabled = true;
         uploadBtn.innerText = "Checking the sky...";
+        errorMessage.style.display = "none";
 
         let userCaption = document.getElementById("captionInput").value.trim();
         if (userCaption === "") {
@@ -108,7 +115,19 @@
             });
             const data = await res.json();
 
-            // Moderation check handled by Cloudinary Upload Preset
+            // --- THE MODERATION FIX ---
+            // If Cloudinary moderation rejects it, data.moderation[0].status will be 'rejected'
+            if (data.moderation && data.moderation[0].status === "rejected") {
+                errorMessage.style.display = "block";
+                uploadBtn.disabled = false;
+                uploadBtn.innerText = "Share the Sky";
+                
+                // Optional: Delete from Cloudinary immediately if rejected to save space
+                console.warn("AI Moderation: Image rejected.");
+                return; 
+            }
+
+            // If it passes moderation, save to Firebase
             await addDoc(collection(db, "photos"), {
                 url: data.secure_url,
                 caption: userCaption,
