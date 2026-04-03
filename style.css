@@ -631,3 +631,63 @@ footer {
     transform: scale(1.1);
     transition: 0.3s;
 }
+/* --- LOGO & NAVIGATION STYLES --- */
+
+.logo a {
+    display: flex;
+    align-items: center;
+    gap: 12px;                  /* Space between camera and text */
+    text-decoration: none !important;
+    color: inherit !important;
+    cursor: pointer !important; /* Force the hand icon */
+    user-select: none;          /* Prevents the text-selection cursor */
+    transition: transform 0.2s ease;
+}
+
+/* The Camera Body */
+.logo-icon {
+    width: 38px;
+    height: 30px;
+    background: #2d2d2d;       /* Dark camera body */
+    border-radius: 6px;
+    position: relative;
+    display: inline-block;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* The Camera "Shutter Button" on top */
+.logo-icon::before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: 8px;
+    width: 10px;
+    height: 3px;
+    background: #2d2d2d;
+    border-radius: 2px 2px 0 0;
+}
+
+/* The Camera Lens (Sunset Gradient) */
+.logo-icon::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    /* This creates the sunset vibe inside the lens */
+    background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 50%, #a18cd1 100%);
+    border: 2px solid #444;    /* Lens rim */
+    border-radius: 50%;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
+}
+
+/* Hover Effect: Makes the whole logo "pop" */
+.logo a:hover {
+    transform: scale(1.05);
+}
+
+.logo a:hover .logo-icon {
+    background: #444; /* Lights up the camera body slightly */
+}
