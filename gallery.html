@@ -8,8 +8,56 @@
     <link rel="stylesheet" href="style.css">
     
     <style>
-        /* Essential Dropdown & Mobile CSS (Same as Index/Upload) */
-        body { font-family: 'Inter', sans-serif; margin: 0; }
+        /* --- GLOBAL & HEADER STYLES (Synced with Index) --- */
+        body { 
+            font-family: 'Inter', sans-serif; 
+            margin: 0; 
+            background: #f8f9fc; 
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .logo a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .header-logo {
+            width: 35px;
+            height: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .logo a:hover .header-logo {
+            transform: translateY(-3px) rotate(-5deg);
+        }
+
+        .logo span {
+            color: #4a4a8a;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        /* Navigation Links Styling */
+        .nav-links { display: flex; align-items: center; gap: 20px; }
+        .nav-links a { text-decoration: none; color: #4a4a8a; font-weight: 600; transition: 0.3s; }
+        .nav-links a:hover { color: #a18cd1; }
+        
+        /* Highlight Gallery link */
+        .nav-links a[href="gallery.html"] { color: #a18cd1; border-bottom: 2px solid #a18cd1; }
 
         .dropdown { position: relative; display: inline-block; }
         .dropbtn {
@@ -21,6 +69,7 @@
             display: none; position: absolute; background-color: white;
             min-width: 180px; box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
             border-radius: 12px; z-index: 100; top: 100%; overflow: hidden;
+            right: 0;
         }
         .dropdown-content a {
             color: #333; padding: 12px 16px; text-decoration: none;
@@ -29,12 +78,8 @@
         .dropdown-content a:hover { background-color: #f8f6ff; color: #a18cd1; }
         .dropdown:hover .dropdown-content { display: block; }
 
-        .menu-toggle {
-            display: none; flex-direction: column; gap: 5px; cursor: pointer;
-        }
-        .menu-toggle span {
-            width: 25px; height: 3px; background-color: #a18cd1; border-radius: 3px;
-        }
+        .menu-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+        .menu-toggle span { width: 25px; height: 3px; background-color: #a18cd1; border-radius: 3px; }
 
         @media (max-width: 768px) {
             .menu-toggle { display: flex; }
@@ -42,20 +87,29 @@
                 display: none; flex-direction: column; position: absolute;
                 top: 70px; right: 20px; background: white; width: 200px;
                 padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-                z-index: 1000;
             }
             .nav-links.active { display: flex; }
-            .dropdown-content {
-                position: static; box-shadow: none; background: #f9f9f9; margin-top: 10px;
-            }
         }
+
+        /* --- GALLERY HEADER --- */
+        .gallery-header {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .gallery-header h2 { font-size: 2.5rem; color: #2d2d6a; margin-bottom: 10px; }
+        .gallery-header p { color: #666; font-size: 1.1rem; }
+
+        footer { text-align: center; padding: 40px 0; color: #777; font-size: 14px; }
     </style>
 </head>
 <body>
 
 <header>
     <h1 class="logo">
-        <a href="index.html"><span>📷</span> ShareTheSky</a>
+        <a href="index.html">
+            <img src="https://img.icons8.com/fluency/48/cloud.png" alt="ShareTheSky Logo" class="header-logo">
+            <span>ShareTheSky</span>
+        </a>
     </h1>
     
     <div class="menu-toggle" id="mobile-menu">
@@ -87,7 +141,7 @@
 </main>
 
 <footer>
-    <p>© 2026 ShareTheSky — Created with love ♥</p>
+    <p>&copy; 2026 ShareTheSky — Created with love ♥</p>
 </footer>
 
 <script type="module">
@@ -118,7 +172,6 @@
     const galleryContainer = document.getElementById("photoGallery");
     const mySkyUserId = localStorage.getItem("mySkyUserId");
 
-    // Fetch photos ordered by date
     const q = query(collection(db, "photos"), orderBy("date", "desc"));
 
     onSnapshot(q, (snapshot) => {
@@ -135,17 +188,14 @@
             card.innerHTML = `
                 <div class="pin-image-wrapper">
                     <img src="${data.url}" class="pin-img" alt="Sky" onclick="openZoom('${data.url}')">
-                    
                     <div class="pin-top-actions">
                         <a href="${data.url}" download="SkyPhoto.jpg" target="_blank" class="action-btn" title="Download">📥</a>
                         <button class="action-btn" onclick="openZoom('${data.url}')" title="Zoom">🔍</button>
                     </div>
-
                     <button class="pin-like-overlay ${localStorage.getItem('liked_'+id) ? 'liked' : ''}" id="like-${id}">
                         ❤️ <span>${data.likes || 0}</span>
                     </button>
                 </div>
-                
                 <div class="pin-content">
                     <h3>${data.caption}</h3>
                     <div class="pin-footer">
@@ -157,15 +207,12 @@
 
             galleryContainer.appendChild(card);
 
-            // Like Logic
             card.querySelector(`#like-${id}`).onclick = async (e) => {
                 e.stopPropagation();
                 const btn = e.currentTarget;
                 const isLiked = btn.classList.contains("liked");
                 const newCount = isLiked ? (data.likes - 1) : (data.likes + 1);
-
                 await updateDoc(doc(db, "photos", id), { likes: newCount });
-
                 if (isLiked) {
                     localStorage.removeItem('liked_'+id);
                     btn.classList.remove("liked");
@@ -175,7 +222,6 @@
                 }
             };
 
-            // Delete Logic
             if (isOwner) {
                 card.querySelector(`#del-${id}`).onclick = async () => {
                     if (confirm("Delete your sky photo?")) {
@@ -186,19 +232,16 @@
         });
     });
 
-    // --- INTEGRATED ZOOM FUNCTION ---
+    // --- ZOOM LOGIC ---
     window.openZoom = (url) => {
         let currentScale = 1;
-
         const overlay = document.createElement('div');
         overlay.className = 'zoom-overlay';
         overlay.id = 'activeZoom';
-        
         overlay.innerHTML = `
             <div class="zoom-content">
                 <img src="${url}" id="zoomedImage" class="zoomed-img">
             </div>
-
             <div class="zoom-controls">
                 <button onclick="changeZoom(-0.25)" class="zoom-btn">➖</button>
                 <span id="zoomLevel">100%</span>
@@ -207,22 +250,18 @@
                 <button onclick="document.getElementById('activeZoom').remove()" class="zoom-close-btn" style="background:#6c5ce7; color:white; border:none; padding:8px 15px; border-radius:20px; cursor:pointer; font-weight:600;">Close</button>
             </div>
         `;
-        
         document.body.appendChild(overlay);
 
         window.changeZoom = (amount) => {
             const img = document.getElementById('zoomedImage');
             const zoomText = document.getElementById('zoomLevel');
             currentScale += amount;
-            
             if (currentScale < 0.5) currentScale = 0.5;
             if (currentScale > 3) currentScale = 3;
-
             img.style.transform = `scale(${currentScale})`;
             zoomText.innerText = `${Math.round(currentScale * 100)}%`;
         };
 
-        // Close on background click
         overlay.onclick = (e) => {
             if (e.target.id === 'activeZoom' || e.target.className === 'zoom-content') {
                 overlay.remove();
