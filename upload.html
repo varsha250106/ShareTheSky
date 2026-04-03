@@ -8,8 +8,56 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* Essential Dropdown & Mobile CSS (Same as Index) */
-        body { font-family: 'Inter', sans-serif; margin: 0; }
+        /* --- GLOBAL & HEADER STYLES (Synced with Index/Gallery) --- */
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .logo a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .header-logo {
+            width: 35px;
+            height: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .logo a:hover .header-logo {
+            transform: translateY(-3px) rotate(-5deg);
+        }
+
+        .logo span {
+            color: #4a4a8a;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        /* Navigation Links */
+        .nav-links { display: flex; align-items: center; gap: 20px; }
+        .nav-links a { text-decoration: none; color: #4a4a8a; font-weight: 600; transition: 0.3s; }
+        .nav-links a:hover { color: #a18cd1; }
 
         .dropdown { position: relative; display: inline-block; }
         .dropbtn {
@@ -21,6 +69,7 @@
             display: none; position: absolute; background-color: white;
             min-width: 180px; box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
             border-radius: 12px; z-index: 100; top: 100%; overflow: hidden;
+            right: 0;
         }
         .dropdown-content a {
             color: #333; padding: 12px 16px; text-decoration: none;
@@ -29,12 +78,8 @@
         .dropdown-content a:hover { background-color: #f8f6ff; color: #a18cd1; }
         .dropdown:hover .dropdown-content { display: block; }
 
-        .menu-toggle {
-            display: none; flex-direction: column; gap: 5px; cursor: pointer;
-        }
-        .menu-toggle span {
-            width: 25px; height: 3px; background-color: #a18cd1; border-radius: 3px;
-        }
+        .menu-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+        .menu-toggle span { width: 25px; height: 3px; background-color: #a18cd1; border-radius: 3px; }
 
         @media (max-width: 768px) {
             .menu-toggle { display: flex; }
@@ -42,13 +87,85 @@
                 display: none; flex-direction: column; position: absolute;
                 top: 70px; right: 20px; background: white; width: 200px;
                 padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-                z-index: 1000;
             }
             .nav-links.active { display: flex; }
-            .dropdown-content {
-                position: static; box-shadow: none; background: #f9f9f9; margin-top: 10px;
-            }
         }
+
+        /* --- UPLOAD CARD STYLES --- */
+        .center-wrapper {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .upload-card {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(15px);
+            padding: 40px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.08);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .upload-card h2 { color: #2d2d6a; margin-bottom: 25px; }
+
+        .upload-box {
+            border: 2px dashed #a18cd1;
+            border-radius: 20px;
+            padding: 40px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(161, 140, 209, 0.05);
+            margin-bottom: 20px;
+        }
+
+        .upload-box:hover {
+            background: rgba(161, 140, 209, 0.1);
+            border-color: #fbc2eb;
+        }
+
+        #captionInput {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+
+        #uploadBtn {
+            width: 100%;
+            background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 50px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(161, 140, 209, 0.3);
+            transition: 0.3s;
+        }
+
+        #uploadBtn:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(161, 140, 209, 0.4); }
+        #uploadBtn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+
+        .error-box {
+            background: #ffe5e5;
+            color: #d63031;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        footer { text-align: center; padding: 30px; color: #777; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -56,7 +173,8 @@
 <header>
     <h1 class="logo">
         <a href="index.html">
-            <span>📷</span> ShareTheSky
+            <img src="https://img.icons8.com/fluency/48/cloud.png" alt="ShareTheSky Logo" class="header-logo">
+            <span>ShareTheSky</span>
         </a>
     </h1>
     
@@ -72,7 +190,7 @@
             <button class="dropbtn">Explore ▾</button>
             <div class="dropdown-content">
                 <a href="gallery.html">Gallery</a>
-                <a href="upload.html">Upload</a>
+                <a href="upload.html" style="color: #a18cd1; font-weight: bold;">Upload</a>
                 <a href="about.html">About Me</a>
             </div>
         </div>
@@ -102,14 +220,14 @@
 </main>
 
 <footer>
-    <p>© 2026 ShareTheSky — Created with love ♥</p>
+    <p>&copy; 2026 ShareTheSky — Created with love ♥</p>
 </footer>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    // Mobile Menu Toggle Script
+    // Mobile Menu Toggle
     const menuToggle = document.getElementById('mobile-menu');
     const navList = document.getElementById('nav-list');
     if (menuToggle) {
@@ -180,7 +298,7 @@
             });
             const data = await res.json();
 
-            // AI Moderation check
+            // Cloudinary AI Moderation check
             if (data.moderation && data.moderation[0].status === "rejected") {
                 errorMessage.style.display = "block";
                 uploadBtn.disabled = false;
