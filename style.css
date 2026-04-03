@@ -539,3 +539,81 @@ footer {
     border-radius: 14px;
     cursor: pointer;
 }
+/* --- Pinterest Masonry Grid --- */
+.pinterest-grid {
+    column-count: 3; /* 3 columns for desktop */
+    column-gap: 20px;
+    padding: 20px 5%;
+    width: 100%;
+}
+
+.photo-card {
+    background: white;
+    border-radius: 20px;
+    margin-bottom: 20px; /* Space between photos vertically */
+    break-inside: avoid; /* Essential: prevents card from splitting */
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    transition: 0.3s;
+    overflow: hidden;
+}
+
+.photo-card:hover {
+    transform: translateY(-5px);
+}
+
+.photo-wrapper {
+    position: relative;
+    cursor: zoom-in;
+}
+
+.photo-wrapper img {
+    width: 100%;
+    display: block;
+    border-radius: 20px 20px 0 0;
+}
+
+.photo-info {
+    padding: 15px;
+}
+
+.photo-info h3 {
+    font-size: 0.95rem;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.photo-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    color: #999;
+}
+
+/* Like Button on Overlay */
+.like-btn {
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.like-btn.liked { color: #ff4757; }
+
+/* Responsive Grid */
+@media (max-width: 900px) { .pinterest-grid { column-count: 2; } }
+@media (max-width: 600px) { .pinterest-grid { column-count: 1; } }
+
+/* Zoom Overlay Style */
+.zoom-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.9);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 1000;
+}
+
+.zoomed-img { max-width: 90%; max-height: 90%; border-radius: 10px; }
