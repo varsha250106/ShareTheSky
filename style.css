@@ -617,3 +617,138 @@ footer {
 }
 
 .zoomed-img { max-width: 90%; max-height: 90%; border-radius: 10px; }
+/* --- Pinterest Masonry Grid --- */
+.pinterest-grid {
+    column-count: 3; /* 3 columns for desktop */
+    column-gap: 20px;
+    padding: 20px 5%;
+    width: 100%;
+}
+
+.pin-card {
+    background: white;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    break-inside: avoid; /* Stops the card from being cut in half */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    position: relative;
+}
+
+.pin-card:hover {
+    transform: translateY(-8px);
+}
+.pin-image-wrapper {
+    position: relative;
+    overflow: hidden;
+}
+
+.pin-img {
+    width: 100%;
+    display: block;
+    cursor: zoom-in;
+}
+
+/* Floating actions (Download/Zoom) */
+.pin-top-actions {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    display: flex;
+    gap: 8px;
+    opacity: 0; /* Hidden by default */
+    transition: 0.3s opacity ease;
+}
+
+.pin-card:hover .pin-top-actions {
+    opacity: 1; /* Shows up on hover */
+}
+
+.action-btn {
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    padding: 8px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Floating Like Button on Image */
+.pin-like-overlay {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.pin-like-overlay.liked {
+    color: #ff4757;
+}
+.pin-content {
+    padding: 15px;
+}
+
+.pin-content h3 {
+    font-size: 0.95rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.pin-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    color: #999;
+}
+
+.pin-delete {
+    background: transparent;
+    border: none;
+    color: #ff4757;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+/* Responsive Grid Adjustments */
+@media (max-width: 950px) {
+    .pinterest-grid { column-count: 2; }
+    .pin-top-actions { opacity: 1; } /* Buttons always visible on touch screens */
+}
+
+@media (max-width: 600px) {
+    .pinterest-grid { column-count: 1; }
+    .pin-card { margin-bottom: 15px; }
+}
+
+/* --- Full Screen Zoom Overlay --- */
+.zoom-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.95);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: zoom-out;
+}
+
+.zoomed-img {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 10px;
+    box-shadow: 0 0 30px rgba(255,255,255,0.1);
+}
