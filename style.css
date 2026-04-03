@@ -542,6 +542,14 @@ footer {
     font-size: 50px;
     cursor: pointer;
 }
+/* This keeps the logo looking like text, not a blue link */
+.logo a {
+    text-decoration: none;
+    color: inherit; /* Inherits the color you already set for .logo */
+    display: inline-block;
+}
+
+/* This makes it feel interactive when you hover over it */
 .logo a:hover {
     opacity: 0.8;
     cursor: pointer;
