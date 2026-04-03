@@ -67,22 +67,8 @@ header {
     max-width: 600px;
 }
 
-.cta-button {
-    display: inline-block;
-    background-color: #3e3efc;
-    color: white;
-    padding: 15px 35px;
-    border-radius: 12px;
-    text-decoration: none;
-    font-weight: 600;
-    box-shadow: 0 10px 25px rgba(62, 62, 252, 0.3);
-    transition: 0.3s;
-    border: none;
-    cursor: pointer;
-}
-
 /* =========================================
-   3. UPLOAD PAGE (Centered Card)
+   3. UPLOAD PAGE & UI COMPONENTS
    ========================================= */
 .upload-page {
     flex: 1;
@@ -116,13 +102,38 @@ header {
     align-items: center;
 }
 
-.input-group input {
-    width: 100%;
-    padding: 15px;
+.cta-button {
+    display: inline-block;
+    background-color: #3e3efc;
+    color: white;
+    padding: 15px 35px;
     border-radius: 12px;
-    border: 1px solid #ddd;
+    text-decoration: none;
+    font-weight: 600;
+    box-shadow: 0 10px 25px rgba(62, 62, 252, 0.3);
+    transition: 0.3s;
+    border: none;
+    cursor: pointer;
+    width: 100%; /* Full width for upload card */
+}
+
+/* AI Error Message Style */
+.error-box {
+    background: rgba(255, 77, 77, 0.12); 
+    color: #d63031;
+    padding: 15px;
+    border-radius: 15px;
+    font-size: 14px;
+    font-weight: 600;
     margin-bottom: 20px;
-    outline: none;
+    border: 1px solid rgba(214, 48, 49, 0.2);
+    animation: shake 0.4s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
 }
 
 /* =========================================
@@ -145,13 +156,11 @@ header {
     border-radius: 20px;
     overflow: hidden;
     box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-    transition: 0.3s;
 }
 
 .pin-image-wrapper { position: relative; overflow: hidden; cursor: pointer; }
 .pin-img { width: 100%; display: block; }
 
-/* Overlay Action Buttons (Zoom/Download) */
 .pin-top-actions {
     position: absolute;
     top: 15px; left: 15px;
@@ -168,35 +177,11 @@ header {
     width: 38px; height: 38px;
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    text-decoration: none;
     backdrop-filter: blur(4px);
 }
 
-.pin-like-btn {
-    position: absolute;
-    bottom: 15px; right: 15px;
-    background: white;
-    padding: 8px 15px;
-    border-radius: 25px;
-    font-weight: 600;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-}
-
 /* =========================================
-   5. ZOOM OVERLAY
-   ========================================= */
-#zoomOverlay {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.9);
-    z-index: 9999;
-    display: flex; align-items: center; justify-content: center;
-}
-
-.zoomed-image { max-width: 90%; max-height: 90%; border-radius: 12px; }
-
-/* =========================================
-   6. FOOTER & RESPONSIVE
+   5. FOOTER & RESPONSIVE
    ========================================= */
 footer { text-align: center; padding: 30px; font-size: 13px; color: #666; margin-top: auto; }
 
@@ -207,4 +192,3 @@ footer { text-align: center; padding: 30px; font-size: 13px; color: #666; margin
     .pin-top-actions { opacity: 1; }
     header { padding: 20px 5%; }
 }
-
