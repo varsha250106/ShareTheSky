@@ -1,20 +1,156 @@
-<div class="about-content">
-    <p>
-        Welcome to my corner of the internet! I built <strong>ShareTheSky</strong> because 
-        I believe that no matter where we are in the world, we all share the same sky.
-    </p>
-    
-    <h3>Get in Touch 📩</h3>
-    <p>For any enquiries or collaborations, feel free to reach out:</p>
-    
-    <div class="contact-info">
-        <p>📧 <strong>Email:</strong> <a href="mailto:your-email@example.com">varshasv2516@gmail.com</a></p>
-        <p>🔗 <strong>LinkedIn:</strong> <a href="https://linkedin.com/in/yourprofile" target="_blank">www.linkedin.com/in/varsha-sv</a></p>
-        <p>💻 <strong>GitHub:</strong> <a href="https://github.com/varsha250106" target="_blank">github.com/varsha250106</a></p>
-    </div>
-    <div class="skills-tag">
-        <span>Web Development</span>
-        <span>UI Design</span>
-        <span>Sky Enthusiast</span>
-    </div>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Me - ShareTheSky</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Internal CSS to ensure the card looks perfect immediately */
+        .about-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 20px;
+            min-height: 80vh;
+        }
+
+        .about-card {
+            background: white;
+            padding: 40px;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            max-width: 550px;
+            width: 100%;
+            text-align: center;
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .profile-pic {
+            font-size: 50px;
+            background: #f3f3f3;
+            width: 100px;
+            height: 100px;
+            line-height: 100px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+        }
+
+        .subtitle {
+            color: #a18cd1;
+            font-weight: bold;
+            margin-top: -10px;
+            margin-bottom: 25px;
+        }
+
+        .about-content {
+            text-align: left;
+            line-height: 1.7;
+            color: #333;
+        }
+
+        .contact-info {
+            background: #f8f6ff;
+            padding: 15px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border-left: 5px solid #a18cd1;
+        }
+
+        .contact-info p {
+            margin: 10px 0;
+            font-size: 15px;
+        }
+
+        .contact-info a {
+            color: #a18cd1;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .skills-tag {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .skills-tag span {
+            background: #eee;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .main-upload-btn {
+            background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 30px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 25px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1 class="logo">
+        <a href="index.html">
+            <span class="logo-icon"></span>
+            ShareTheSky
+        </a>
+    </h1>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="upload.html">Upload</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="about.html">About Me</a>
+    </nav>
+</header>
+
+<main class="about-container">
+    <section class="about-card">
+        <div class="profile-pic">👩‍💻</div> 
+        
+        <h2>Hi, I'm Varsha 👋</h2>
+        <p class="subtitle">Creator of ShareTheSky</p>
+        
+        <div class="about-content">
+            <p>
+                Welcome to my corner of the internet! I built <strong>ShareTheSky</strong> because 
+                I believe that no matter where we are in the world, we all share the same sky.
+            </p>
+            
+            <h3>Get in Touch 📩</h3>
+            <p>For any enquiries or collaborations, feel free to reach out:</p>
+            
+            <div class="contact-info">
+                <p>📧 <strong>Email:</strong> <a href="mailto:varshara2516@gmail.com">varshara2516@gmail.com</a></p>
+                <p>🔗 <strong>LinkedIn:</strong> <a href="https://linkedin.com/in/varsha-ra" target="_blank">View Profile</a></p>
+                <p>💻 <strong>GitHub:</strong> <a href="https://github.com/varsha250106" target="_blank">varsha250106</a></p>
+            </div>
+
+            <div class="skills-tag">
+                <span>Web Development</span>
+                <span>UI Design</span>
+                <span>Sky Enthusiast</span>
+            </div>
+        </div>
+
+        <a href="gallery.html" class="main-upload-btn" style="text-decoration:none;">Explore the Gallery</a>
+    </section>
+</main>
+
+</body>
+</html>
