@@ -47,9 +47,20 @@
 </main>
 
 <script type="module">
+    // 1. Firebase Imports
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
+    // --- NEW: MOBILE MENU LOGIC ---
+    const menuToggle = document.getElementById('mobile-menu');
+    const navList = document.getElementById('nav-list');
+    if (menuToggle) {
+        menuToggle.addEventListener('click', () => {
+            navList.classList.toggle('active');
+        });
+    }
+
+    // 2. Firebase Configuration
     const firebaseConfig = {
         apiKey: "AIzaSyDxgtNzywhjYGR7R2XMVobR73-SioT6v98",
         authDomain: "sharethesky-a9c7d.firebaseapp.com",
@@ -62,12 +73,15 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    // 🆔 Get/Set Unique Browser ID
     let mySkyUserId = localStorage.getItem("mySkyUserId") || "user_" + Math.random().toString(36).substr(2, 9);
     localStorage.setItem("mySkyUserId", mySkyUserId);
 
+    // ☁️ Cloudinary Config
     const cloudName = "dqpmybazh";
     const uploadPreset = "sharethesky";
 
+    // 3. UI Elements
     const fileInput = document.getElementById("fileInput");
     const previewImage = document.getElementById("previewImage");
     const uploadText = document.getElementById("uploadText");
@@ -75,6 +89,7 @@
 
     const skyNames = ["Infinite Azure", "Cotton Candy Clouds", "Golden Hour Glow", "Midnight Whisper", "Painted Horizon", "Celestial Canvas", "Eternal Blue", "Sun-Kissed Stratus", "Twilight Magic", "Dreamy Overcast", "Velvet Dusk", "Ocean in the Sky"];
 
+    // 4. File Selection Preview
     fileInput.addEventListener("change", function() {
         const file = this.files[0];
         if (file) {
@@ -85,6 +100,7 @@
         }
     });
 
+    // 5. Upload Handler
     uploadBtn.addEventListener("click", async () => {
         const file = fileInput.files[0];
         if (!file) return alert("Please select a sky photo first!");
@@ -108,20 +124,17 @@
             });
             
             const data = await res.json();
-            console.log("Full Cloudinary Data:", data); // View this in F12 -> Console
 
             // --- STRICT MODERATION LOGIC ---
             let isSafe = true;
-
             if (data.moderation && data.moderation.length > 0) {
-                // If status is NOT 'approved', it's a fail
                 if (data.moderation[0].status !== "approved") {
                     isSafe = false;
                 }
             }
 
             if (!isSafe) {
-                alert("☁️ Sky Check Failed: Our AI flagged this image as inappropriate. Please share a real sky!");
+                alert("☁️ Sky Check Failed: AI flagged this image. Please share a real sky!");
                 uploadBtn.disabled = false;
                 uploadBtn.innerText = "Share the Sky";
                 return; 
@@ -134,7 +147,7 @@
                 return;
             }
 
-            // ONLY SAVES IF SAFE
+            // Save to Firestore
             await addDoc(collection(db, "photos"), {
                 url: data.secure_url,
                 caption: userCaption,
@@ -150,9 +163,4 @@
             console.error(err);
             alert("Connection error. Try again!");
             uploadBtn.disabled = false;
-            uploadBtn.innerText = "Share the Sky";
-        }
-    });
-</script>
-</body>
-</html>
+            uploadBtn.innerText
