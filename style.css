@@ -4074,3 +4074,33 @@ header {
     
     .dropdown-content::before { display: none; } /* Remove desktop bridge */
 }
+@media (max-width: 768px) {
+    /* Ensure the header can expand to fit the menu */
+    header {
+        flex-wrap: wrap; /* Allows menu to move to a new line */
+        position: relative;
+    }
+
+    /* Update nav-links to push content down instead of covering it */
+    .nav-links {
+        display: none; 
+        width: 100%; /* Take full width below the logo */
+        flex-direction: column;
+        background: white;
+        text-align: center;
+        padding: 20px 0;
+        border-top: 1px solid #eee;
+        /* Change from 'absolute' to 'static' or 'relative' to push content */
+        position: relative; 
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+
+    /* Make the hero section push down smoothly */
+    .hero {
+        padding-top: 20px;
+        transition: margin-top 0.3s ease;
+    }
+}
