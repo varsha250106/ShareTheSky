@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sky Match - ShareTheSky</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sky Collector - ShareTheSky</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -11,312 +11,230 @@
             --secondary: #fbc2eb;
             --dark: #2d2d6a;
             --bg: #f8f9fc;
+            --gold: #ffd700;
         }
 
         body { 
             margin: 0; font-family: 'Segoe UI', sans-serif; 
             background-color: var(--bg); color: var(--dark);
-            display: flex; flex-direction: column; min-height: 100vh;
+            min-height: 100vh; overflow-x: hidden; overscroll-behavior-y: contain; 
         }
 
-        /* --- NAVIGATION: EXACT HOME PAGE STYLE --- */
         header {
             display: flex; justify-content: space-between; align-items: center; 
             padding: 12px 5%; background: white; box-shadow: 0 2px 15px rgba(0,0,0,0.05);
-            position: sticky; top: 0; z-index: 1000;
         }
-        
-        /* LOGO ANIMATION */
-        .logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
-        .logo img { 
-            width: 30px; 
-            animation: float 3s ease-in-out infinite; 
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-        .logo span { font-weight: 800; font-size: 1.2rem; color: var(--dark); }
 
-        .nav-links { display: flex; align-items: center; gap: 25px; }
-        .nav-links a { text-decoration: none; color: #444; font-weight: 600; font-size: 0.95rem; }
-        
-        .dropdown { position: relative; display: inline-block; }
-        .drop-btn { cursor: pointer; color: #444; font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 5px; }
-        
-        .dropdown-content {
-            display: none; position: absolute; right: 0; background-color: white;
-            min-width: 150px; box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            border-radius: 12px; overflow: hidden; z-index: 1001; margin-top: 10px;
-        }
-        .dropdown-content a {
-            color: #444; padding: 12px 16px; text-decoration: none;
-            display: flex; align-items: center; justify-content: space-between; font-size: 0.9rem;
-        }
-        .dropdown-content a:hover { background-color: #f8f9fc; color: var(--primary); }
-        .dropdown:hover .dropdown-content { display: block; }
-
-        /* --- LAYOUT --- */
         .main-container {
-            display: flex; padding: 20px 5%; gap: 30px; flex: 1; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box;
+            display: grid; grid-template-columns: 300px 1fr; gap: 40px;
+            padding: 20px 5%; max-width: 1200px; margin: 0 auto;
         }
 
-        .sidebar { width: 300px; display: flex; flex-direction: column; gap: 20px; flex-shrink: 0; }
-        .card-panel { background: white; padding: 22px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
-        
-        .stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-        .stat-pill { background: #fcfaff; padding: 12px; border-radius: 15px; text-align: center; border: 1px solid #f0edff; }
-        .stat-pill span { display: block; font-size: 1.3rem; font-weight: 800; color: var(--primary); }
-
-        /* RULE HOVER EFFECT */
-        .rule-item { 
-            display: flex; align-items: flex-start; gap: 12px; padding: 10px; 
-            border-radius: 12px; margin-bottom: 8px; transition: all 0.3s ease;
-            cursor: default;
+        /* --- UI ELEMENTS --- */
+        .sidebar { display: flex; flex-direction: column; gap: 20px; }
+        .dashboard-card {
+            background: white; border-radius: 20px; padding: 25px;
+            text-align: center; box-shadow: 0 8px 30px rgba(0,0,0,0.02);
+            border: 1.5px solid #f0edff;
         }
-        .rule-item:hover {
-            background-color: #f4f0ff;
-            transform: translateX(5px);
+
+        /* The Light Meter Styling */
+        .meter-container {
+            width: 100%; height: 12px; background: #eee; border-radius: 10px;
+            margin-top: 10px; overflow: hidden;
         }
-        .rule-icon { 
-            width: 32px; height: 32px; background: #f4f0ff; color: var(--primary); 
-            display: flex; align-items: center; justify-content: center; 
-            border-radius: 10px; font-size: 0.9rem; flex-shrink: 0; 
-            transition: transform 0.3s ease;
+        #lightMeter {
+            width: 100%; height: 100%; background: linear-gradient(90deg, #fbc2eb, #a18cd1);
+            transition: width 0.2s;
         }
-        .rule-item:hover .rule-icon { transform: scale(1.1); }
-        .rule-text h4 { margin: 0; font-size: 0.9rem; color: var(--dark); }
-        .rule-text p { margin: 0; font-size: 0.75rem; color: #777; line-height: 1.4; }
 
-        .game-section { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-        .game-card { background: white; width: 100%; border-radius: 28px; padding: 25px; box-shadow: 0 15px 50px rgba(0,0,0,0.02); display: flex; flex-direction: column; align-items: center; }
-
-        .btn-group { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; }
-        .mode-btn { padding: 9px 16px; border-radius: 10px; border: 2.5px solid #f0f0f0; background: white; cursor: pointer; font-weight: 700; color: #666; font-size: 0.85rem; transition: 0.3s; }
-        .mode-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
-        .restart-btn { border-color: #ff9a9e; color: #ff9a9e; }
-
-        .memory-grid { display: grid; gap: 10px; width: 100%; margin: 0 auto; perspective: 1000px; }
-        .grid-small { max-width: 420px; }
-        
-        .card { position: relative; transform-style: preserve-3d; transition: 0.6s; cursor: pointer; aspect-ratio: 1/1; }
-        .card.flipped { transform: rotateY(180deg); }
-        .card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 10px; }
-        .card-front { background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; color: white; }
-        .card-back { background: #fff; transform: rotateY(180deg); display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1.5px solid #eee; }
-        .card-back img { width: 100%; height: 100%; object-fit: cover; }
-
-        @media (max-width: 900px) {
-            .main-container { flex-direction: column; padding: 15px; }
-            .sidebar { width: 100%; order: 2; }
-            .game-section { order: 1; }
+        .game-section { 
+            background: white; border-radius: 30px; padding: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.03); display: flex; 
+            flex-direction: column; align-items: center; position: relative;
         }
+
+        .canvas-area { position: relative; width: 100%; max-width: 350px; aspect-ratio: 7/10; }
+        #gameCanvas { background: linear-gradient(to bottom, #2d2d6a 0%, #a18cd1 100%); border-radius: 20px; width: 100%; height: 100%; display: block; touch-action: none; }
+
+        #overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(45, 45, 106, 0.9); border-radius: 20px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            color: white; z-index: 10; text-align: center; padding: 20px;
+        }
+
+        .btn-action {
+            background: white; color: var(--primary); border: none; padding: 15px 45px;
+            border-radius: 50px; font-weight: 800; cursor: pointer; margin-top: 20px;
+        }
+
+        @media (max-width: 900px) { .main-container { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
 <header>
-    <a href="index.html" class="logo">
-        <img src="https://img.icons8.com/fluency/48/cloud.png" alt="Cloud">
+    <a href="#" class="logo">
+        <img src="https://img.icons8.com/fluency/48/star.png" width="30">
         <span>ShareTheSky</span>
     </a>
-    <nav class="nav-links">
-        <a href="index.html">Home</a>
-        <div class="dropdown">
-            <div class="drop-btn">Explore <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem;"></i></div>
-            <div class="dropdown-content">
-                <a href="gallery.html">Gallery</a>
-                <a href="upload.html">Upload</a>
-                <a href="skymatch.html">Sky Match <i class="fa-solid fa-gamepad" style="font-size: 0.8rem;"></i></a>
-                <a href="cloudhopper.html">Cloud Hopper <i class="fa-solid fa-cloud-bolt"></i></a>
-                <a href="about.html">About Me</a>
-            </div>
-        </div>
-    </nav>
 </header>
 
 <div class="main-container">
     <div class="sidebar">
-        <div class="card-panel">
-            <h3 style="margin:0">Dashboard</h3>
-            <div class="stat-row">
-                <div class="stat-pill">Moves<span id="moves">0</span></div>
-                <div class="stat-pill">Matches<span id="matches">0</span></div>
-            </div>
+        <div class="dashboard-card">
+            <div style="font-size: 0.8rem; font-weight: 700; opacity: 0.7;">LIGHT ENERGY</div>
+            <div class="meter-container"><div id="lightMeter"></div></div>
         </div>
-
-        <div class="card-panel">
-            <h3 style="margin:0 0 12px 0">How to Play</h3>
-            <div class="rule-item">
-                <div class="rule-icon"><i class="fa-solid fa-clone"></i></div>
-                <div class="rule-text"><h4>Find Pairs</h4><p>Match identical sky photos.</p></div>
-            </div>
-            <div class="rule-item">
-                <div class="rule-icon"><i class="fa-solid fa-bolt"></i></div>
-                <div class="rule-text"><h4>Thunder</h4><p>Resets unmatched flips.</p></div>
-            </div>
-            <div class="rule-item">
-                <div class="rule-icon"><i class="fa-solid fa-eye"></i></div>
-                <div class="rule-text"><h4>Vision</h4><p>Briefly shows all cards.</p></div>
-            </div>
+        <div class="dashboard-card">
+            <div style="font-size: 0.8rem; font-weight: 700; opacity: 0.7;">FRAGMENTS</div>
+            <div style="font-size: 2rem; font-weight: 800; color: var(--primary);" id="fragCount">0</div>
         </div>
     </div>
 
     <div class="game-section">
-        <div class="game-card">
-            <h2 style="margin:0 0 20px 0; font-size: 1.6rem;">Sky Match</h2>
-            <div class="btn-group">
-                <button class="mode-btn" id="btn-4" onclick="initGame(4, 4)">4×4</button>
-                <button class="mode-btn" id="btn-6" onclick="initGame(6, 6)">6×6</button>
-                <button class="mode-btn" id="btn-8" onclick="initGame(8, 7)">8×7</button>
-                <button class="mode-btn restart-btn" onclick="restartGame()"><i class="fa-solid fa-rotate-right"></i> Restart</button>
+        <h2 style="margin: 0 0 15px 0;">Sky Collector</h2>
+        <div class="canvas-area">
+            <div id="overlay">
+                <h2>Collect the Stars!</h2>
+                <p>Don't let your light run out.</p>
+                <button class="btn-action" id="startBtn">START</button>
             </div>
-            <div id="game-grid"></div>
+            <canvas id="gameCanvas" width="350" height="500"></canvas>
         </div>
     </div>
 </div>
 
-<script type="module">
-    // Firebase Integration
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, getDocs, limit, query } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const overlay = document.getElementById('overlay');
 
-    const firebaseConfig = { 
-        apiKey: "AIzaSyDxgtNzywhjYGR7R2XMVobR73-SioT6v98", 
-        projectId: "sharethesky-a9c7d",
-        authDomain: "sharethesky-a9c7d.firebaseapp.com", 
-        storageBucket: "sharethesky-a9c7d.appspot.com"
+    let gameRunning = false;
+    let light = 100;
+    let fragments = 0;
+    let player = { x: 155, y: 350, w: 40, h: 30, vx: 0, vy: 0, jump: -10, grav: 0.35 };
+    let platforms = [];
+    let stars = [];
+
+    // Controls
+    let keys = {};
+    window.onkeydown = e => keys[e.code] = true;
+    window.onkeyup = e => keys[e.code] = false;
+    canvas.addEventListener('touchstart', e => {
+        const rect = canvas.getBoundingClientRect();
+        const touchX = e.touches[0].clientX - rect.left;
+        keys[touchX < rect.width/2 ? 'ArrowLeft' : 'ArrowRight'] = true;
+    });
+    canvas.addEventListener('touchend', () => { keys['ArrowLeft'] = false; keys['ArrowRight'] = false; });
+
+    function spawnPlatform(y) {
+        let px = Math.random() * (canvas.width - 70);
+        platforms.push({ x: px, y: y, w: 70, h: 12 });
+        
+        // 40% chance to spawn a star on this platform
+        if (Math.random() > 0.6) {
+            stars.push({ x: px + 25, y: y - 25, size: 10, gathered: false });
+        }
+    }
+
+    function init() {
+        platforms = []; stars = []; light = 100; fragments = 0;
+        player.x = 155; player.y = 350; player.vy = 0;
+        platforms.push({ x: 140, y: 420, w: 70, h: 12 });
+        for (let i = 0; i < 7; i++) spawnPlatform(i * 75);
+    }
+
+    function loop() {
+        if (!gameRunning) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Light Decay
+        light -= 0.15;
+        document.getElementById('lightMeter').style.width = light + "%";
+        if (light <= 0) gameOver("Out of Light!");
+
+        // Player Physics
+        player.vy += player.grav;
+        player.y += player.vy;
+        if (keys['ArrowLeft']) player.vx = -5;
+        else if (keys['ArrowRight']) player.vx = 5;
+        else player.vx *= 0.85;
+        player.x += player.vx;
+
+        // Wrap
+        if (player.x < -player.w) player.x = canvas.width;
+        if (player.x > canvas.width) player.x = -player.w;
+
+        // Draw Platforms
+        platforms.forEach((p, i) => {
+            ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+            ctx.fillRect(p.x, p.y, p.w, p.h);
+
+            // Collision
+            if (player.vy > 0 && player.x < p.x + p.w && player.x + player.w > p.x && 
+                player.y + player.h > p.y && player.y + player.h < p.y + p.h + 15) {
+                player.vy = player.jump;
+            }
+
+            // Scroll
+            if (player.y < 250) {
+                let diff = 250 - player.y;
+                player.y += diff;
+                p.y += diff;
+                stars.forEach(s => s.y += diff);
+                if (p.y > canvas.height) { platforms.splice(i, 1); spawnPlatform(0); }
+            }
+        });
+
+        // Draw Stars
+        stars.forEach((s, i) => {
+            if (!s.gathered) {
+                ctx.fillStyle = "#ffd700";
+                ctx.shadowBlur = 15; ctx.shadowColor = "#ffd700";
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, 6, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0; // Reset shadow
+
+                // Collection Logic
+                let dx = player.x + 20 - s.x;
+                let dy = player.y + 15 - s.y;
+                if (Math.sqrt(dx*dx + dy*dy) < 30) {
+                    s.gathered = true;
+                    light = Math.min(100, light + 15);
+                    fragments++;
+                    document.getElementById('fragCount').innerText = fragments;
+                }
+            }
+            if (s.y > canvas.height) stars.splice(i, 1);
+        });
+
+        // Draw Player (Cloud)
+        ctx.fillStyle = "white";
+        ctx.beginPath();
+        ctx.arc(player.x+10, player.y+15, 12, 0, Math.PI*2);
+        ctx.arc(player.x+20, player.y+10, 15, 0, Math.PI*2);
+        ctx.arc(player.x+30, player.y+15, 12, 0, Math.PI*2);
+        ctx.fill();
+
+        if (player.y > canvas.height) gameOver("Fell from the sky!");
+        requestAnimationFrame(loop);
+    }
+
+    function gameOver(msg) {
+        gameRunning = false;
+        overlay.style.display = 'flex';
+        overlay.innerHTML = `<h2>${msg}</h2><p>Stars: ${fragments}</p><button class="btn-action" onclick="location.reload()">RETRY</button>`;
+    }
+
+    document.getElementById('startBtn').onclick = () => {
+        overlay.style.display = 'none';
+        gameRunning = true;
+        init();
+        loop();
     };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    let flipped = [], moves = 0, matches = 0, isLock = false, totalPairs = 0, currentCols = 4, currentRows = 4;
-
-    // --- Initialize Game Grid ---
-    async function initGame(cols = 4, rows = 4) {
-        currentCols = cols; currentRows = rows;
-        
-        // UI Updates for Buttons
-        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-        const btnId = `btn-${cols}`;
-        if(document.getElementById(btnId)) document.getElementById(btnId).classList.add('active');
-
-        const grid = document.getElementById('game-grid');
-        grid.className = `memory-grid ${cols === 4 ? 'grid-small' : ''}`;
-        grid.innerHTML = "<p style='grid-column: 1/-1; text-align:center;'>Fetching the sky...</p>";
-        
-        // Reset Dashboard
-        moves = 0; matches = 0; flipped = []; isLock = false;
-        document.getElementById('moves').innerText = "0";
-        document.getElementById('matches').innerText = "0";
-
-        const totalCards = cols * rows;
-        const powerCount = cols === 8 ? 4 : 2; 
-        totalPairs = Math.floor((totalCards - powerCount) / 2);
-
-        try {
-            // Load images from Firebase
-            const snap = await getDocs(query(collection(db, "photos"), limit(totalPairs)));
-            let photos = []; 
-            snap.forEach(doc => photos.push(doc.data().url));
-
-            // Create Deck with Pairs and Power-ups
-            let deck = [...photos, ...photos].map(url => ({ type: 'photo', val: url }));
-            const powers = ['fa-bolt', 'fa-eye'];
-            
-            while(deck.length < totalCards) {
-                deck.push({ type: 'power', val: powers[deck.length % 2] });
-            }
-
-            // Shuffle and Render Grid
-            deck.sort(() => Math.random() - 0.5);
-            grid.innerHTML = "";
-            grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-
-            deck.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.dataset.type = item.type; 
-                card.dataset.val = item.val;
-                card.innerHTML = `
-                    <div class="card-front"><i class="fa-solid fa-cloud"></i></div>
-                    <div class="card-back">
-                        ${item.type === 'photo' ? `<img src="${item.val}">` : `<i class="fa-solid ${item.val}" style="color:gold; font-size: 2rem;"></i>`}
-                    </div>`;
-                card.onclick = handleFlip;
-                grid.appendChild(card);
-            });
-        } catch (error) {
-            grid.innerHTML = "<p>Failed to load photos. Please try again.</p>";
-        }
-    }
-
-    // --- Card Interaction Logic ---
-    function handleFlip() {
-        if (isLock || this.classList.contains('flipped') || this.dataset.done) return;
-        this.classList.add('flipped');
-
-        // Logic for Thunder and Vision Powers
-        if (this.dataset.type === 'power') {
-            isLock = true;
-            setTimeout(() => {
-                if (this.dataset.val === 'fa-bolt') {
-                    // Thunder Reset
-                    document.querySelectorAll('.card.flipped:not([data-done])').forEach(c => c.classList.remove('flipped'));
-                } else {
-                    // Vision Reveal
-                    const hidden = document.querySelectorAll('.card:not(.flipped)');
-                    hidden.forEach(c => c.classList.add('flipped'));
-                    setTimeout(() => {
-                        hidden.forEach(c => { if(!c.dataset.done) c.classList.remove('flipped'); });
-                    }, 1200);
-                }
-                this.style.opacity = "0.4"; 
-                this.dataset.done = "true"; 
-                isLock = false;
-            }, 600);
-            return;
-        }
-
-        flipped.push(this);
-        if (flipped.length === 2) {
-            moves++; 
-            document.getElementById('moves').innerText = moves;
-            isLock = true;
-            
-            const [c1, c2] = flipped;
-            if (c1.dataset.val === c2.dataset.val) {
-                // Match Found
-                matches++; 
-                document.getElementById('matches').innerText = matches;
-                c1.dataset.done = "true"; 
-                c2.dataset.done = "true";
-                flipped = []; 
-                isLock = false;
-
-                // Updated Win Message
-                if (matches === totalPairs) {
-                    setTimeout(() => {
-                        alert(`✨ Sky Clear! ✨\n\nAmazing job! You matched all the clouds in ${moves} moves.`);
-                    }, 500);
-                }
-            } else {
-                // No Match Found
-                setTimeout(() => { 
-                    c1.classList.remove('flipped'); 
-                    c2.classList.remove('flipped'); 
-                    flipped = []; 
-                    isLock = false; 
-                }, 800);
-            }
-        }
-    }
-
-    // --- Global Controls ---
-    window.restartGame = () => initGame(currentCols, currentRows);
-    window.initGame = initGame;
-    window.onload = () => initGame(4, 4);
 </script>
 </body>
 </html>
