@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="style.css">
     
     <style>
-        /* --- GLOBAL & HEADER STYLES (Synced with Index) --- */
+        /* --- GLOBAL & HEADER STYLES --- */
         body { 
             font-family: 'Inter', sans-serif; 
             margin: 0; 
@@ -35,48 +35,119 @@
             text-decoration: none;
         }
 
-        .header-logo {
-            width: 35px;
-            height: auto;
-            transition: transform 0.3s ease;
-        }
+        .header-logo { width: 35px; height: auto; transition: transform 0.3s ease; }
+        .logo a:hover .header-logo { transform: translateY(-3px) rotate(-5deg); }
+        .logo span { color: #4a4a8a; font-size: 1.5rem; font-weight: 700; }
 
-        .logo a:hover .header-logo {
-            transform: translateY(-3px) rotate(-5deg);
-        }
-
-        .logo span {
-            color: #4a4a8a;
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
-        /* Navigation Links Styling */
         .nav-links { display: flex; align-items: center; gap: 20px; }
         .nav-links a { text-decoration: none; color: #4a4a8a; font-weight: 600; transition: 0.3s; }
         .nav-links a:hover { color: #a18cd1; }
-        
-        /* Highlight Gallery link */
         .nav-links a[href="gallery.html"] { color: #a18cd1; border-bottom: 2px solid #a18cd1; }
 
-        .dropdown { position: relative; display: inline-block; }
-        .dropbtn {
-            background: none; border: none; color: #4a4a8a;
-            font-size: 16px; font-weight: 600; cursor: pointer;
-            padding: 10px 15px; font-family: inherit;
+        /* --- RESPONSIVE PINTEREST GRID --- */
+        .pinterest-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            padding: 20px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
         }
-        .dropdown-content {
-            display: none; position: absolute; background-color: white;
-            min-width: 180px; box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
-            border-radius: 12px; z-index: 100; top: 100%; overflow: hidden;
-            right: 0;
+
+        .pin-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
         }
-        .dropdown-content a {
-            color: #333; padding: 12px 16px; text-decoration: none;
-            display: block; font-size: 14px; transition: background 0.2s;
+
+        .pin-card:hover { transform: translateY(-5px); }
+
+        .pin-image-wrapper {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4 / 5;
+            overflow: hidden;
+            background: #eee;
         }
-        .dropdown-content a:hover { background-color: #f8f6ff; color: #a18cd1; }
-        .dropdown:hover .dropdown-content { display: block; }
+
+        .pin-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            cursor: zoom-in;
+        }
+
+        /* Fixed Action Buttons - Top Right */
+        .pin-top-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .action-btn {
+            background: white;
+            border: none;
+            padding: 8px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        /* Fixed Like Overlay - Bottom Right */
+        .pin-like-overlay {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            padding: 8px 14px;
+            border-radius: 25px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            z-index: 10;
+        }
+
+        .pin-like-overlay.liked {
+            background: #ff4757 !important;
+            color: white !important;
+        }
+
+        .pin-content { padding: 15px; }
+        .pin-content h3 { margin: 0 0 8px 0; font-size: 1.1rem; color: #2d2d6a; }
+        .pin-footer { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: #888; }
+
+        .pin-delete {
+            background: #fff0f0;
+            color: #ff4757;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 600px) {
+            .pinterest-grid { grid-template-columns: 1fr; padding: 10px 20px; }
+            .pin-image-wrapper { aspect-ratio: 1 / 1; }
+        }
 
         .menu-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
         .menu-toggle span { width: 25px; height: 3px; background-color: #a18cd1; border-radius: 3px; }
@@ -90,16 +161,6 @@
             }
             .nav-links.active { display: flex; }
         }
-
-        /* --- GALLERY HEADER --- */
-        .gallery-header {
-            text-align: center;
-            padding: 60px 20px;
-        }
-        .gallery-header h2 { font-size: 2.5rem; color: #2d2d6a; margin-bottom: 10px; }
-        .gallery-header p { color: #666; font-size: 1.1rem; }
-
-        footer { text-align: center; padding: 40px 0; color: #777; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -111,53 +172,29 @@
             <span>ShareTheSky</span>
         </a>
     </h1>
-    
-    <div class="menu-toggle" id="mobile-menu">
-        <span></span>
-        <span></span>
-        <span></span>
-    </div>
-
+    <div class="menu-toggle" id="mobile-menu"><span></span><span></span><span></span></div>
     <nav class="nav-links" id="nav-list">
         <a href="index.html">Home</a>
-        <div class="dropdown">
-            <button class="dropbtn">Explore ▾</button>
-            <div class="dropdown-content">
-                <a href="gallery.html">Gallery</a>
-                <a href="upload.html">Upload</a>
-                <a href="about.html">About Me</a>
-            </div>
-        </div>
+        <a href="gallery.html">Gallery</a>
+        <a href="upload.html">Upload</a>
+        <a href="about.html">About Me</a>
     </nav>
 </header>
 
 <main class="gallery-container">
-    <section class="gallery-header">
-        <h2>Community Sky Gallery ☁️</h2>
-        <p>Explore the beauty of the world, one sky at a time.</p>
+    <section class="gallery-header" style="text-align: center; padding: 40px 20px;">
+        <h2 style="font-size: 2.2rem; color: #2d2d6a;">Community Sky Gallery ☁️</h2>
+        <p style="color: #666;">Explore the beauty of the world, one sky at a time.</p>
     </section>
-
     <div id="photoGallery" class="pinterest-grid"></div>
 </main>
 
-<footer>
-    <p>&copy; 2026 ShareTheSky — Created with love ♥</p>
-</footer>
+<footer><p>&copy; 2026 ShareTheSky — Created with love ♥</p></footer>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    // --- MOBILE MENU LOGIC ---
-    const menuToggle = document.getElementById('mobile-menu');
-    const navList = document.getElementById('nav-list');
-    if (menuToggle) {
-        menuToggle.addEventListener('click', () => {
-            navList.classList.toggle('active');
-        });
-    }
-
-    // --- FIREBASE CONFIG ---
     const firebaseConfig = {
         apiKey: "AIzaSyDxgtNzywhjYGR7R2XMVobR73-SioT6v98",
         authDomain: "sharethesky-a9c7d.firebaseapp.com",
@@ -172,27 +209,30 @@
     const galleryContainer = document.getElementById("photoGallery");
     const mySkyUserId = localStorage.getItem("mySkyUserId");
 
+    // Mobile Menu
+    document.getElementById('mobile-menu').onclick = () => document.getElementById('nav-list').classList.toggle('active');
+
     const q = query(collection(db, "photos"), orderBy("date", "desc"));
 
     onSnapshot(q, (snapshot) => {
         galleryContainer.innerHTML = ""; 
-        
         snapshot.forEach((docSnap) => {
             const data = docSnap.data();
             const id = docSnap.id;
             const isOwner = data.uploaderId === mySkyUserId;
+            const likedKey = 'liked_' + id;
+            const isCurrentlyLiked = localStorage.getItem(likedKey) === "true";
 
             const card = document.createElement("div");
             card.className = "pin-card";
-
             card.innerHTML = `
                 <div class="pin-image-wrapper">
                     <img src="${data.url}" class="pin-img" alt="Sky" onclick="openZoom('${data.url}')">
                     <div class="pin-top-actions">
-                        <a href="${data.url}" download="SkyPhoto.jpg" target="_blank" class="action-btn" title="Download">📥</a>
-                        <button class="action-btn" onclick="openZoom('${data.url}')" title="Zoom">🔍</button>
+                        <a href="${data.url}" download="SkyPhoto.jpg" target="_blank" class="action-btn">📥</a>
+                        <button class="action-btn" onclick="openZoom('${data.url}')">🔍</button>
                     </div>
-                    <button class="pin-like-overlay ${localStorage.getItem('liked_'+id) ? 'liked' : ''}" id="like-${id}">
+                    <button class="pin-like-overlay ${isCurrentlyLiked ? 'liked' : ''}" id="like-${id}">
                         ❤️ <span>${data.likes || 0}</span>
                     </button>
                 </div>
@@ -207,66 +247,42 @@
 
             galleryContainer.appendChild(card);
 
+            // FIXED LIKE LOGIC
             card.querySelector(`#like-${id}`).onclick = async (e) => {
                 e.stopPropagation();
                 const btn = e.currentTarget;
-                const isLiked = btn.classList.contains("liked");
-                const newCount = isLiked ? (data.likes - 1) : (data.likes + 1);
-                await updateDoc(doc(db, "photos", id), { likes: newCount });
-                if (isLiked) {
-                    localStorage.removeItem('liked_'+id);
+                const hasAlreadyLiked = localStorage.getItem(likedKey) === "true";
+                let currentLikes = data.likes || 0;
+                let newCount;
+
+                if (hasAlreadyLiked) {
+                    newCount = Math.max(0, currentLikes - 1);
+                    localStorage.removeItem(likedKey);
                     btn.classList.remove("liked");
                 } else {
-                    localStorage.setItem('liked_'+id, "true");
+                    newCount = currentLikes + 1;
+                    localStorage.setItem(likedKey, "true");
                     btn.classList.add("liked");
                 }
+
+                await updateDoc(doc(db, "photos", id), { likes: newCount });
             };
 
             if (isOwner) {
                 card.querySelector(`#del-${id}`).onclick = async () => {
-                    if (confirm("Delete your sky photo?")) {
-                        await deleteDoc(doc(db, "photos", id));
-                    }
+                    if (confirm("Delete your sky photo?")) await deleteDoc(doc(db, "photos", id));
                 };
             }
         });
     });
 
-    // --- ZOOM LOGIC ---
+    // Zoom Function
     window.openZoom = (url) => {
-        let currentScale = 1;
         const overlay = document.createElement('div');
-        overlay.className = 'zoom-overlay';
-        overlay.id = 'activeZoom';
-        overlay.innerHTML = `
-            <div class="zoom-content">
-                <img src="${url}" id="zoomedImage" class="zoomed-img">
-            </div>
-            <div class="zoom-controls">
-                <button onclick="changeZoom(-0.25)" class="zoom-btn">➖</button>
-                <span id="zoomLevel">100%</span>
-                <button onclick="changeZoom(0.25)" class="zoom-btn">➕</button>
-                <div style="width:1px; height:25px; background:#ddd; margin:0 10px;"></div>
-                <button onclick="document.getElementById('activeZoom').remove()" class="zoom-close-btn" style="background:#6c5ce7; color:white; border:none; padding:8px 15px; border-radius:20px; cursor:pointer; font-weight:600;">Close</button>
-            </div>
-        `;
+        overlay.style = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:2000;display:flex;justify-content:center;align-items:center;cursor:zoom-out;";
+        overlay.innerHTML = `<img src="${url}" style="max-width:90%;max-height:90%;border-radius:10px;transform:scale(1);transition:0.3s;" id="zImg">`;
+        overlay.onclick = () => overlay.remove();
         document.body.appendChild(overlay);
-
-        window.changeZoom = (amount) => {
-            const img = document.getElementById('zoomedImage');
-            const zoomText = document.getElementById('zoomLevel');
-            currentScale += amount;
-            if (currentScale < 0.5) currentScale = 0.5;
-            if (currentScale > 3) currentScale = 3;
-            img.style.transform = `scale(${currentScale})`;
-            zoomText.innerText = `${Math.round(currentScale * 100)}%`;
-        };
-
-        overlay.onclick = (e) => {
-            if (e.target.id === 'activeZoom' || e.target.className === 'zoom-content') {
-                overlay.remove();
-            }
-        };
     };
 </script>
 </body>
