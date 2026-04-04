@@ -3,64 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Color Pour - ShareTheSky</title>
+    <title>Cloud Chaser - ShareTheSky</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --bg: #0d0d15; --accent: #ff7e5f; --glass: rgba(255, 255, 255, 0.1); }
+        :root { --pink: #ff7eb3; --blue: #7afcff; --accent: #feb47b; }
         
         body { 
-            margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white;
+            margin: 0; background: linear-gradient(to bottom, #0f0c29, #302b63); 
+            color: white; font-family: 'Segoe UI', sans-serif; overflow: hidden;
             display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;
-            overflow: hidden; touch-action: none;
+            touch-action: none;
         }
 
         .exit-btn {
             position: absolute; top: 20px; left: 20px; color: white; text-decoration: none;
-            background: var(--glass); padding: 10px 18px; border-radius: 25px; font-size: 14px;
+            background: rgba(255,255,255,0.1); padding: 10px 18px; border-radius: 25px; font-size: 14px; z-index: 100;
         }
 
-        /* Streak Counter */
-        .stats { position: absolute; top: 20px; right: 20px; text-align: right; }
-        #streak-count { font-size: 1.5rem; color: var(--accent); font-weight: bold; }
-
-        /* Target UI */
-        .target-box { text-align: center; margin-bottom: 20px; }
-        #target-display {
-            width: 70px; height: 70px; border-radius: 50%; margin: 10px auto;
-            border: 3px solid white; box-shadow: 0 0 20px rgba(255,255,255,0.2);
+        #game-canvas {
+            background: linear-gradient(to bottom, #4facfe 0%, #00f2fe 100%);
+            border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            max-width: 100%; max-height: 80vh; cursor: pointer;
         }
 
-        /* Mixing Jar */
-        #jar {
-            width: 140px; height: 180px; border: 4px solid #fff; border-top: none;
-            border-radius: 0 0 20px 20px; position: relative; overflow: hidden;
-            background: rgba(255,255,255,0.05); margin-bottom: 30px;
-        }
-        #liquid {
-            position: absolute; bottom: 0; width: 100%; height: 0%;
-            background: transparent; transition: height 0.1s linear, background 0.3s ease;
+        .ui-layer {
+            position: absolute; pointer-events: none; text-align: center; width: 100%;
         }
 
-        /* Dynamic Tanks */
-        .tanks { display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; }
-        .tank-wrapper { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 0.8rem; }
-        .pour-btn {
-            width: 55px; height: 55px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.2); 
-            cursor: pointer; transition: transform 0.1s; touch-action: none;
-        }
-        .pour-btn:active { transform: scale(1.2); }
-
-        /* Results */
-        .result-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.95);
-            display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 100;
-        }
-        .result-overlay.active { display: flex; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        .mix-btn {
-            margin-top: 30px; padding: 12px 40px; border-radius: 30px; border: none; 
-            background: var(--accent); color: white; cursor: pointer; font-weight: bold;
+        #score-display { top: 40px; font-size: 2rem; font-weight: bold; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        
+        #start-msg { 
+            background: rgba(0,0,0,0.6); padding: 20px 40px; border-radius: 50px;
+            backdrop-filter: blur(10px); pointer-events: auto; cursor: pointer;
         }
     </style>
 </head>
@@ -68,137 +42,176 @@
 
     <a href="index.html" class="exit-btn"><i class="fas fa-arrow-left"></i> Exit</a>
 
-    <div class="stats">
-        <div>STREAK</div>
-        <div id="streak-count">0</div>
-    </div>
+    <div id="score-display" class="ui-layer">0</div>
 
-    <div class="target-box">
-        <div id="target-display"></div>
-        <div style="font-size: 0.8rem; opacity: 0.6;">Match this Sky Shade</div>
-    </div>
+    <canvas id="game-canvas"></canvas>
 
-    <div id="jar">
-        <div id="liquid"></div>
-    </div>
-
-    <div class="tanks" id="tank-container">
+    <div id="start-screen" class="ui-layer">
+        <div id="start-msg" onclick="startGame()">
+            <h2>Cloud Chaser</h2>
+            <p>Tap to stay afloat.<br>Match your color to the Aura Rings!</p>
+            <strong style="color: var(--accent);">TAP TO FLY</strong>
         </div>
-
-    <button class="mix-btn" onclick="checkMatch()">MIX & EVALUATE</button>
-
-    <div id="result-screen" class="result-overlay">
-        <h1 id="accuracy-text">0%</h1>
-        <p id="feedback"></p>
-        <button class="mix-btn" style="background: white; color: black;" onclick="setupGame()">Next Level</button>
     </div>
 
 <script>
-    const skyLibrary = [
-        { name: "Sunset", r: 255, g: 126, b: 179 },
-        { name: "Cyan", r: 122, g: 252, b: 255 },
-        { name: "Cloud", r: 255, g: 255, b: 255 },
-        { name: "Indigo", r: 48, g: 43, b: 99 },
-        { name: "Gold", r: 255, g: 180, b: 0 },
-        { name: "Violet", r: 150, g: 120, b: 220 },
-        { name: "Storm", r: 100, g: 110, b: 130 },
-        { name: "Peach", r: 255, g: 218, b: 185 },
-        { name: "Deep Sea", r: 0, g: 105, b: 148 },
-        { name: "Neon Sun", r: 255, g: 255, b: 0 }
-    ];
+    const canvas = document.getElementById('game-canvas');
+    const ctx = canvas.getContext('2d');
+    const scoreEl = document.getElementById('score-display');
+    const startScreen = document.getElementById('start-screen');
 
-    let streak = 0;
-    let target = { r: 0, g: 0, b: 0 };
-    let poured = [0, 0, 0]; // Tracks volume for 3 active tanks
-    let activeTanks = [];
-    let pourInterval;
+    // Resize for mobile
+    canvas.width = 400;
+    canvas.height = 600;
 
-    const liquid = document.getElementById('liquid');
-    const tankContainer = document.getElementById('tank-container');
+    // Game Constants
+    const GRAVITY = 0.25;
+    const FLAP = -5;
+    const SPAWN_RATE = 120; // Every 120 frames
+    const COLORS = ['#ff7eb3', '#7afcff']; // Pink and Blue
 
-    function setupGame() {
-        document.getElementById('result-screen').classList.remove('active');
-        poured = [0, 0, 0];
-        liquid.style.height = '0%';
-        liquid.style.backgroundColor = 'transparent';
+    let cloud, rings, particles, score, gameActive, frame;
 
-        // 1. Pick 3 random tanks
-        activeTanks = [...skyLibrary].sort(() => 0.5 - Math.random()).slice(0, 3);
+    class Cloud {
+        constructor() {
+            this.reset();
+        }
+        reset() {
+            this.x = 50;
+            this.y = 300;
+            this.velocity = 0;
+            this.radius = 25;
+            this.color = COLORS[0];
+        }
+        draw() {
+            ctx.save();
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = this.color;
+            ctx.fillStyle = "rgba(255,255,255,0.9)";
+            
+            // Draw a wispy cloud shape using 3 circles
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            ctx.arc(this.x + 15, this.y - 10, this.radius * 0.8, 0, Math.PI * 2);
+            ctx.arc(this.x + 15, this.y + 10, this.radius * 0.8, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Glow effect for active color
+            ctx.strokeStyle = this.color;
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            ctx.restore();
+        }
+        update() {
+            this.velocity += GRAVITY;
+            this.y += this.velocity;
+            if (this.y + this.radius > canvas.height || this.y - this.radius < 0) endGame();
+        }
+    }
+
+    class Ring {
+        constructor() {
+            this.x = canvas.width + 50;
+            this.y = Math.random() * (canvas.height - 200) + 100;
+            this.width = 15;
+            this.height = 100;
+            this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
+            this.passed = false;
+        }
+        draw() {
+            ctx.save();
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = this.color;
+            ctx.strokeStyle = this.color;
+            ctx.lineWidth = 6;
+            ctx.setLineDash([5, 5]); // Dashed "Aura" look
+            
+            ctx.beginPath();
+            ctx.ellipse(this.x, this.y, 20, 60, 0, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.restore();
+        }
+        update() {
+            this.x -= 3;
+        }
+    }
+
+    function startGame() {
+        cloud = new Cloud();
+        rings = [];
+        score = 0;
+        frame = 0;
+        gameActive = true;
+        scoreEl.innerText = "0";
+        startScreen.style.display = "none";
+        animate();
+    }
+
+    function animate() {
+        if (!gameActive) return;
         
-        // 2. Build UI
-        tankContainer.innerHTML = '';
-        activeTanks.forEach((color, i) => {
-            const wrap = document.createElement('div');
-            wrap.className = 'tank-wrapper';
-            wrap.innerHTML = `
-                <button class="pour-btn" style="background:rgb(${color.r},${color.g},${color.b})"></button>
-                <span>${color.name}</span>
-            `;
-            const btn = wrap.querySelector('button');
-            btn.onmousedown = btn.ontouchstart = (e) => { e.preventDefault(); startPour(i); };
-            btn.onmouseup = btn.ontouchend = btn.onmouseleave = stopPour;
-            tankContainer.appendChild(wrap);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Background Gradient Shift
+        let bgGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        bgGrad.addColorStop(0, '#4facfe');
+        bgGrad.addColorStop(1, '#00f2fe');
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0,0, canvas.width, canvas.height);
+
+        cloud.update();
+        cloud.draw();
+
+        // Manage Rings
+        if (frame % SPAWN_RATE === 0) rings.push(new Ring());
+        
+        rings.forEach((ring, index) => {
+            ring.update();
+            ring.draw();
+
+            // Collision Detection
+            if (!ring.passed && ring.x < cloud.x + cloud.radius) {
+                if (Math.abs(ring.y - cloud.y) < 60) {
+                    if (cloud.color === ring.color) {
+                        score++;
+                        scoreEl.innerText = score;
+                        ring.passed = true;
+                        // Swap Cloud Color
+                        cloud.color = (cloud.color === COLORS[0]) ? COLORS[1] : COLORS[0];
+                    } else {
+                        endGame();
+                    }
+                }
+            }
+
+            if (ring.x < -50) rings.splice(index, 1);
         });
 
-        // 3. Create solvable target
-        const ratios = [Math.random(), Math.random(), Math.random()];
-        const sum = ratios.reduce((a, b) => a + b, 0);
-        target.r = Math.round(activeTanks.reduce((acc, c, i) => acc + (c.r * ratios[i]), 0) / sum);
-        target.g = Math.round(activeTanks.reduce((acc, c, i) => acc + (c.g * ratios[i]), 0) / sum);
-        target.b = Math.round(activeTanks.reduce((acc, c, i) => acc + (c.b * ratios[i]), 0) / sum);
-        
-        document.getElementById('target-display').style.backgroundColor = `rgb(${target.r},${target.g},${target.b})`;
+        frame++;
+        requestAnimationFrame(animate);
     }
 
-    function startPour(index) {
-        pourInterval = setInterval(() => {
-            const total = poured.reduce((a, b) => a + b, 0);
-            if (total < 100) {
-                poured[index] += 2;
-                updateJar();
-            }
-        }, 50);
+    function endGame() {
+        gameActive = false;
+        startScreen.style.display = "flex";
+        document.getElementById('start-msg').innerHTML = `
+            <h2 style="color:#ff4b2b">Game Over</h2>
+            <p>Score: ${score}</p>
+            <strong style="color: var(--accent);">TRY AGAIN</strong>
+        `;
     }
 
-    function stopPour() { clearInterval(pourInterval); }
-
-    function updateJar() {
-        const total = poured.reduce((a, b) => a + b, 0);
-        if (total === 0) return;
-
-        const r = Math.round(activeTanks.reduce((acc, c, i) => acc + (c.r * poured[i]), 0) / total);
-        const g = Math.round(activeTanks.reduce((acc, c, i) => acc + (c.g * poured[i]), 0) / total);
-        const b = Math.round(activeTanks.reduce((acc, c, i) => acc + (c.b * poured[i]), 0) / total);
-
-        liquid.style.height = total + '%';
-        liquid.style.backgroundColor = `rgb(${r},${g},${b})`;
-    }
-
-    function checkMatch() {
-        const total = poured.reduce((a, b) => a + b, 0);
-        if (total < 5) return;
-
-        const curR = Math.round(activeTanks.reduce((acc, c, i) => acc + (c.r * poured[i]), 0) / total);
-        const curG = Math.round(activeTanks.reduce((acc, c, i) => acc + (c.g * poured[i]), 0) / total);
-        const curB = Math.round(activeTanks.reduce((acc, c, i) => acc + (c.b * poured[i]), 0) / total);
-
-        const dist = Math.sqrt(Math.pow(target.r-curR,2)+Math.pow(target.g-curG,2)+Math.pow(target.b-curB,2));
-        const accuracy = Math.max(0, Math.round(100 - (dist / 441) * 100));
-
-        if (accuracy >= 90) {
-            streak++;
-            document.getElementById('feedback').innerText = "Perfect Chemistry! +1 Streak";
-        } else {
-            streak = 0;
-            document.getElementById('feedback').innerText = "Streak Broken! Try for 90%+";
+    // Input Listeners
+    const handleInput = (e) => {
+        if (gameActive) {
+            cloud.velocity = FLAP;
         }
+    };
 
-        document.getElementById('streak-count').innerText = streak;
-        document.getElementById('accuracy-text').innerText = accuracy + "%";
-        document.getElementById('result-screen').classList.add('active');
-    }
+    window.addEventListener('keydown', (e) => { if (e.code === 'Space') handleInput(); });
+    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); handleInput(); });
+    canvas.addEventListener('mousedown', handleInput);
 
-    setupGame();
 </script>
 </body>
 </html>
