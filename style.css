@@ -3499,3 +3499,34 @@ footer p {
     color: #8c8c8c; /* Matches the refined grey color in your screenshot */
     font-weight: 400;
 }
+/* Update the dropdown container */
+.dropdown {
+    position: relative;
+    display: inline-block;
+    /* This ensures the hover area includes the padding around the button */
+    padding-bottom: 10px; 
+    margin-bottom: -10px;
+}
+
+/* Update the content box */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: white;
+    min-width: 140px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    z-index: 100;
+    
+    /* CRITICAL: Ensure there is no gap. 
+       If it's still disappearing, try setting 'top: 100%' 
+       or a slightly smaller number like 95% */
+    top: 100%; 
+    left: 0;
+    overflow: hidden;
+}
+
+/* This keeps the menu open while your mouse is moving toward it */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
