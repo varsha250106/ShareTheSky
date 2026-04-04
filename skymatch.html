@@ -19,7 +19,7 @@
             display: flex; flex-direction: column; min-height: 100vh;
         }
 
-        /* --- HEADER & NAVIGATION --- */
+        /* --- NAVIGATION (Matches Homepage) --- */
         header {
             display: flex; justify-content: space-between; align-items: center; 
             padding: 12px 5%; background: white; box-shadow: 0 2px 15px rgba(0,0,0,0.05);
@@ -32,23 +32,23 @@
         .nav-links { display: flex; align-items: center; gap: 25px; }
         .nav-links a { text-decoration: none; color: #444; font-weight: 600; font-size: 0.95rem; }
         
-        /* Dropdown Menu Logic */
         .dropdown { position: relative; display: inline-block; }
         .drop-btn { cursor: pointer; color: #444; font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 5px; }
         
         .dropdown-content {
             display: none; position: absolute; right: 0; background-color: white;
-            min-width: 160px; box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            min-width: 180px; box-shadow: 0 8px 25px rgba(0,0,0,0.1);
             border-radius: 12px; overflow: hidden; z-index: 1001; margin-top: 10px;
         }
         .dropdown-content a {
             color: #444; padding: 12px 16px; text-decoration: none;
-            display: flex; align-items: center; gap: 10px; font-size: 0.9rem;
+            display: flex; align-items: center; gap: 12px; font-size: 0.9rem;
         }
+        .dropdown-content a i { color: var(--primary); width: 15px; }
         .dropdown-content a:hover { background-color: #f8f9fc; color: var(--primary); }
         .dropdown:hover .dropdown-content { display: block; }
 
-        /* --- LAYOUT --- */
+        /* --- RESPONSIVE LAYOUT --- */
         .main-container {
             display: flex; padding: 20px 5%; gap: 30px; flex: 1; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box;
         }
@@ -57,6 +57,7 @@
             .main-container { flex-direction: column; padding: 15px; }
             .sidebar { width: 100% !important; order: 2; }
             .game-section { order: 1; }
+            header { padding: 10px 15px; }
             .nav-links { gap: 15px; }
         }
 
@@ -68,28 +69,44 @@
         .stat-pill { background: #fcfaff; padding: 12px; border-radius: 15px; text-align: center; border: 1px solid #f0edff; }
         .stat-pill span { display: block; font-size: 1.3rem; font-weight: 800; color: var(--primary); }
 
-        /* --- RULES --- */
-        .rule-item { display: flex; align-items: flex-start; gap: 12px; padding: 10px; border-radius: 12px; margin-bottom: 8px; }
+        /* --- RULES WITH HOVER EFFECT --- */
+        .rule-item { 
+            display: flex; align-items: flex-start; gap: 12px; padding: 12px; 
+            border-radius: 15px; margin-bottom: 8px; transition: 0.3s ease;
+            background: white; border: 1px solid transparent;
+        }
+        .rule-item:hover { 
+            background: #f4f0ff; 
+            border-color: var(--primary); 
+            transform: translateX(5px);
+        }
         .rule-icon { width: 32px; height: 32px; background: #f4f0ff; color: var(--primary); display: flex; align-items: center; justify-content: center; border-radius: 10px; font-size: 0.9rem; flex-shrink: 0; }
         .rule-text h4 { margin: 0; font-size: 0.9rem; color: var(--dark); }
         .rule-text p { margin: 0; font-size: 0.75rem; color: #777; line-height: 1.4; }
 
-        /* --- GAME GRID --- */
+        /* --- GAME GRID (The "Grid Fix") --- */
         .game-section { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-        .game-card { background: white; width: 100%; border-radius: 28px; padding: 25px; box-shadow: 0 15px 50px rgba(0,0,0,0.02); display: flex; flex-direction: column; align-items: center; }
+        .game-card { background: white; width: 100%; border-radius: 28px; padding: 25px; box-shadow: 0 15px 50px rgba(0,0,0,0.02); display: flex; flex-direction: column; align-items: center; box-sizing: border-box;}
 
-        .btn-group { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; }
+        .btn-group { display: flex; gap: 8px; margin-bottom: 25px; flex-wrap: wrap; justify-content: center; }
         .mode-btn { padding: 9px 16px; border-radius: 10px; border: 2.5px solid #f0f0f0; background: white; cursor: pointer; font-weight: 700; color: #666; font-size: 0.85rem; transition: 0.3s; }
         .mode-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
         .restart-btn { border-color: #ff9a9e; color: #ff9a9e; }
 
-        .memory-grid { display: grid; gap: 10px; width: 100%; margin: 0 auto; perspective: 1000px; }
-        .grid-small { max-width: 420px; }
+        .memory-grid { 
+            display: grid; 
+            gap: 12px; 
+            width: 100%; 
+            margin: 0 auto; 
+            perspective: 1000px;
+            min-height: 300px; /* Ensures space for "Loading" text */
+        }
+        .grid-small { max-width: 450px; }
         
-        .card { position: relative; transform-style: preserve-3d; transition: 0.6s; cursor: pointer; aspect-ratio: 1/1; }
+        .card { position: relative; transform-style: preserve-3d; transition: 0.6s; cursor: pointer; aspect-ratio: 1/1; width: 100%; }
         .card.flipped { transform: rotateY(180deg); }
-        .card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 10px; }
-        .card-front { background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; color: white; }
+        .card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 12px; }
+        .card-front { background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; }
         .card-back { background: #fff; transform: rotateY(180deg); display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1.5px solid #eee; }
         .card-back img { width: 100%; height: 100%; object-fit: cover; }
     </style>
@@ -152,13 +169,152 @@
                 <button class="mode-btn" id="btn-8" onclick="initGame(8, 7)">8×7</button>
                 <button class="mode-btn restart-btn" onclick="restartGame()"><i class="fa-solid fa-rotate-right"></i></button>
             </div>
-            <div id="game-grid"></div>
+            <div id="game-grid" class="memory-grid"></div>
         </div>
     </div>
 </div>
 
 <script type="module">
-    // ... (Keep your existing Firebase and handleFlip script logic here) ...
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, limit, query } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    // Your Firebase Configuration
+    const firebaseConfig = { 
+        apiKey: "AIzaSyDxgtNzywhjYGR7R2XMVobR73-SioT6v98", 
+        projectId: "sharethesky-a9c7d",
+        authDomain: "sharethesky-a9c7d.firebaseapp.com", 
+        storageBucket: "sharethesky-a9c7d.appspot.com"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let flipped = [], moves = 0, matches = 0, isLock = false, totalPairs = 0, currentCols = 4, currentRows = 4;
+
+    // --- Core Game Initialization ---
+    async function initGame(cols = 4, rows = 4) {
+        currentCols = cols; currentRows = rows;
+        
+        // Update UI Button States
+        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+        const btnId = `btn-${cols}`;
+        if(document.getElementById(btnId)) document.getElementById(btnId).classList.add('active');
+
+        const grid = document.getElementById('game-grid');
+        grid.className = `memory-grid ${cols === 4 ? 'grid-small' : ''}`;
+        grid.innerHTML = "<p style='grid-column: 1/-1; text-align:center;'>Clearing the sky...</p>";
+        
+        // Reset Stats
+        moves = 0; matches = 0; flipped = []; isLock = false;
+        document.getElementById('moves').innerText = "0";
+        document.getElementById('matches').innerText = "0";
+
+        const totalCards = cols * rows;
+        const powerCount = cols === 8 ? 4 : 2; 
+        totalPairs = Math.floor((totalCards - powerCount) / 2);
+
+        // Fetch Photos from Firebase
+        try {
+            const snap = await getDocs(query(collection(db, "photos"), limit(totalPairs)));
+            let photos = []; 
+            snap.forEach(doc => photos.push(doc.data().url));
+
+            // Build the Deck (Pairs + Special Powers)
+            let deck = [...photos, ...photos].map(url => ({ type: 'photo', val: url }));
+            const powers = ['fa-bolt', 'fa-eye']; // Thunder and Vision
+            
+            while(deck.length < totalCards) {
+                deck.push({ type: 'power', val: powers[deck.length % 2] });
+            }
+
+            // Shuffle and Render
+            deck.sort(() => Math.random() - 0.5);
+            grid.innerHTML = "";
+            grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+
+            deck.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.dataset.type = item.type; 
+                card.dataset.val = item.val;
+                card.innerHTML = `
+                    <div class="card-front"><i class="fa-solid fa-cloud"></i></div>
+                    <div class="card-back">
+                        ${item.type === 'photo' ? `<img src="${item.val}">` : `<i class="fa-solid ${item.val}" style="color:gold; font-size: 2rem;"></i>`}
+                    </div>`;
+                card.onclick = handleFlip;
+                grid.appendChild(card);
+            });
+        } catch (error) {
+            grid.innerHTML = "<p>Failed to load the sky. Check your connection.</p>";
+        }
+    }
+
+    // --- Card Flip & Matching Logic ---
+    function handleFlip() {
+        if (isLock || this.classList.contains('flipped') || this.dataset.done) return;
+        this.classList.add('flipped');
+
+        // Handle Power Cards
+        if (this.dataset.type === 'power') {
+            isLock = true;
+            setTimeout(() => {
+                if (this.dataset.val === 'fa-bolt') {
+                    // Thunder: Reset unmatched cards
+                    document.querySelectorAll('.card.flipped:not([data-done])').forEach(c => c.classList.remove('flipped'));
+                } else {
+                    // Vision: Briefly show all cards
+                    const hidden = document.querySelectorAll('.card:not(.flipped)');
+                    hidden.forEach(c => c.classList.add('flipped'));
+                    setTimeout(() => {
+                        hidden.forEach(c => { if(!c.dataset.done) c.classList.remove('flipped'); });
+                    }, 1200);
+                }
+                this.style.opacity = "0.4"; 
+                this.dataset.done = "true"; 
+                isLock = false;
+            }, 600);
+            return;
+        }
+
+        flipped.push(this);
+        if (flipped.length === 2) {
+            moves++; 
+            document.getElementById('moves').innerText = moves;
+            isLock = true;
+            
+            const [c1, c2] = flipped;
+            if (c1.dataset.val === c2.dataset.val) {
+                // Match Found
+                matches++; 
+                document.getElementById('matches').innerText = matches;
+                c1.dataset.done = "true"; 
+                c2.dataset.done = "true";
+                flipped = []; 
+                isLock = false;
+
+                // Win Condition
+                if (matches === totalPairs) {
+                    setTimeout(() => {
+                        alert(`Sky Clear! You cleared the sky in ${moves} moves.`);
+                    }, 500);
+                }
+            } else {
+                // No Match
+                setTimeout(() => { 
+                    c1.classList.remove('flipped'); 
+                    c2.classList.remove('flipped'); 
+                    flipped = []; 
+                    isLock = false; 
+                }, 800);
+            }
+        }
+    }
+
+    // --- Global Controls ---
+    window.restartGame = () => initGame(currentCols, currentRows);
+    window.initGame = initGame;
+    window.onload = () => initGame(4, 4);
 </script>
 </body>
 </html>
