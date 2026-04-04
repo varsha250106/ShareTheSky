@@ -7,49 +7,24 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- GLOBAL & ANIMATION --- */
-        body { 
-            font-family: 'Inter', sans-serif; 
-            margin: 0; 
-            background: #f5f7fa; 
-            color: #333;
-        }
+        /* --- GLOBAL & ANIMATIONS --- */
+        body { font-family: 'Inter', sans-serif; margin: 0; background: #f5f7fa; color: #333; overflow-x: hidden; }
 
         @keyframes float {
             0% { transform: translateY(0px); }
             50% { transform: translateY(-8px); }
             100% { transform: translateY(0px); }
         }
+        .floating-cloud { animation: float 3s ease-in-out infinite; width: 35px; height: auto; }
 
-        .floating-cloud {
-            animation: float 3s ease-in-out infinite;
-            width: 35px;
-            height: auto;
-        }
-
-        /* --- HEADER & NAVIGATION --- */
+        /* --- NAVIGATION --- */
         header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 5%;
-            background: white;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 5%; background: white; position: sticky; top: 0; z-index: 1000;
             box-shadow: 0 2px 10px rgba(0,0,0,0.03);
         }
-
-        .logo a {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-            color: #2d2d6a;
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
+        .logo a { display: flex; align-items: center; gap: 12px; text-decoration: none; color: #2d2d6a; font-size: 1.5rem; font-weight: 700; }
+        
         .nav-links { display: flex; align-items: center; gap: 25px; }
         .nav-links a { text-decoration: none; color: #4a4a8a; font-weight: 600; transition: 0.3s; }
         .nav-links a:hover { color: #a18cd1; }
@@ -66,84 +41,50 @@
             min-width: 170px; box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
             border-radius: 12px; z-index: 100; right: 0; overflow: hidden;
         }
-        .dropdown-content a { color: #333; padding: 12px 16px; text-decoration: none; display: block; font-size: 14px; }
+        .dropdown-content a { color: #333; padding: 12px 16px; display: block; text-decoration: none; font-size: 14px; }
         .dropdown-content a:hover { background: #f8f6ff; color: #a18cd1; }
         .dropdown:hover .dropdown-content { display: block; }
 
-        /* --- MOBILE MENU TOGGLE --- */
-        .menu-toggle {
-            display: none;
-            flex-direction: column;
-            gap: 5px;
-            cursor: pointer;
-            padding: 5px;
-        }
-        .menu-toggle span {
-            width: 28px; height: 3px;
-            background-color: #2d2d6a;
-            border-radius: 3px;
-        }
+        /* Mobile Menu Bars */
+        .menu-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+        .menu-toggle span { width: 28px; height: 3px; background-color: #2d2d6a; border-radius: 3px; }
 
         @media (max-width: 768px) {
             .menu-toggle { display: flex; }
             .nav-links {
-                display: none;
-                flex-direction: column;
-                position: absolute;
-                top: 70px; right: 5%;
-                background: white;
-                width: 220px;
-                padding: 20px;
-                border-radius: 15px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                display: none; flex-direction: column; position: absolute;
+                top: 70px; right: 5%; background: white; width: 220px;
+                padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             }
             .nav-links.active { display: flex; }
         }
 
         /* --- PINTEREST GRID --- */
         .pinterest-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px; padding: 20px 5%;
-            max-width: 1400px; margin: 0 auto;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px; padding: 20px 5%; max-width: 1400px; margin: 0 auto;
         }
-
-        .pin-card {
-            background: white; border-radius: 20px;
-            overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease;
-        }
-
-        .pin-image-wrapper { position: relative; aspect-ratio: 4 / 5; background: #eee; }
+        .pin-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        .pin-image-wrapper { position: relative; aspect-ratio: 4 / 5; }
         .pin-img { width: 100%; height: 100%; object-fit: cover; cursor: zoom-in; }
 
-        .pin-top-actions { position: absolute; top: 12px; right: 12px; display: flex; gap: 8px; }
-        .action-btn {
-            background: white; border: none; width: 36px; height: 36px;
-            border-radius: 50%; cursor: pointer; display: flex;
-            align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-
-        .pin-like-overlay {
-            position: absolute; bottom: 12px; right: 12px;
-            background: rgba(255,255,255,0.9); border: none;
-            padding: 8px 15px; border-radius: 25px; font-weight: 700;
-            cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-        .pin-like-overlay.liked { background: #ff4757; color: white; }
-
-        /* --- ZOOM OVERLAY & PILL --- */
+        /* --- FIXED ZOOM OVERLAY --- */
         .zoom-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95); z-index: 2000;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: rgba(0,0,0,0.95); z-index: 5000;
+            display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+            padding: 40px 0;
         }
+        .zoom-heading { color: white; font-size: 1.8rem; font-weight: 700; z-index: 5100; margin-bottom: 10px; }
+        .zoom-img-container { flex-grow: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; width: 100%; }
+        #zImg { max-width: 90%; max-height: 75%; transition: transform 0.2s ease; border-radius: 10px; }
+        
         .zoom-pill {
             background: white; padding: 12px 25px; border-radius: 40px;
-            display: flex; gap: 20px; align-items: center; margin-top: 20px;
+            display: flex; gap: 20px; align-items: center; z-index: 5100;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        .zoom-pill button { background: none; border: none; cursor: pointer; font-size: 20px; }
+        .zoom-pill button { background: none; border: none; cursor: pointer; font-size: 22px; color: #2d2d6a; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -151,7 +92,7 @@
 <header>
     <h1 class="logo">
         <a href="index.html">
-            <img src="https://img.icons8.com/fluency/48/cloud.png" class="floating-cloud" alt="Cloud Logo">
+            <img src="https://img.icons8.com/fluency/48/cloud.png" class="floating-cloud">
             <span>ShareTheSky</span>
         </a>
     </h1>
@@ -179,7 +120,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyDxgtNzywhjYGR7R2XMVobR73-SioT6v98",
@@ -194,61 +135,40 @@
     const db = getFirestore(app);
     const galleryContainer = document.getElementById("photoGallery");
 
-    // Toggle Mobile Menu
+    // Mobile Toggle
     document.getElementById('mobile-toggle').onclick = () => {
         document.getElementById('nav-menu').classList.toggle('active');
     };
 
+    // Real-time Gallery Update
     onSnapshot(query(collection(db, "photos"), orderBy("date", "desc")), (snapshot) => {
         galleryContainer.innerHTML = ""; 
         snapshot.forEach((docSnap) => {
             const data = docSnap.data();
-            const id = docSnap.id;
-            const likedKey = 'liked_' + id;
-            const isLiked = localStorage.getItem(likedKey) === "true";
-
             const card = document.createElement("div");
             card.className = "pin-card";
             card.innerHTML = `
                 <div class="pin-image-wrapper">
-                    <img src="${data.url}" class="pin-img" onclick="openZoom('${data.url}')">
-                    <div class="pin-top-actions">
-                        <a href="${data.url}" download class="action-btn">📥</a>
-                        <button class="action-btn" onclick="openZoom('${data.url}')">🔍</button>
-                    </div>
-                    <button class="pin-like-overlay ${isLiked ? 'liked' : ''}" id="like-${id}">
-                        ❤️ <span>${data.likes || 0}</span>
-                    </button>
+                    <img src="${data.url}" class="pin-img" onclick="openZoom('${data.url}', '${data.caption || 'Sky View'}')">
                 </div>
             `;
             galleryContainer.appendChild(card);
-
-            card.querySelector(`#like-${id}`).onclick = async (e) => {
-                e.stopPropagation();
-                let likes = data.likes || 0;
-                if (localStorage.getItem(likedKey)) {
-                    likes = Math.max(0, likes - 1);
-                    localStorage.removeItem(likedKey);
-                } else {
-                    likes += 1;
-                    localStorage.setItem(likedKey, "true");
-                }
-                await updateDoc(doc(db, "photos", id), { likes });
-            };
         });
     });
 
-    window.openZoom = (url) => {
+    // Zoom Functionality
+    window.openZoom = (url, caption) => {
         let scale = 1;
         const overlay = document.createElement('div');
         overlay.className = "zoom-overlay";
         overlay.innerHTML = `
-            <img src="${url}" id="zImg" style="max-width:90%; max-height:75%; transition:0.2s; border-radius:10px;">
+            <h3 class="zoom-heading">${caption}</h3>
+            <div class="zoom-img-container"><img src="${url}" id="zImg"></div>
             <div class="zoom-pill">
                 <button onclick="changeScale(-0.25)">➖</button>
-                <span id="zPerc" style="font-weight:700;">100%</span>
+                <span id="zPerc" style="color:#2d2d6a; font-weight:700;">100%</span>
                 <button onclick="changeScale(0.25)">➕</button>
-                <button onclick="this.closest('.zoom-overlay').remove()" style="color:#ff4757; font-weight:700;">Close</button>
+                <button onclick="this.closest('.zoom-overlay').remove()" style="color:#ff4757;">Close</button>
             </div>
         `;
         document.body.appendChild(overlay);
