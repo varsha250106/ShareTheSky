@@ -7,28 +7,30 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <div class="logo">
-            <a href="index.html">
-                <img src="https://img.icons8.com/fluency/48/cloud.png" class="floating-cloud">
-                <span>ShareTheSky</span>
-            </a>
-        </div>
-        <div class="menu-toggle" onclick="document.getElementById('nav-menu').classList.toggle('active')">
-            <span></span><span></span><span></span>
-        </div>
-        <nav class="nav-links" id="nav-menu">
-            <a href="index.html" class="active">Home</a>
-            <div class="dropdown">
-                <button class="dropbtn">Explore ▾</button>
-                <div class="dropdown-content">
-                    <a href="gallery.html">Gallery</a>
-                    <a href="upload.html">Upload</a>
-                    <a href="about.html">About Me</a> </div>
-            </div>
-        </nav>
-    </header>
+   <header>
+    <div class="logo">
+        <a href="index.html">
+            <img src="https://img.icons8.com/fluency/48/cloud.png" class="floating-cloud">
+            <span>ShareTheSky</span>
+        </a>
+    </div>
 
+    <div class="menu-icon" onclick="toggleMobileMenu()">
+        <i class="fa-solid fa-bars"></i>
+    </div>
+
+    <nav class="nav-links" id="navLinks">
+        <a href="index.html">Home</a>
+        <div class="dropdown">
+            <button class="dropbtn">Explore ▾</button>
+            <div class="dropdown-content">
+                <a href="gallery.html">Gallery</a>
+                <a href="upload.html">Upload</a>
+                <a href="about.html">About Me</a>
+            </div>
+        </div>
+    </nav>
+</header>
     <main class="hero">
         <h1>Capture the sky.<br>Share the magic.</h1>
         <p>A community where everyone uploads their sky pics together.</p>
