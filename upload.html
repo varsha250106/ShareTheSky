@@ -10,17 +10,29 @@
 <body>
 
 <header>
-    <div class="header-content">
-        <h1 class="logo">
-            <a href="index.html">☁️ ShareTheSky</a>
-        </h1>
-        <nav class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="upload.html" class="active">Upload</a>
-            <a href="gallery.html">Gallery</a>
-            <a href="about.html">About Me</a>
-        </nav>
+    <div class="logo">
+        <a href="index.html">
+            <img src="https://img.icons8.com/fluency/48/cloud.png" class="floating-cloud">
+            <span>ShareTheSky</span>
+        </a>
     </div>
+
+    <div class="menu-toggle" onclick="document.getElementById('nav-menu').classList.toggle('active')">
+        <span></span><span></span><span></span>
+    </div>
+
+    <nav class="nav-links" id="nav-menu">
+        <a href="index.html">Home</a>
+        
+        <div class="dropdown">
+            <button class="dropbtn">Explore ▾</button>
+            <div class="dropdown-content">
+                <a href="gallery.html">Gallery</a>
+                <a href="upload.html" class="active">Upload</a>
+                <a href="about.html">About Me</a>
+            </div>
+        </div>
+    </nav>
 </header>
 
 <main class="upload-wrapper">
