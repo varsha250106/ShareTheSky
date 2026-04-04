@@ -3,171 +3,191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aesthetic Matchmaker - ShareTheSky</title>
+    <title>Color Pour - ShareTheSky</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --bg: #121212;
-            --accent: #ff7e5f;
-        }
-
-        body {
-            margin: 0; font-family: 'Segoe UI', sans-serif;
-            background: var(--bg); color: white;
-            display: flex; flex-direction: column; align-items: center;
-            min-height: 100vh; overflow-x: hidden;
+        :root { --bg: #121212; --glass: rgba(255, 255, 255, 0.1); }
+        
+        body { 
+            margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;
         }
 
         .exit-btn {
-            position: absolute; top: 20px; left: 20px;
-            color: white; text-decoration: none;
-            background: rgba(255,255,255,0.1); padding: 10px 18px;
-            border-radius: 25px; font-size: 14px; backdrop-filter: blur(5px);
+            position: absolute; top: 20px; left: 20px; color: white; text-decoration: none;
+            background: var(--glass); padding: 10px 18px; border-radius: 25px; font-size: 14px;
         }
 
-        header { margin-top: 60px; text-align: center; }
-
-        /* The Sky Photo */
-        #target-sky {
-            width: 320px; height: 180px;
-            border-radius: 15px; object-fit: cover;
-            border: 4px solid #333; margin: 20px 0;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        /* Target UI */
+        .target-box { text-align: center; margin-bottom: 30px; }
+        #target-display {
+            width: 80px; height: 80px; border-radius: 50%; margin: 10px auto;
+            border: 4px solid white; box-shadow: 0 0 20px rgba(255,255,255,0.2);
         }
 
-        /* Choice Grid */
-        .choices-container {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 20px; width: 90%; max-width: 600px; padding-bottom: 40px;
+        /* Mixing Jar */
+        #jar {
+            width: 150px; height: 200px; border: 4px solid #fff; border-top: none;
+            border-radius: 0 0 20px 20px; position: relative; overflow: hidden;
+            background: rgba(255,255,255,0.05); margin-bottom: 40px;
+        }
+        #liquid {
+            position: absolute; bottom: 0; width: 100%; height: 0%;
+            background: transparent; transition: height 0.1s linear, background 0.3s ease;
         }
 
-        .room-choice {
-            background: #1e1e1e; border-radius: 15px;
-            padding: 15px; cursor: pointer;
-            transition: 0.3s; border: 2px solid transparent;
-            text-align: center;
+        /* Controls */
+        .tanks { display: flex; gap: 20px; }
+        .tank-wrapper { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .pour-btn {
+            width: 60px; height: 60px; border-radius: 50%; border: none; cursor: pointer;
+            transition: transform 0.1s; touch-action: none;
         }
+        .pour-btn:active { transform: scale(0.9); filter: brightness(1.2); }
 
-        .room-choice:hover { transform: translateY(-5px); background: #252525; }
-        .room-choice.correct { border-color: #27ae60; background: #1a2e20; }
-        .room-choice.wrong { border-color: #e74c3c; opacity: 0.6; }
+        #white-btn { background: #ffffff; }
+        #pink-btn { background: #ff7eb3; }
+        #blue-btn { background: #7afcff; }
 
-        /* SVG Styling */
-        .room-svg { width: 100%; height: auto; margin-bottom: 10px; }
-        .room-svg path { transition: fill 0.5s ease; }
-
-        #message { font-weight: bold; margin: 15px 0; height: 24px; }
-        
-        .next-btn {
-            background: var(--accent); color: white; border: none;
-            padding: 12px 30px; border-radius: 25px; cursor: pointer;
-            font-weight: bold; display: none; margin-bottom: 30px;
+        .result-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.9);
+            display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 100;
         }
+        .active { display: flex; }
     </style>
 </head>
 <body>
 
     <a href="index.html" class="exit-btn"><i class="fas fa-arrow-left"></i> Exit</a>
 
-    <header>
-        <h1>Aesthetic Matchmaker</h1>
-        <p style="opacity: 0.7;">Which room was inspired by this sky?</p>
-    </header>
+    <div class="target-box">
+        <div>Target Color</div>
+        <div id="target-display"></div>
+        <div id="target-name" style="font-size: 0.9rem; opacity: 0.7;">Dusk Lavender</div>
+    </div>
 
-    <img id="target-sky" src="" alt="Target Sky">
+    <div id="jar">
+        <div id="liquid"></div>
+    </div>
 
-    <div id="message"></div>
-
-    <div class="choices-container" id="choices">
+    <div class="tanks">
+        <div class="tank-wrapper">
+            <button class="pour-btn" id="pink-btn"></button>
+            <span>Pink</span>
         </div>
+        <div class="tank-wrapper">
+            <button class="pour-btn" id="blue-btn"></button>
+            <span>Blue</span>
+        </div>
+        <div class="tank-wrapper">
+            <button class="pour-btn" id="white-btn"></button>
+            <span>White</span>
+        </div>
+    </div>
 
-    <button class="next-btn" id="next-btn" onclick="setupGame()">Next Challenge</button>
+    <button onclick="checkMatch()" style="margin-top: 40px; padding: 10px 30px; border-radius: 20px; border: none; background: #ff7e5f; color: white; cursor: pointer; font-weight: bold;">Mix & Compare</button>
+
+    <div id="result-screen" class="result-overlay">
+        <h2 id="accuracy-text">95% Match!</h2>
+        <p id="feedback"></p>
+        <button onclick="resetGame()" style="padding: 10px 30px; border-radius: 20px; border: none; background: white; cursor: pointer;">Try Again</button>
+    </div>
 
 <script>
-    const levels = [
-        {
-            sky: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=500",
-            palette: { wall: "#4facfe", sofa: "#ffffff", rug: "#00f2fe" },
-            name: "Ocean Breeze"
-        },
-        {
-            sky: "https://images.unsplash.com/photo-1470252649358-96940c9353d9?w=500",
-            palette: { wall: "#ff7e5f", sofa: "#2c3e50", rug: "#feb47b" },
-            name: "Desert Dusk"
-        },
-        {
-            sky: "https://images.unsplash.com/photo-1532978341072-c96b0015a396?w=500",
-            palette: { wall: "#0f0c29", sofa: "#302b63", rug: "#ffffff" },
-            name: "Midnight Minimal"
-        }
-    ];
+    // Configuration
+    const colors = {
+        pink: { r: 255, g: 126, b: 179 },
+        blue: { r: 122, g: 252, b: 255 },
+        white: { r: 255, g: 255, b: 255 }
+    };
 
-    const wrongPalettes = [
-        { wall: "#2ecc71", sofa: "#27ae60", rug: "#f1c40f" },
-        { wall: "#e74c3c", sofa: "#c0392b", rug: "#34495e" },
-        { wall: "#8e44ad", sofa: "#2c3e50", rug: "#ecf0f1" }
-    ];
+    let target = { r: 0, g: 0, b: 0 };
+    let poured = { pink: 0, blue: 0, white: 0 };
+    let isPouring = false;
+    let pourInterval;
 
-    let canClick = true;
-
-    // The SVG Blueprint for the room
-    function getRoomSVG(colors, id) {
-        return `
-        <svg class="room-svg" viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
-            <path d="M10 10 H190 V110 H10 Z" fill="${colors.wall}" />
-            <path d="M10 110 H190 V140 H10 Z" fill="#333" />
-            <path d="M40 120 H160 V135 H40 Z" fill="${colors.rug}" />
-            <path d="M50 80 H150 V115 H50 Z" fill="${colors.sofa}" />
-            <path d="M50 65 H150 V80 H50 Z" fill="${colors.sofa}" opacity="0.8" />
-            <rect x="140" y="30" width="30" height="40" fill="white" opacity="0.2" />
-        </svg>`;
-    }
+    const liquid = document.getElementById('liquid');
 
     function setupGame() {
-        canClick = true;
-        document.getElementById('next-btn').style.display = 'none';
-        document.getElementById('message').innerText = "";
-        document.getElementById('message').style.color = "white";
+        // Create a random target by mixing predefined ratios
+        const r1 = Math.random(), r2 = Math.random(), r3 = Math.random();
+        const total = r1 + r2 + r3;
+        target.r = Math.round((r1*colors.pink.r + r2*colors.blue.r + r3*colors.white.r) / total);
+        target.g = Math.round((r1*colors.pink.g + r2*colors.blue.g + r3*colors.white.g) / total);
+        target.b = Math.round((r1*colors.pink.b + r2*colors.blue.b + r3*colors.white.b) / total);
         
-        const level = levels[Math.floor(Math.random() * levels.length)];
-        document.getElementById('target-sky').src = level.sky;
-
-        const choicesDiv = document.getElementById('choices');
-        choicesDiv.innerHTML = "";
-
-        // Combine correct palette with 2 random wrong ones
-        let options = [
-            { palette: level.palette, isCorrect: true },
-            { palette: wrongPalettes[0], isCorrect: false },
-            { palette: wrongPalettes[1], isCorrect: false }
-        ].sort(() => Math.random() - 0.5);
-
-        options.forEach(opt => {
-            const card = document.createElement('div');
-            card.className = 'room-choice';
-            card.innerHTML = getRoomSVG(opt.palette);
-            card.onclick = () => handleChoice(card, opt.isCorrect);
-            choicesDiv.appendChild(card);
-        });
+        document.getElementById('target-display').style.backgroundColor = `rgb(${target.r}, ${target.g}, ${target.b})`;
+        resetState();
     }
 
-    function handleChoice(element, isCorrect) {
-        if (!canClick) return;
-        canClick = false;
-
-        if (isCorrect) {
-            element.classList.add('correct');
-            document.getElementById('message').innerText = "Perfect Match! ✨";
-            document.getElementById('message').style.color = "#27ae60";
-        } else {
-            element.classList.add('wrong');
-            document.getElementById('message').innerText = "Not quite the right vibe...";
-            document.getElementById('message').style.color = "#e74c3c";
-        }
-        
-        document.getElementById('next-btn').style.display = 'block';
+    function resetState() {
+        poured = { pink: 0, blue: 0, white: 0 };
+        liquid.style.height = '0%';
+        liquid.style.backgroundColor = 'transparent';
+        document.getElementById('result-screen').classList.remove('active');
     }
 
+    function startPour(type) {
+        isPouring = true;
+        pourInterval = setInterval(() => {
+            const totalPoured = poured.pink + poured.blue + poured.white;
+            if (totalPoured < 100) {
+                poured[type] += 2;
+                updateJar();
+            }
+        }, 50);
+    }
+
+    function stopPour() {
+        clearInterval(pourInterval);
+        isPouring = false;
+    }
+
+    function updateJar() {
+        const total = poured.pink + poured.blue + poured.white;
+        if (total === 0) return;
+
+        // Calculate current mixed color
+        const r = Math.round((poured.pink*colors.pink.r + poured.blue*colors.blue.r + poured.white*colors.white.r) / total);
+        const g = Math.round((poured.pink*colors.pink.g + poured.blue*colors.blue.g + poured.white*colors.white.g) / total);
+        const b = Math.round((poured.pink*colors.pink.b + poured.blue*colors.blue.b + poured.white*colors.white.b) / total);
+
+        liquid.style.height = total + '%';
+        liquid.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+    }
+
+    function checkMatch() {
+        const total = poured.pink + poured.blue + poured.white;
+        if (total < 10) return alert("Pour some colors first!");
+
+        const currentR = Math.round((poured.pink*colors.pink.r + poured.blue*colors.blue.r + poured.white*colors.white.r) / total);
+        const currentG = Math.round((poured.pink*colors.pink.g + poured.blue*colors.blue.g + poured.white*colors.white.g) / total);
+        const currentB = Math.round((poured.pink*colors.pink.b + poured.blue*colors.blue.b + poured.white*colors.white.b) / total);
+
+        // Euclidean distance for color accuracy
+        const diff = Math.sqrt(
+            Math.pow(target.r - currentR, 2) +
+            Math.pow(target.g - currentG, 2) +
+            Math.pow(target.b - currentB, 2)
+        );
+        
+        const accuracy = Math.max(0, Math.round(100 - (diff / 441) * 100));
+        
+        document.getElementById('accuracy-text').innerText = `${accuracy}% Match`;
+        document.getElementById('feedback').innerText = accuracy > 90 ? "You have a true designer's eye! 🌟" : "Keep practicing your color theory.";
+        document.getElementById('result-screen').classList.add('active');
+    }
+
+    // Event Listeners for Mobile & Desktop
+    ['pink', 'blue', 'white'].forEach(color => {
+        const btn = document.getElementById(`${color}-btn`);
+        btn.addEventListener('mousedown', () => startPour(color));
+        btn.addEventListener('touchstart', (e) => { e.preventDefault(); startPour(color); });
+        btn.addEventListener('mouseup', stopPour);
+        btn.addEventListener('touchend', stopPour);
+    });
+
+    function resetGame() { setupGame(); }
     setupGame();
 </script>
 </body>
