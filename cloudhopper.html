@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Cloud Hopper - ShareTheSky</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -18,6 +18,9 @@
             margin: 0; font-family: 'Segoe UI', sans-serif; 
             background-color: var(--bg); color: var(--dark);
             min-height: 100vh;
+            overflow-x: hidden;
+            /* Prevents pull-to-refresh on mobile Chrome */
+            overscroll-behavior-y: contain; 
         }
 
         header {
@@ -30,11 +33,12 @@
         .nav-links { display: flex; gap: 25px; }
         .nav-links a { text-decoration: none; color: #444; font-weight: 600; }
 
+        /* --- LAYOUT --- */
         .main-container {
             display: grid;
             grid-template-columns: 300px 1fr;
             gap: 40px;
-            padding: 40px 5%;
+            padding: 20px 5%;
             max-width: 1200px;
             margin: 0 auto;
         }
@@ -49,32 +53,52 @@
         .stat-value { font-size: 2rem; font-weight: 800; color: var(--primary); }
 
         .game-section { 
-            background: white; border-radius: 30px; padding: 30px;
+            background: white; border-radius: 30px; padding: 20px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.03);
             display: flex; flex-direction: column; align-items: center;
             position: relative;
         }
 
-        .canvas-area { position: relative; width: 350px; height: 500px; }
+        .canvas-area { 
+            position: relative; 
+            width: 100%; 
+            max-width: 350px; 
+            aspect-ratio: 7/10; 
+        }
+        
         #gameCanvas {
             background: linear-gradient(to bottom, #e0c3fc 0%, #8ec5fc 100%);
-            border-radius: 20px; display: block;
+            border-radius: 20px; 
+            width: 100%;
+            height: 100%;
+            display: block;
+            touch-action: none; /* Crucial: stops the browser from scrolling while you play */
         }
 
         #overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(45, 45, 106, 0.9); border-radius: 20px;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            color: white; z-index: 10;
+            color: white; z-index: 10; text-align: center; padding: 20px; box-sizing: border-box;
         }
 
         .btn-action {
             background: white; color: var(--primary); border: none; padding: 15px 45px;
             border-radius: 50px; font-weight: 800; cursor: pointer; margin-top: 20px;
+            font-size: 1rem;
         }
 
+        /* --- MOBILE RESPONSIVENESS --- */
         @media (max-width: 900px) {
-            .main-container { grid-template-columns: 1fr; }
+            .main-container { 
+                grid-template-columns: 1fr; 
+                padding: 15px;
+                gap: 20px;
+            }
+            .sidebar { order: 2; flex-direction: row; flex-wrap: wrap; justify-content: center; }
+            .dashboard-card { flex: 1; min-width: 140px; padding: 15px; }
+            .stat-value { font-size: 1.5rem; }
+            header { padding: 10px 5%; }
         }
     </style>
 </head>
@@ -99,17 +123,18 @@
             <div class="stat-value" id="bestClimb">0m</div>
         </div>
         <div class="dashboard-card" style="text-align: left; font-size: 0.85rem;">
-            <p><b>Arrows:</b> Move</p>
-            <p><b>Pink:</b> Moving Cloud</p>
-            <p style="color: #ff6b6b;"><b>Dark:</b> Avoid Storms!</p>
+            <p style="margin: 5px 0;"><b>Touch Left/Right:</b> Move</p>
+            <p style="margin: 5px 0;"><b>Pink:</b> Moving</p>
+            <p style="margin: 5px 0; color: #ff6b6b;"><b>Dark:</b> Avoid!</p>
         </div>
     </div>
 
     <div class="game-section">
-        <h2 style="margin-top: 0;">Cloud Hopper</h2>
+        <h2 style="margin: 0 0 15px 0; font-size: 1.5rem;">Cloud Hopper</h2>
         <div class="canvas-area">
             <div id="overlay">
                 <h2>Cloud Hopper</h2>
+                <p>Tap left or right to climb!</p>
                 <button class="btn-action" id="startBtn">START GAME</button>
             </div>
             <canvas id="gameCanvas" width="350" height="500"></canvas>
@@ -129,15 +154,41 @@
 
     let player = { x: 155, y: 350, w: 40, h: 30, vx: 0, vy: 0, jump: -10, grav: 0.35 };
     let platforms = [];
-    let trail = []; // Stores previous positions for the trail effect
+    let trail = [];
+
+    // --- CONTROLS LOGIC ---
+    let keys = {};
+    window.onkeydown = e => keys[e.code] = true;
+    window.onkeyup = e => keys[e.code] = false;
+
+    // Mobile Touch Controls
+    canvas.addEventListener('touchstart', e => {
+        if (!gameRunning) return;
+        e.preventDefault();
+        const rect = canvas.getBoundingClientRect();
+        const touchX = e.touches[0].clientX - rect.left;
+        const centerX = rect.width / 2;
+        
+        if (touchX < centerX) {
+            keys['ArrowLeft'] = true;
+            keys['ArrowRight'] = false;
+        } else {
+            keys['ArrowRight'] = true;
+            keys['ArrowLeft'] = false;
+        }
+    }, {passive: false});
+
+    canvas.addEventListener('touchend', e => {
+        keys['ArrowLeft'] = false;
+        keys['ArrowRight'] = false;
+    }, {passive: false});
 
     function spawnPlatform(y, isFirst = false) {
         let type = 'normal';
         let r = Math.random();
-        // Difficulty scaling
         if (!isFirst) {
-            if (score > 20 && r > 0.7) type = 'moving';
-            if (score > 40 && r > 0.88) type = 'storm';
+            if (score > 15 && r > 0.7) type = 'moving';
+            if (score > 35 && r > 0.88) type = 'storm';
         }
         platforms.push({
             x: Math.random() * (canvas.width - 70), 
@@ -145,7 +196,7 @@
             w: 70, 
             h: 12, 
             type: type,
-            speed: (Math.random() > 0.5 ? 1 : -1) * (1.5 + Math.random())
+            speed: (Math.random() > 0.5 ? 1 : -1) * (1.2 + Math.random() * 1.5)
         });
     }
 
@@ -156,20 +207,14 @@
         player.x = 155; 
         player.y = 350; 
         player.vy = 0;
+        player.vx = 0;
         document.getElementById('currentHeight').innerText = "0m";
         
-        // Solid base to start
         platforms.push({ x: 140, y: 420, w: 70, h: 12, type: 'normal' });
-        
-        // Initial set of platforms
         for (let i = 0; i < 7; i++) {
             spawnPlatform(i * 70);
         }
     }
-
-    let keys = {};
-    window.onkeydown = e => keys[e.code] = true;
-    window.onkeyup = e => keys[e.code] = false;
 
     function drawCloud(x, y, opacity = 1) {
         ctx.save();
@@ -181,11 +226,10 @@
         ctx.arc(x + 30, y + 15, 12, 0, Math.PI * 2);
         ctx.fill();
         
-        // Only draw eyes for the main player (full opacity)
         if (opacity === 1) {
             ctx.fillStyle = "#2d2d6a";
-            ctx.fillRect(x + 15, y + 12, 3, 3);
-            ctx.fillRect(x + 25, y + 12, 3, 3);
+            ctx.fillRect(x + 13, y + 12, 3, 3);
+            ctx.fillRect(x + 24, y + 12, 3, 3);
         }
         ctx.restore();
     }
@@ -200,22 +244,25 @@
 
         // Draw Trail
         trail.forEach((pos, index) => {
-            let opacity = (index + 1) / (trail.length * 2);
+            let opacity = (index + 1) / (trail.length * 3);
             drawCloud(pos.x, pos.y, opacity);
         });
 
         // Player physics
         player.vy += player.grav;
         player.y += player.vy;
+        
         if (keys['ArrowLeft']) player.vx = -5;
         else if (keys['ArrowRight']) player.vx = 5;
-        else player.vx *= 0.8;
+        else player.vx *= 0.85; // Friction
+        
         player.x += player.vx;
 
+        // Wrap around screen
         if (player.x < -player.w) player.x = canvas.width;
         if (player.x > canvas.width) player.x = -player.w;
 
-        // Platform Loop (Reverse to handle splicing correctly)
+        // Platform Logic
         for (let i = platforms.length - 1; i >= 0; i--) {
             let p = platforms[i];
 
@@ -226,14 +273,16 @@
 
             // Draw Platforms
             ctx.fillStyle = p.type === 'storm' ? '#4a4a8a' : (p.type === 'moving' ? '#fbc2eb' : 'white');
-            ctx.fillRect(p.x, p.y, p.w, p.h);
+            ctx.beginPath();
+            ctx.roundRect(p.x, p.y, p.w, p.h, 5);
+            ctx.fill();
 
-            // Collision
+            // Collision Detection
             if (player.vy > 0 && 
                 player.x < p.x + p.w && 
                 player.x + player.w > p.x && 
                 player.y + player.h > p.y && 
-                player.y + player.h < p.y + p.h + 10) {
+                player.y + player.h < p.y + p.h + 15) {
                 
                 if (p.type === 'storm') {
                     gameOver();
@@ -242,12 +291,11 @@
                 }
             }
 
-            // Camera Scroll & Recycling
+            // Camera Scrolling
             if (player.y < 250) {
                 let diff = 250 - player.y;
                 player.y += diff;
                 
-                // Shift all platforms and trail
                 platforms.forEach(plat => plat.y += diff);
                 trail.forEach(pos => pos.y += diff);
 
@@ -255,14 +303,14 @@
                 document.getElementById('currentHeight').innerText = Math.floor(score) + "m";
             }
 
-            // Remove and Replace
+            // Recycling platforms
             if (p.y > canvas.height) {
                 platforms.splice(i, 1);
                 spawnPlatform(0);
             }
         }
 
-        // Main Player
+        // Draw Main Player
         drawCloud(player.x, player.y);
 
         if (player.y > canvas.height) gameOver();
@@ -272,9 +320,13 @@
     function gameOver() {
         gameRunning = false;
         let finalScore = Math.floor(score);
-        if (finalScore > bestClimb) localStorage.setItem('cloudHopperBest', finalScore);
+        if (finalScore > bestClimb) {
+            localStorage.setItem('cloudHopperBest', finalScore);
+            bestClimb = finalScore;
+            document.getElementById('bestClimb').innerText = bestClimb + "m";
+        }
         overlay.style.display = 'flex';
-        overlay.innerHTML = `<h2>Game Over</h2><p>${finalScore}m</p><button class="btn-action" onclick="location.reload()">RETRY</button>`;
+        overlay.innerHTML = `<h2>Game Over</h2><p style="font-size:1.5rem">${finalScore}m</p><button class="btn-action" onclick="location.reload()">RETRY</button>`;
     }
 
     document.getElementById('startBtn').onclick = () => {
