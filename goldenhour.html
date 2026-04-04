@@ -3,97 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Vapor Drift - ShareTheSky</title>
+    <title>Cloud Drift - ShareTheSky</title>
     <style>
-        :root { --pink: #ff7eb3; --cyan: #7afcff; }
+        /* Modernized Aesthetic Color Palette */
+        :root { 
+            --mist-pink: rgba(255, 126, 179, 0.4); 
+            --mist-cyan: rgba(122, 252, 255, 0.4); 
+            --text-gold: #ffeb3b;
+        }
         body { 
-            margin: 0; 
-            padding: 0;
-            overflow: hidden; 
-            background: #0b141a; 
-            font-family: 'Segoe UI', sans-serif; 
-            touch-action: none; 
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            margin: 0; padding: 0; overflow: hidden; 
+            background: #0b141a; font-family: 'Montserrat', 'Segoe UI', sans-serif; 
+            touch-action: none; height: 100vh;
+            display: flex; align-items: center; justify-content: center;
         }
         
         #game-container { 
-            position: relative; 
-            width: 450px; 
-            height: 85vh; /* Responsive height to fit your laptop screen */
-            max-width: 95vw; 
-            background: #000;
-            border-radius: 24px;
-            box-shadow: 0 0 50px rgba(0,0,0,0.5);
-            overflow: hidden;
+            position: relative; width: 450px; height: 85vh;
+            max-width: 95vw; background: #000; border-radius: 24px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5); overflow: hidden;
         }
 
-        canvas { 
-            display: block; 
-            width: 100%; 
-            height: 100%; 
-        }
+        canvas { display: block; width: 100%; height: 100%; }
 
         .ui { 
-            position: absolute; 
-            inset: 0; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            pointer-events: none; 
-            color: white; 
-            z-index: 10;
+            position: absolute; inset: 0; display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; pointer-events: none; 
+            color: white; z-index: 10;
         }
 
         #score-board { 
-            position: absolute; 
-            top: 40px; 
-            font-size: 3.5rem; 
-            font-weight: 200; 
-            letter-spacing: 8px; 
-            text-shadow: 0 0 20px rgba(122, 252, 255, 0.5); 
+            position: absolute; top: 40px; font-size: 3.5rem; 
+            font-weight: 200; letter-spacing: 8px; 
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5); 
         }
 
         .card { 
-            background: rgba(10, 20, 30, 0.85); 
-            backdrop-filter: blur(15px); 
-            padding: 40px; 
-            border-radius: 30px; 
-            text-align: center; 
-            pointer-events: auto; 
-            border: 1px solid rgba(255,255,255,0.1); 
+            background: rgba(10, 20, 30, 0.8); backdrop-filter: blur(15px); 
+            padding: 40px; border-radius: 30px; text-align: center; 
+            pointer-events: auto; border: 1px solid rgba(255,255,255,0.1); 
             width: 70%;
         }
 
         .btn { 
-            background: white; 
-            border: none; 
-            padding: 15px 40px; 
-            border-radius: 50px; 
-            font-weight: bold; 
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            cursor: pointer; 
-            margin-top: 20px; 
+            background: #fff; border: none; padding: 15px 40px; 
+            border-radius: 50px; font-weight: bold; text-transform: uppercase;
+            letter-spacing: 2px; cursor: pointer; margin-top: 20px; 
             transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
         }
 
-        .btn:hover { 
-            transform: scale(1.1); 
-            box-shadow: 0 0 30px var(--cyan); 
-        }
-
-        #overdrive-hint {
-            position: absolute;
-            bottom: 30px;
-            font-size: 0.7rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            opacity: 0.4;
-        }
+        .btn:hover { transform: scale(1.1); box-shadow: 0 0 30px var(--cyan); }
     </style>
 </head>
 <body>
@@ -103,11 +62,10 @@
         <div class="ui">
             <div id="score-board">00</div>
             <div id="start-menu" class="card">
-                <h1 style="font-weight: 200; margin: 0; letter-spacing: 4px;">VAPOR DRIFT</h1>
-                <p style="opacity: 0.6; font-size: 0.9rem; margin: 15px 0;">Spacebar or Tap to Glide</p>
-                <button class="btn" onclick="startGame()">Enter the Sky</button>
+                <h1 style="font-weight: 200; margin: 0; letter-spacing: 4px;">CLOUD DRIFT</h1>
+                <p style="opacity: 0.6; font-size: 0.9rem; margin: 15px 0;">Glide through matching colors</p>
+                <button class="btn" onclick="startGame()">Drift Into Sky</button>
             </div>
-            <div id="overdrive-hint">Match colors to drift through</div>
         </div>
     </div>
 
@@ -118,7 +76,6 @@
     const scoreBoard = document.getElementById('score-board');
     const startMenu = document.getElementById('start-menu');
 
-    // High DPI Scaling for crisp visuals on your laptop
     const dpr = window.devicePixelRatio || 1;
     let viewW, viewH;
 
@@ -131,21 +88,16 @@
     }
     resize();
 
-    let cloud, portals, sparkles, gameActive, score, frame;
+    let vaporCloud, mistyPortals, sparkles, gameActive, score, frame;
 
-    class Particle {
+    class Sparkle {
         constructor(x, y, color) {
             this.x = x; this.y = y;
-            this.size = Math.random() * 2 + 1;
-            this.speedX = -Math.random() * 4 - 2;
-            this.speedY = (Math.random() - 0.5) * 2;
-            this.color = color; this.opacity = 1;
+            this.size = Math.random() * 2 + 0.5;
+            this.speedX = -Math.random() * 3 - 1;
+            this.color = color; this.opacity = 0.8;
         }
-        update() { 
-            this.x += this.speedX; 
-            this.y += this.speedY;
-            this.opacity -= 0.02; 
-        }
+        update() { this.x += this.speedX; this.opacity -= 0.01; }
         draw() {
             ctx.globalAlpha = this.opacity; ctx.fillStyle = this.color;
             ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill();
@@ -153,121 +105,119 @@
         }
     }
 
-    class Portal {
+    class MistyPortal { // MODIFIED: Pinterest-Style Soft Cloud
         constructor() {
-            this.width = 90;
-            this.height = 140;
-            this.x = viewW + 50;
-            // Spawn safely within the responsive height
-            this.y = Math.random() * (viewH - 250) + 125;
-            this.color = Math.random() > 0.5 ? '#ff7eb3' : '#7afcff';
+            this.width = 120; // Wide broad cloud
+            this.height = 160;
+            this.x = viewW + 100;
+            this.y = Math.random() * (viewH - 300) + 150;
+            // Diffused mist colors (semi-transparent)
+            this.color = Math.random() > 0.5 ? 'rgba(255, 126, 179, 0.4)' : 'rgba(122, 252, 255, 0.4)';
             this.passed = false;
         }
         draw() {
             ctx.save();
-            ctx.strokeStyle = this.color;
-            ctx.lineWidth = 3;
-            ctx.shadowBlur = 15;
-            ctx.shadowColor = this.color;
-            
-            // Outer Frame
-            ctx.strokeRect(this.x, this.y - this.height/2, this.width, this.height);
-            
-            // Internal Mist
-            ctx.globalAlpha = 0.1;
+            ctx.globalAlpha = 0.6;
             ctx.fillStyle = this.color;
-            ctx.fillRect(this.x, this.y - this.height/2, this.width, this.height);
+            // Draw a cluster of layered ellipses for a wisp effect
+            ctx.beginPath();
+            ctx.ellipse(this.x, this.y, this.width/2, this.height/2, 0, 0, Math.PI*2);
+            ctx.ellipse(this.x + 20, this.y - 15, this.width/2.5, this.height/2.5, 0, 0, Math.PI*2);
+            ctx.ellipse(this.x - 15, this.y + 10, this.width/2.2, this.height/2.2, 0, 0, Math.PI*2);
+            ctx.fill();
+            
+            // Add a subtle center "glow" 
+            ctx.globalAlpha = 0.8;
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = this.color;
+            ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+            ctx.beginPath();
+            ctx.ellipse(this.x, this.y, this.width/5, this.height/5, 0, 0, Math.PI*2);
+            ctx.fill();
             ctx.restore();
         }
-        update() { this.x -= 3.2; }
+        update() { this.x -= 3.0; }
     }
 
-    class Cloud {
+    class VaporCloud {
         constructor() { 
-            this.x = 80; 
-            this.y = viewH / 2; 
+            this.x = 90; this.y = viewH / 2; 
             this.v = 0; 
-            this.color = '#ff7eb3'; 
+            this.color = 'rgba(255, 126, 179, 0.8)'; // Set default misty pink
         }
         draw() {
             ctx.save();
-            ctx.shadowBlur = 20; ctx.shadowColor = this.color;
+            // Subtler glow for a soft look
+            ctx.shadowBlur = 10; ctx.shadowColor = this.color;
             
-            // Vapor Streak Shape
-            ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+            // The Sleek Vapor Streak
+            ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
             ctx.beginPath();
-            ctx.roundRect(this.x - 35, this.y - 5, 70, 10, 10);
+            ctx.roundRect(this.x - 30, this.y - 5, 60, 10, 10);
             ctx.fill();
             
             // Core Glow
             ctx.fillStyle = this.color;
             ctx.beginPath();
-            ctx.arc(this.x + 25, this.y, 4, 0, Math.PI*2);
+            ctx.arc(this.x + 20, this.y, 4, 0, Math.PI*2);
             ctx.fill();
             ctx.restore();
         }
         update() {
-            this.v += 0.14; // Low floaty gravity
-            if (this.v > 5.5) this.v = 5.5; // Terminal velocity
+            this.v += 0.15; // Airy gravity
+            if (this.v > 6) this.v = 6; 
             this.y += this.v;
-            
-            // Trail particles
-            if (frame % 2 === 0) sparkles.push(new Particle(this.x - 20, this.y, this.color));
-            
-            // Responsive Screen Bounds
+            // Fading trail
+            if (frame % 3 === 0) sparkles.push(new Sparkle(this.x - 15, this.y, this.color));
             if (this.y > viewH || this.y < 0) endGame();
         }
     }
 
     function startGame() {
-        resize(); // Recalculate on every start
-        cloud = new Cloud(); portals = []; sparkles = [];
+        resize();
+        vaporCloud = new VaporCloud(); mistyPortals = []; sparkles = [];
         score = 0; frame = 0; gameActive = true;
-        startMenu.style.display = 'none'; 
-        scoreBoard.innerText = "00";
+        startMenu.style.display = 'none'; scoreBoard.innerText = "00";
         animate();
     }
 
     function animate() {
         if (!gameActive) return;
         
-        // Deep Sky Gradient
+        // Aesthetic Sky Gradient
         let grad = ctx.createLinearGradient(0, 0, 0, viewH);
-        grad.addColorStop(0, '#0f2027'); 
-        grad.addColorStop(1, '#203a43');
+        grad.addColorStop(0, '#10222a'); 
+        grad.addColorStop(1, '#244b58');
         ctx.fillStyle = grad; 
         ctx.fillRect(0,0, viewW, viewH);
 
-        cloud.update(); cloud.draw();
+        vaporCloud.update(); vaporCloud.draw();
 
-        if (frame % 110 === 0) portals.push(new Portal());
+        if (frame % 110 === 0) mistyPortals.push(new MistyPortal());
 
-        portals.forEach((p, i) => {
+        mistyPortals.forEach((p, i) => {
             p.update(); p.draw();
             
-            // Collision: Check if Streak is inside the Portal Width
-            if (!p.passed && cloud.x > p.x && cloud.x < p.x + p.width) {
-                // Vertical check
-                if (Math.abs(p.y - cloud.y) < p.height/2) {
-                    if (p.color === cloud.color) {
-                        score++; 
-                        p.passed = true;
-                        // Swap colors for next challenge
-                        cloud.color = (cloud.color === '#ff7eb3' ? '#7afcff' : '#ff7eb3');
+            // PASSING THROUGH LOGIC (Updated to work with soft cloud shape)
+            if (!p.passed && vaporCloud.x > p.x - p.width/2 && vaporCloud.x < p.x + p.width/2) {
+                if (Math.abs(p.y - vaporCloud.y) < p.height/2.2) {
+                    // Normalize colors for match check (MistyPink vs MistCyan)
+                    const normalizedA = p.color.includes('255, 126') ? 'pink' : 'cyan';
+                    const normalizedB = vaporCloud.color.includes('255, 126') ? 'pink' : 'cyan';
+                    
+                    if (normalizedA === normalizedB) {
+                        score++; p.passed = true;
+                        // Swap vapor trailing color for next challenge
+                        vaporCloud.color = (normalizedB === 'pink' ? 'rgba(122, 252, 255, 0.8)' : 'rgba(255, 126, 179, 0.8)');
                         scoreBoard.innerText = score < 10 ? "0" + score : score;
                     } else { endGame(); }
                 }
             }
-            if (p.x < -150) portals.splice(i, 1);
+            if (p.x < -200) mistyPortals.splice(i, 1);
         });
 
-        sparkles.forEach((s, i) => { 
-            s.update(); s.draw(); 
-            if (s.opacity <= 0) sparkles.splice(i, 1); 
-        });
-
-        frame++; 
-        requestAnimationFrame(animate);
+        sparkles.forEach((s, i) => { s.update(); s.draw(); if (s.opacity <= 0) sparkles.splice(i, 1); });
+        frame++; requestAnimationFrame(animate);
     }
 
     function endGame() {
@@ -277,36 +227,22 @@
             startMenu.style.display = 'block';
             startMenu.innerHTML = `
                 <h2 style="font-weight:200; margin:0; letter-spacing:2px;">DRIFT ENDED</h2>
-                <p style="margin:10px 0; opacity:0.6;">Final Score: ${score}</p>
+                <p style="margin:10px 0; opacity:0.6;">Score: ${score}</p>
                 <button class="btn" onclick="startGame()">Fly Again</button>
             `;
         }, 600);
     }
 
-    // MULTI-DEVICE CONTROLS
     const triggerJump = (e) => {
         if (gameActive) {
             if (e) e.preventDefault();
-            cloud.v = -4.3; // Gentle lift
+            vaporCloud.v = -4.5; // Very soft, airy lift
         }
     };
 
-    // Laptop: Spacebar
-    window.addEventListener('keydown', (e) => {
-        if (e.code === 'Space') triggerJump(e);
-    });
-
-    // Mobile: Touch
-    window.addEventListener('touchstart', (e) => {
-        triggerJump(e);
-    }, { passive: false });
-
-    // Desktop: Click
-    window.addEventListener('mousedown', () => {
-        triggerJump();
-    });
-
-    // Ensure resizing doesn't break the game mid-play
+    window.addEventListener('keydown', (e) => { if (e.code === 'Space') triggerJump(e); });
+    window.addEventListener('touchstart', (e) => { triggerJump(e); }, { passive: false });
+    window.addEventListener('mousedown', () => triggerJump());
     window.addEventListener('resize', resize);
 </script>
 </body>
