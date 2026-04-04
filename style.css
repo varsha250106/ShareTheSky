@@ -4028,3 +4028,49 @@ header {
     color: white;
     transform: scale(1.1);
 }
+/* --- Desktop Nav (Default) --- */
+.menu-icon { display: none; } /* Hide hamburger on desktop */
+
+/* --- Mobile Nav (768px and below) --- */
+@media (max-width: 768px) {
+    .menu-icon {
+        display: block;
+        font-size: 1.5rem;
+        color: var(--dark-text);
+        cursor: pointer;
+    }
+
+    .nav-links {
+        display: none; /* Hide by default on mobile */
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: white;
+        padding: 20px 0;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+
+    /* Class to show menu when clicked */
+    .nav-links.active {
+        display: flex;
+    }
+
+    .nav-links a, .dropdown {
+        margin: 15px 0;
+        width: 100%;
+    }
+
+    /* Make dropdown visible and stacked on mobile */
+    .dropdown-content {
+        position: static; /* Stack links vertically */
+        display: block; 
+        box-shadow: none;
+        background: #f9f9f9;
+        margin-top: 10px;
+    }
+    
+    .dropdown-content::before { display: none; } /* Remove desktop bridge */
+}
