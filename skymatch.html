@@ -11,6 +11,7 @@
             --bg-light: #f8f9fa;
             --dark-text: #2d2d6a;
             --main-font: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            --accent-gold: #ffd700;
         }
 
         body {
@@ -18,9 +19,10 @@
             font-family: var(--main-font);
             background-color: var(--bg-light);
             text-align: center;
+            overflow-x: hidden;
         }
 
-        /* --- Header & Navigation (Synced with Gallery/Upload) --- */
+        /* --- Header & Navigation --- */
         header {
             display: flex;
             justify-content: space-between;
@@ -50,7 +52,6 @@
             font-family: var(--main-font);
         }
 
-        /* --- Vertical Dropdown Styling --- */
         .dropdown { position: relative; }
         .dropdown-content {
             display: none;
@@ -75,45 +76,70 @@
             transition: 0.2s;
         }
 
-        .dropdown-content a:hover {
-            background-color: #f8f9ff;
-            color: var(--primary-purple);
-        }
-
+        .dropdown-content a:hover { background-color: #f8f9ff; color: var(--primary-purple); }
         .dropdown:hover .dropdown-content { display: block; }
 
         /* --- Game Area --- */
         .game-container {
-            max-width: 800px;
-            margin: 40px auto;
+            max-width: 900px;
+            margin: 30px auto;
             padding: 20px;
         }
 
-        h1 { color: var(--dark-text); margin-bottom: 5px; }
-        
-        .difficulty-picker {
-            margin-bottom: 25px;
-            background: white;
-            padding: 15px;
-            border-radius: 15px;
-            display: inline-block;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        .controls-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
         }
+
+        .control-box {
+            background: white;
+            padding: 10px 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        label { font-weight: 700; color: var(--dark-text); font-size: 0.9rem; }
 
         select {
-            padding: 8px 15px;
-            border-radius: 10px;
-            border: 2px solid #eee;
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
             font-family: inherit;
-            font-weight: 600;
-            color: var(--dark-text);
-            outline: none;
             cursor: pointer;
+            outline: none;
         }
 
-        .stats { margin-bottom: 25px; font-weight: 700; color: #666; font-size: 1.1rem; }
+        /* --- Power-Up Button --- */
+        #peek-btn {
+            background: var(--accent-gold);
+            color: #443300;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+            display: none; /* Hidden until 2 matches made */
+            margin: 10px auto;
+            animation: pulse 2s infinite;
+        }
 
-        /* --- Memory Grid (Dynamic) --- */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .stats { font-weight: 700; color: #666; margin-bottom: 20px; font-size: 1.1rem; }
+
+        /* --- Grid & Cards --- */
         .memory-grid {
             display: grid;
             gap: 12px;
@@ -131,10 +157,19 @@
 
         .card.flipped { transform: rotateY(180deg); }
 
+        /* Mismatch Shake Effect */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0) rotateY(180deg); }
+            20% { transform: translateX(-8px) rotateY(180deg); }
+            40% { transform: translateX(8px) rotateY(180deg); }
+            60% { transform: translateX(-8px) rotateY(180deg); }
+            80% { transform: translateX(8px) rotateY(180deg); }
+        }
+        .card.mismatch { animation: shake 0.4s linear; }
+
         .card-front, .card-back {
             position: absolute;
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             backface-visibility: hidden;
             border-radius: 12px;
             display: flex;
@@ -145,37 +180,29 @@
 
         .card-front {
             background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
-            color: white;
-            font-size: 1.5rem;
+            color: white; font-size: 1.5rem;
         }
 
-        .card-back {
-            background: white;
-            transform: rotateY(180deg);
-            overflow: hidden;
-        }
+        .card-back { background: white; transform: rotateY(180deg); overflow: hidden; }
+        .card-back img { width: 100%; height: 100%; object-fit: cover; }
 
-        .card-back img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        /* --- Aesthetic Filters --- */
+        .filter-retro img { filter: sepia(0.4) contrast(1.2) brightness(0.9) saturate(1.3); }
+        .filter-golden img { filter: brightness(1.1) sepia(0.2) saturate(1.6) hue-rotate(-10deg); }
+        .filter-moody img { filter: contrast(1.4) brightness(0.7) saturate(0.7); }
 
         .reset-btn {
-            margin-top: 40px;
-            padding: 14px 40px;
+            margin-top: 30px;
+            padding: 12px 35px;
             background: var(--primary-purple);
             color: white;
             border: none;
             border-radius: 30px;
             font-weight: 700;
-            font-size: 1rem;
             cursor: pointer;
-            transition: 0.3s ease;
-            box-shadow: 0 4px 15px rgba(161, 140, 209, 0.3);
+            transition: 0.3s;
         }
-
-        .reset-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(161, 140, 209, 0.4); }
+        .reset-btn:hover { transform: scale(1.05); }
     </style>
 </head>
 <body>
@@ -204,19 +231,31 @@
 <div class="game-container">
     <h1>Sky Match ☁️</h1>
     
-    <div class="difficulty-picker">
-        <label style="font-weight: 700; color: var(--dark-text);">Grid Size: </label>
-        <select id="gridSize" onchange="resetWithNewSize()">
-            <option value="4">4 x 4 (Easy)</option>
-            <option value="6">6 x 6 (Normal)</option>
-            <option value="8">8 x 8 (Hard)</option>
-        </select>
+    <div class="controls-wrapper">
+        <div class="control-box">
+            <label>Size:</label>
+            <select id="gridSize" onchange="resetWithNewSize()">
+                <option value="4">4 x 4</option>
+                <option value="6">6 x 6</option>
+                <option value="8">8 x 8</option>
+            </select>
+        </div>
+        <div class="control-box">
+            <label>Filter:</label>
+            <select id="themeFilter" onchange="applyTheme()">
+                <option value="none">Original</option>
+                <option value="retro">90s Retro 🎥</option>
+                <option value="golden">Golden Hour ☀️</option>
+                <option value="moody">Deep Moody ⛈️</option>
+            </select>
+        </div>
     </div>
+
+    <button id="peek-btn" onclick="useLightningPeek()">⚡ LIGHTNING PEEK READY!</button>
 
     <p class="stats">Moves: <span id="move-count">0</span> | Matches: <span id="match-count">0</span>/<span id="total-matches">8</span></p>
     
-    <div class="memory-grid" id="game-grid">
-        </div>
+    <div class="memory-grid" id="game-grid"></div>
 
     <button class="reset-btn" onclick="resetWithNewSize()">Restart Game</button>
 </div>
@@ -241,41 +280,40 @@
     let moves = 0;
     let matches = 0;
     let lockBoard = false;
+    let powerUsed = false;
 
     async function initGame(size = 4) {
         const totalCards = size * size;
         const pairCount = totalCards / 2;
         
-        // Reset UI
+        // Reset UI & State
         document.getElementById('total-matches').innerText = pairCount;
         document.getElementById('move-count').innerText = "0";
         document.getElementById('match-count').innerText = "0";
+        document.getElementById('peek-btn').style.display = "none";
         moves = 0;
         matches = 0;
         flippedCards = [];
         lockBoard = false;
+        powerUsed = false;
 
-        // Fetch Photos
-        const q = query(collection(db, "photos"), limit(50));
+        const q = query(collection(db, "photos"), limit(60));
         const querySnapshot = await getDocs(q);
         let photoPool = [];
         querySnapshot.forEach(doc => photoPool.push(doc.data().url));
 
-        // Fallback photos if gallery is empty
         if(photoPool.length < pairCount) {
             const fallback = "https://images.unsplash.com/photo-1513002749550-c59d786b8e6c?auto=format&fit=crop&w=400";
             while(photoPool.length < pairCount) photoPool.push(fallback);
         }
 
-        // Shuffle and pick
         photoPool = photoPool.sort(() => 0.5 - Math.random()).slice(0, pairCount);
         const gameImages = [...photoPool, ...photoPool].sort(() => 0.5 - Math.random());
 
-        // Build Grid
         const grid = document.getElementById('game-grid');
         grid.innerHTML = "";
         grid.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
-        grid.style.maxWidth = size === 4 ? "500px" : size === 6 ? "700px" : "900px";
+        grid.style.maxWidth = size === 4 ? "500px" : size === 6 ? "750px" : "850px";
 
         gameImages.forEach((url) => {
             const card = document.createElement('div');
@@ -288,11 +326,11 @@
             card.addEventListener('click', flipCard);
             grid.appendChild(card);
         });
+        applyTheme(); // Maintain filter on restart
     }
 
     function flipCard() {
         if (lockBoard || this === flippedCards[0] || this.classList.contains('flipped')) return;
-
         this.classList.add('flipped');
         flippedCards.push(this);
 
@@ -311,26 +349,55 @@
             matches++;
             document.getElementById('match-count').innerText = matches;
             flippedCards = [];
+            
+            // Unlock Power-up after 2 matches
+            if (matches === 2 && !powerUsed) {
+                document.getElementById('peek-btn').style.display = "block";
+            }
+
             if (matches === (parseInt(document.getElementById('gridSize').value) ** 2 / 2)) {
-                setTimeout(() => alert(`Sky Cleared! ✨ Total Moves: ${moves}`), 500);
+                setTimeout(() => alert(`Sky Cleared! ✨ Moves: ${moves}`), 500);
             }
         } else {
             lockBoard = true;
+            card1.classList.add('mismatch');
+            card2.classList.add('mismatch');
+            
             setTimeout(() => {
-                card1.classList.remove('flipped');
-                card2.classList.remove('flipped');
+                card1.classList.remove('flipped', 'mismatch');
+                card2.classList.remove('flipped', 'mismatch');
                 flippedCards = [];
                 lockBoard = false;
             }, 1000);
         }
     }
 
-    window.resetWithNewSize = () => {
-        const size = parseInt(document.getElementById('gridSize').value);
-        initGame(size);
+    window.useLightningPeek = () => {
+        if (lockBoard || powerUsed) return;
+        lockBoard = true;
+        powerUsed = true;
+        document.getElementById('peek-btn').style.display = "none";
+
+        const unlipped = document.querySelectorAll('.card:not(.flipped)');
+        unlipped.forEach(c => c.classList.add('flipped'));
+
+        setTimeout(() => {
+            unlipped.forEach(c => c.classList.remove('flipped'));
+            lockBoard = false;
+        }, 1500); // 1.5 seconds peek
     };
 
-    // Initial Load
+    window.applyTheme = () => {
+        const theme = document.getElementById('themeFilter').value;
+        const grid = document.getElementById('game-grid');
+        grid.classList.remove('filter-retro', 'filter-golden', 'filter-moody');
+        if (theme !== 'none') grid.classList.add(`filter-${theme}`);
+    };
+
+    window.resetWithNewSize = () => {
+        initGame(parseInt(document.getElementById('gridSize').value));
+    };
+
     initGame(4);
 </script>
 </body>
