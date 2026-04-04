@@ -1813,3 +1813,216 @@ footer {
         aspect-ratio: 1 / 1; /* Squares look better on mobile feed */
     }
 }
+/* --- Root Variables for Consistency --- */
+:root {
+    --primary-purple: #a18cd1;
+    --secondary-pink: #fbc2eb;
+    --dark-text: #2d2d6a;
+    --light-gray: #f8f9fc;
+    --glass-bg: rgba(255, 255, 255, 0.8);
+}
+
+/* --- Base Layout --- */
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    background: var(--light-gray);
+    color: #333;
+    line-height: 1.6;
+}
+
+/* --- Shared Navigation & Header --- */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 5%;
+    background: white;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.logo a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: var(--dark-text);
+}
+
+.nav-links {
+    display: flex;
+    gap: 25px;
+    align-items: center;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--dark-text);
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.nav-links a:hover {
+    color: var(--primary-purple);
+}
+
+/* --- Responsive Pinterest Grid --- */
+.pinterest-grid {
+    display: grid;
+    /* Laptop: 3-4 columns | Tablet: 2 columns | Mobile: 1 column */
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+    padding: 20px 5%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* --- Card Styling --- */
+.pin-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.pin-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(161, 140, 209, 0.2);
+}
+
+.pin-image-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 5; /* Keeps vertical height consistent */
+    overflow: hidden;
+}
+
+.pin-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.pin-card:hover .pin-img {
+    transform: scale(1.05);
+}
+
+/* --- Like & Action Buttons --- */
+.pin-top-actions {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    display: flex;
+    gap: 8px;
+    z-index: 5;
+}
+
+.action-btn {
+    background: white;
+    border: none;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.pin-like-overlay {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    background: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 30px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: 0.3s;
+}
+
+.pin-like-overlay.liked {
+    background: #ff4757;
+    color: white;
+}
+
+/* --- Content Styling --- */
+.pin-content {
+    padding: 15px 20px 20px;
+}
+
+.pin-content h3 {
+    margin: 0 0 10px 0;
+    color: var(--dark-text);
+    font-size: 1.2rem;
+}
+
+.pin-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.pin-delete {
+    background: #fff0f0;
+    color: #ff4757;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.pin-delete:hover {
+    background: #ff4757;
+    color: white;
+}
+
+/* --- Mobile Specific Fixes --- */
+@media (max-width: 768px) {
+    .nav-links {
+        display: none; /* Hide standard nav for mobile menu toggle */
+    }
+    
+    .pinterest-grid {
+        grid-template-columns: 1fr; /* Single column on phones */
+        padding: 10px 15px;
+    }
+
+    .pin-image-wrapper {
+        aspect-ratio: 1 / 1; /* Squares look cleaner on mobile feeds */
+    }
+
+    .pin-top-actions {
+        top: 10px;
+        right: 10px;
+    }
+}
+
+/* --- Footer --- */
+footer {
+    text-align: center;
+    padding: 30px;
+    color: #aaa;
+    font-size: 0.8rem;
+}
