@@ -4,45 +4,149 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload - ShareTheSky</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <style>
-        .upload-card {
-            max-width: 500px; margin: 50px auto; background: white;
-            padding: 30px; border-radius: 20px; text-align: center;
-        }
-        .drop-zone {
-            border: 2px dashed #ccc; padding: 40px; border-radius: 15px;
-            margin-bottom: 20px; cursor: pointer;
-        }
-        input[type="text"] {
-            width: 100%; padding: 12px; margin-bottom: 20px;
-            border: 1px solid #ddd; border-radius: 8px;
-        }
-    </style>
 </head>
 <body>
-    <header>
-        <div class="logo"><a href="index.html"><img src="https://img.icons8.com/fluency/48/cloud.png" class="floating-cloud"><span>ShareTheSky</span></a></div>
-        <nav class="nav-links">
-            <a href="index.html">Home</a>
-            <div class="dropdown">
-                <button class="dropbtn">Explore ▾</button>
-                <div class="dropdown-content">
-                    <a href="gallery.html">Gallery</a>
-                    <a href="upload.html">Upload</a>
-                </div>
-            </div>
-        </nav>
-    </header>
 
-    <div class="upload-card">
-        <h2>Upload Your Sky Photo 🌟</h2>
-        <div class="drop-zone" id="dropZone">
-            <img src="https://img.icons8.com/fluency/48/cloud.png" style="width:50px"><br>
-            Click or Drag photo here
-        </div>
-        <input type="text" id="caption" placeholder="Write a caption...">
-        <button class="main-btn" style="width:100%; border:none; cursor:pointer">Share the Sky</button>
+<header>
+    <div class="header-container">
+        <h1 class="logo">
+            <a href="index.html">
+                <span class="logo-icon">☁️</span> ShareTheSky
+            </a>
+        </h1>
+        
+        <nav class="nav-links" id="nav-list">
+            <a href="index.html">Home</a>
+            <a href="upload.html" class="active">Upload</a>
+            <a href="gallery.html">Gallery</a>
+            <a href="about.html">About Me</a>
+        </nav>
     </div>
+</header>
+
+<main class="upload-wrapper">
+    <section class="upload-card">
+        <h2>Upload Your Sky Photo 🌤️</h2>
+        
+        <div id="dropArea" class="upload-box" onclick="document.getElementById('fileInput').click()">
+            <div class="upload-content">
+                <div class="upload-icon-container">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3208/3208752.png" alt="Cloud Icon" class="cloud-img">
+                </div>
+                <p id="uploadText">Click to select or drag your sky here</p>
+                <img id="previewImage" class="preview-img" style="display:none;">
+            </div>
+        </div>
+
+        <input type="file" id="fileInput" accept="image/*" style="display: none;">
+
+        <div class="input-container">
+            <input type="text" id="captionInput" placeholder="Write a caption... (or leave blank for a random name)">
+        </div>
+
+        <button id="uploadBtn" class="main-upload-btn">Share the Sky</button>
+    </section>
+</main>
+
+<footer>
+    <p>© 2026 ShareTheSky — Created with love ♥</p>
+</footer>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    // Firebase Configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyDxgtNzywhjYGR7R2XMVobR73-SioT6v98",
+        authDomain: "sharethesky-a9c7d.firebaseapp.com",
+        projectId: "sharethesky-a9c7d",
+        storageBucket: "sharethesky-a9c7d.firebasestorage.app",
+        messagingSenderId: "1047232389865",
+        appId: "1:1047232389865:web:37694bf13bcef31f570678"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let mySkyUserId = localStorage.getItem("mySkyUserId") || "user_" + Math.random().toString(36).substr(2, 9);
+    localStorage.setItem("mySkyUserId", mySkyUserId);
+
+    const cloudName = "dqpmybazh";
+    const uploadPreset = "sharethesky";
+
+    const fileInput = document.getElementById("fileInput");
+    const previewImage = document.getElementById("previewImage");
+    const uploadText = document.getElementById("uploadText");
+    const uploadBtn = document.getElementById("uploadBtn");
+    const cloudIcon = document.querySelector(".upload-icon-container");
+
+    const skyNames = ["Infinite Azure", "Cotton Candy Clouds", "Golden Hour Glow", "Midnight Whisper", "Painted Horizon", "Celestial Canvas"];
+
+    fileInput.addEventListener("change", function() {
+        const file = this.files[0];
+        if (file) {
+            previewImage.src = URL.createObjectURL(file);
+            previewImage.style.display = "block";
+            uploadText.innerText = "Selected: " + file.name;
+            cloudIcon.style.display = "none";
+        }
+    });
+
+    uploadBtn.addEventListener("click", async () => {
+        const file = fileInput.files[0];
+        if (!file) return alert("Please select a sky photo first!");
+
+        uploadBtn.disabled = true;
+        uploadBtn.innerText = "Checking the sky...";
+
+        let userCaption = document.getElementById("captionInput").value.trim();
+        if (userCaption === "") userCaption = skyNames[Math.floor(Math.random() * skyNames.length)];
+
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", uploadPreset);
+
+        try {
+            const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+                method: "POST",
+                body: formData
+            });
+            const data = await res.json();
+
+            // AI Moderation logic (Cloudinary needs "Google Video Intelligence" or "Amazon Rekognition" add-on)
+            let isSafe = true;
+            if (data.moderation) {
+                const rejected = data.moderation.some(m => m.status === "rejected");
+                if (rejected) isSafe = false;
+            }
+
+            if (!isSafe) {
+                alert("☁️ Sky Check Failed: This doesn't look like a clear sky!");
+                uploadBtn.disabled = false;
+                uploadBtn.innerText = "Share the Sky";
+                return;
+            }
+
+            await addDoc(collection(db, "photos"), {
+                url: data.secure_url,
+                caption: userCaption,
+                date: new Date().toLocaleString(),
+                likes: 0,
+                uploaderId: mySkyUserId 
+            });
+
+            alert("Sky shared successfully! 🌍");
+            window.location.href = "gallery.html";
+        } catch (err) {
+            console.error(err);
+            alert("Connection error. Try again!");
+            uploadBtn.disabled = false;
+            uploadBtn.innerText = "Share the Sky";
+        }
+    });
+</script>
 </body>
 </html>
