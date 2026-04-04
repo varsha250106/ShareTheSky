@@ -4144,3 +4144,69 @@ header {
         display: flex; /* Shows the menu when 'active' class is added */
     }
 }
+/* --- Updated Navigation for Gallery to match Upload --- */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 5%;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.nav-links { 
+    display: flex; 
+    align-items: center; 
+    gap: 10px; /* Keeps Home and Explore spaced correctly */
+}
+
+.nav-links a, .dropbtn {
+    text-decoration: none;
+    color: #555;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: 0.3s;
+    background: none; 
+    border: none; 
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    margin: 0; /* Remove the large left margin to keep it tight */
+}
+
+/* --- Dropdown Layout (Matches Upload Screenshot) --- */
+.dropdown { position: relative; }
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: white;
+    min-width: 150px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    padding: 10px 0;
+    text-align: center; /* Centers the text like in your upload page */
+    z-index: 2000;
+}
+
+.dropdown-content a {
+    color: #444;
+    padding: 10px 15px;
+    display: block;
+    margin: 0 !important; /* Forces them to stay in a vertical column */
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.dropdown-content a:hover {
+    background-color: #f8f9ff;
+    color: #a18cd1;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
