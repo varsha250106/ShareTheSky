@@ -2,216 +2,200 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cloud Chaser - ShareTheSky</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sky Charades - ShareTheSky</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --pink: #ff7eb3; --blue: #7afcff; --accent: #feb47b; }
-        
-        body { 
-            margin: 0; background: linear-gradient(to bottom, #0f0c29, #302b63); 
-            color: white; font-family: 'Segoe UI', sans-serif; overflow: hidden;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;
-            touch-action: none;
+        :root {
+            --bg: #0a0a12;
+            --glass: rgba(255, 255, 255, 0.1);
+            --accent: #bb86fc;
+            --success: #03dac6;
+        }
+
+        body {
+            margin: 0; font-family: 'Segoe UI', sans-serif;
+            background: var(--bg); color: white;
+            display: flex; flex-direction: column; align-items: center;
+            min-height: 100vh; padding: 20px;
         }
 
         .exit-btn {
-            position: absolute; top: 20px; left: 20px; color: white; text-decoration: none;
-            background: rgba(255,255,255,0.1); padding: 10px 18px; border-radius: 25px; font-size: 14px; z-index: 100;
+            position: absolute; top: 20px; left: 20px;
+            color: white; text-decoration: none;
+            background: var(--glass); padding: 10px 18px;
+            border-radius: 25px; font-size: 14px; backdrop-filter: blur(10px);
         }
 
-        #game-canvas {
-            background: linear-gradient(to bottom, #4facfe 0%, #00f2fe 100%);
-            border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            max-width: 100%; max-height: 80vh; cursor: pointer;
+        header { margin-top: 50px; text-align: center; }
+
+        /* The AI Image Container */
+        .image-container {
+            position: relative; width: 100%; max-width: 400px;
+            aspect-ratio: 1/1; margin: 25px 0;
+            border-radius: 20px; overflow: hidden;
+            border: 4px solid var(--glass);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
         }
 
-        .ui-layer {
-            position: absolute; pointer-events: none; text-align: center; width: 100%;
+        #ai-image { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+
+        /* Word Cloud / Chips */
+        .word-grid {
+            display: flex; flex-wrap: wrap; justify-content: center;
+            gap: 12px; max-width: 500px; margin-bottom: 30px;
         }
 
-        #score-display { top: 40px; font-size: 2rem; font-weight: bold; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        .word-chip {
+            background: var(--glass); border: 1px solid rgba(255,255,255,0.2);
+            padding: 10px 20px; border-radius: 15px; cursor: pointer;
+            transition: 0.3s; font-weight: 500;
+        }
+
+        .word-chip:hover { background: rgba(255,255,255,0.2); }
+        .word-chip.selected { 
+            background: var(--accent); color: #000; border-color: var(--accent); 
+            transform: translateY(-3px);
+        }
+
+        /* UI Feedback */
+        #status-msg { height: 30px; margin-bottom: 10px; font-weight: bold; }
         
-        #start-msg { 
-            background: rgba(0,0,0,0.6); padding: 20px 40px; border-radius: 50px;
-            backdrop-filter: blur(10px); pointer-events: auto; cursor: pointer;
+        .controls { display: flex; gap: 15px; }
+
+        .btn {
+            background: transparent; border: 2px solid var(--accent);
+            color: var(--accent); padding: 12px 30px; border-radius: 25px;
+            cursor: pointer; font-weight: bold; transition: 0.3s;
         }
+
+        .btn:hover { background: var(--accent); color: #000; }
+        .btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        /* Level Indicator */
+        .level-dots { display: flex; gap: 8px; margin-top: 20px; }
+        .dot { width: 8px; height: 8px; background: var(--glass); border-radius: 50%; }
+        .dot.active { background: var(--accent); box-shadow: 0 0 10px var(--accent); }
     </style>
 </head>
 <body>
 
     <a href="index.html" class="exit-btn"><i class="fas fa-arrow-left"></i> Exit</a>
 
-    <div id="score-display" class="ui-layer">0</div>
+    <header>
+        <h1>Sky Charades</h1>
+        <p style="opacity: 0.7;">Guess the 3 keywords used to generate this sky.</p>
+    </header>
 
-    <canvas id="game-canvas"></canvas>
-
-    <div id="start-screen" class="ui-layer">
-        <div id="start-msg" onclick="startGame()">
-            <h2>Cloud Chaser</h2>
-            <p>Tap to stay afloat.<br>Match your color to the Aura Rings!</p>
-            <strong style="color: var(--accent);">TAP TO FLY</strong>
-        </div>
+    <div class="image-container">
+        <img id="ai-image" src="" alt="AI Sky Rendering">
     </div>
 
+    <div id="status-msg"></div>
+
+    <div class="word-grid" id="word-grid">
+        </div>
+
+    <div class="controls">
+        <button class="btn" id="submit-btn" onclick="checkGuess()">Verify Prompt</button>
+    </div>
+
+    <div class="level-dots" id="level-dots"></div>
+
 <script>
-    const canvas = document.getElementById('game-canvas');
-    const ctx = canvas.getContext('2d');
-    const scoreEl = document.getElementById('score-display');
-    const startScreen = document.getElementById('start-screen');
-
-    // Resize for mobile
-    canvas.width = 400;
-    canvas.height = 600;
-
-    // Game Constants
-    const GRAVITY = 0.25;
-    const FLAP = -5;
-    const SPAWN_RATE = 120; // Every 120 frames
-    const COLORS = ['#ff7eb3', '#7afcff']; // Pink and Blue
-
-    let cloud, rings, particles, score, gameActive, frame;
-
-    class Cloud {
-        constructor() {
-            this.reset();
+    const levels = [
+        {
+            img: "https://images.unsplash.com/photo-1614850523296-d8c1af93d400?w=600",
+            correct: ["Neon", "Lightning", "90s Anime"],
+            others: ["Cloudy", "Ocean", "Vintage", "Cyberpunk", "Sunset", "Realistic"]
+        },
+        {
+            img: "https://images.unsplash.com/photo-1534067783941-51c9c23ecefd?w=600",
+            correct: ["Cinematic", "Mist", "Mountains"],
+            others: ["Red", "Digital", "Space", "Pastel", "Rainy", "Flat Design"]
+        },
+        {
+            img: "https://images.unsplash.com/photo-1464802686167-b939a67e06a1?w=600",
+            correct: ["Starry", "Galaxy", "Ethereal"],
+            others: ["Urban", "Daylight", "Thunder", "Minimalist", "Yellow", "Grainy"]
         }
-        reset() {
-            this.x = 50;
-            this.y = 300;
-            this.velocity = 0;
-            this.radius = 25;
-            this.color = COLORS[0];
-        }
-        draw() {
-            ctx.save();
-            ctx.shadowBlur = 20;
-            ctx.shadowColor = this.color;
-            ctx.fillStyle = "rgba(255,255,255,0.9)";
-            
-            // Draw a wispy cloud shape using 3 circles
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-            ctx.arc(this.x + 15, this.y - 10, this.radius * 0.8, 0, Math.PI * 2);
-            ctx.arc(this.x + 15, this.y + 10, this.radius * 0.8, 0, Math.PI * 2);
-            ctx.fill();
-            
-            // Glow effect for active color
-            ctx.strokeStyle = this.color;
-            ctx.lineWidth = 3;
-            ctx.stroke();
-            ctx.restore();
-        }
-        update() {
-            this.velocity += GRAVITY;
-            this.y += this.velocity;
-            if (this.y + this.radius > canvas.height || this.y - this.radius < 0) endGame();
-        }
-    }
+    ];
 
-    class Ring {
-        constructor() {
-            this.x = canvas.width + 50;
-            this.y = Math.random() * (canvas.height - 200) + 100;
-            this.width = 15;
-            this.height = 100;
-            this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
-            this.passed = false;
-        }
-        draw() {
-            ctx.save();
-            ctx.shadowBlur = 15;
-            ctx.shadowColor = this.color;
-            ctx.strokeStyle = this.color;
-            ctx.lineWidth = 6;
-            ctx.setLineDash([5, 5]); // Dashed "Aura" look
-            
-            ctx.beginPath();
-            ctx.ellipse(this.x, this.y, 20, 60, 0, 0, Math.PI * 2);
-            ctx.stroke();
-            ctx.restore();
-        }
-        update() {
-            this.x -= 3;
-        }
-    }
+    let currentLevel = 0;
+    let selectedWords = [];
 
-    function startGame() {
-        cloud = new Cloud();
-        rings = [];
-        score = 0;
-        frame = 0;
-        gameActive = true;
-        scoreEl.innerText = "0";
-        startScreen.style.display = "none";
-        animate();
-    }
-
-    function animate() {
-        if (!gameActive) return;
+    function initGame() {
+        selectedWords = [];
+        const level = levels[currentLevel];
+        const wordGrid = document.getElementById('word-grid');
+        const status = document.getElementById('status-msg');
         
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // Reset UI
+        status.innerText = "";
+        document.getElementById('ai-image').src = level.img;
+        wordGrid.innerHTML = "";
         
-        // Background Gradient Shift
-        let bgGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-        bgGrad.addColorStop(0, '#4facfe');
-        bgGrad.addColorStop(1, '#00f2fe');
-        ctx.fillStyle = bgGrad;
-        ctx.fillRect(0,0, canvas.width, canvas.height);
+        // Create Dots
+        const dots = document.getElementById('level-dots');
+        dots.innerHTML = levels.map((_, i) => `<div class="dot ${i === currentLevel ? 'active' : ''}"></div>`).join('');
 
-        cloud.update();
-        cloud.draw();
+        // Shuffle all words
+        const allWords = [...level.correct, ...level.others].sort(() => Math.random() - 0.5);
 
-        // Manage Rings
-        if (frame % SPAWN_RATE === 0) rings.push(new Ring());
-        
-        rings.forEach((ring, index) => {
-            ring.update();
-            ring.draw();
-
-            // Collision Detection
-            if (!ring.passed && ring.x < cloud.x + cloud.radius) {
-                if (Math.abs(ring.y - cloud.y) < 60) {
-                    if (cloud.color === ring.color) {
-                        score++;
-                        scoreEl.innerText = score;
-                        ring.passed = true;
-                        // Swap Cloud Color
-                        cloud.color = (cloud.color === COLORS[0]) ? COLORS[1] : COLORS[0];
-                    } else {
-                        endGame();
-                    }
-                }
-            }
-
-            if (ring.x < -50) rings.splice(index, 1);
+        allWords.forEach(word => {
+            const chip = document.createElement('div');
+            chip.className = 'word-chip';
+            chip.innerText = word;
+            chip.onclick = () => toggleWord(chip, word);
+            wordGrid.appendChild(chip);
         });
-
-        frame++;
-        requestAnimationFrame(animate);
     }
 
-    function endGame() {
-        gameActive = false;
-        startScreen.style.display = "flex";
-        document.getElementById('start-msg').innerHTML = `
-            <h2 style="color:#ff4b2b">Game Over</h2>
-            <p>Score: ${score}</p>
-            <strong style="color: var(--accent);">TRY AGAIN</strong>
-        `;
-    }
-
-    // Input Listeners
-    const handleInput = (e) => {
-        if (gameActive) {
-            cloud.velocity = FLAP;
+    function toggleWord(el, word) {
+        if (el.classList.contains('selected')) {
+            el.classList.remove('selected');
+            selectedWords = selectedWords.filter(w => w !== word);
+        } else if (selectedWords.length < 3) {
+            el.classList.add('selected');
+            selectedWords.push(word);
         }
-    };
+    }
 
-    window.addEventListener('keydown', (e) => { if (e.code === 'Space') handleInput(); });
-    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); handleInput(); });
-    canvas.addEventListener('mousedown', handleInput);
+    function checkGuess() {
+        if (selectedWords.length < 3) {
+            document.getElementById('status-msg').innerText = "Pick 3 keywords!";
+            return;
+        }
 
+        const level = levels[currentLevel];
+        const isCorrect = selectedWords.every(w => level.correct.includes(w));
+
+        const status = document.getElementById('status-msg');
+        if (isCorrect) {
+            status.style.color = "var(--success)";
+            status.innerText = "Prompt Matched! ✨";
+            
+            setTimeout(() => {
+                currentLevel++;
+                if (currentLevel < levels.length) {
+                    initGame();
+                } else {
+                    alert("You are a Master Prompt Engineer!");
+                    currentLevel = 0;
+                    initGame();
+                }
+            }, 1500);
+        } else {
+            status.style.color = "#ff4b2b";
+            status.innerText = "Incorrect keywords. Try again.";
+            // Deselect all
+            setTimeout(() => {
+                initGame();
+            }, 1000);
+        }
+    }
+
+    initGame();
 </script>
 </body>
 </html>
