@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gallery - ShareTheSky</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
     
     <style>
-        /* --- GLOBAL & HEADER STYLES --- */
+        /* --- GLOBAL STYLES --- */
         body { 
             font-family: 'Inter', sans-serif; 
             margin: 0; 
             background: #f8f9fc; 
+            color: #333;
         }
 
         header {
@@ -20,8 +20,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 15px 5%;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
+            background: white;
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -35,16 +34,14 @@
             text-decoration: none;
         }
 
-        .header-logo { width: 35px; height: auto; transition: transform 0.3s ease; }
-        .logo a:hover .header-logo { transform: translateY(-3px) rotate(-5deg); }
+        .header-logo { width: 35px; height: auto; }
         .logo span { color: #4a4a8a; font-size: 1.5rem; font-weight: 700; }
 
         .nav-links { display: flex; align-items: center; gap: 20px; }
         .nav-links a { text-decoration: none; color: #4a4a8a; font-weight: 600; transition: 0.3s; }
         .nav-links a:hover { color: #a18cd1; }
-        .nav-links a[href="gallery.html"] { color: #a18cd1; border-bottom: 2px solid #a18cd1; }
 
-        /* --- RESPONSIVE PINTEREST GRID --- */
+        /* --- RESPONSIVE GRID --- */
         .pinterest-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -81,11 +78,11 @@
             cursor: zoom-in;
         }
 
-        /* Fixed Action Buttons - Top Right */
+        /* Top Action Buttons */
         .pin-top-actions {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 12px;
+            right: 12px;
             display: flex;
             gap: 8px;
             z-index: 10;
@@ -94,33 +91,34 @@
         .action-btn {
             background: white;
             border: none;
-            padding: 8px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             cursor: pointer;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            font-size: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
             text-decoration: none;
+            font-size: 16px;
         }
 
-        /* Fixed Like Overlay - Bottom Right */
+        /* Bottom Like Button */
         .pin-like-overlay {
             position: absolute;
             bottom: 12px;
             right: 12px;
-            background: rgba(255, 255, 255, 0.95);
+            background: white;
             border: none;
-            padding: 8px 14px;
+            padding: 8px 15px;
             border-radius: 25px;
             font-weight: 700;
             cursor: pointer;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            transition: 0.3s;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
+            transition: 0.3s;
             z-index: 10;
         }
 
@@ -140,26 +138,23 @@
             padding: 5px 10px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 0.8rem;
+        }
+
+        /* Zoom Pill UI */
+        .zoom-controls {
+            background: white;
+            padding: 10px 25px;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
         /* Mobile Adjustments */
         @media (max-width: 600px) {
             .pinterest-grid { grid-template-columns: 1fr; padding: 10px 20px; }
             .pin-image-wrapper { aspect-ratio: 1 / 1; }
-        }
-
-        .menu-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
-        .menu-toggle span { width: 25px; height: 3px; background-color: #a18cd1; border-radius: 3px; }
-
-        @media (max-width: 768px) {
-            .menu-toggle { display: flex; }
-            .nav-links {
-                display: none; flex-direction: column; position: absolute;
-                top: 70px; right: 20px; background: white; width: 200px;
-                padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            }
-            .nav-links.active { display: flex; }
         }
     </style>
 </head>
@@ -168,28 +163,25 @@
 <header>
     <h1 class="logo">
         <a href="index.html">
-            <img src="https://img.icons8.com/fluency/48/cloud.png" alt="ShareTheSky Logo" class="header-logo">
+            <img src="https://img.icons8.com/fluency/48/cloud.png" alt="Logo" class="header-logo">
             <span>ShareTheSky</span>
         </a>
     </h1>
-    <div class="menu-toggle" id="mobile-menu"><span></span><span></span><span></span></div>
-    <nav class="nav-links" id="nav-list">
+    <nav class="nav-links">
         <a href="index.html">Home</a>
-        <a href="gallery.html">Gallery</a>
+        <a href="gallery.html" style="color: #a18cd1; border-bottom: 2px solid #a18cd1;">Gallery</a>
         <a href="upload.html">Upload</a>
         <a href="about.html">About Me</a>
     </nav>
 </header>
 
-<main class="gallery-container">
-    <section class="gallery-header" style="text-align: center; padding: 40px 20px;">
+<main>
+    <section style="text-align: center; padding: 40px 20px;">
         <h2 style="font-size: 2.2rem; color: #2d2d6a;">Community Sky Gallery ☁️</h2>
         <p style="color: #666;">Explore the beauty of the world, one sky at a time.</p>
     </section>
     <div id="photoGallery" class="pinterest-grid"></div>
 </main>
-
-<footer><p>&copy; 2026 ShareTheSky — Created with love ♥</p></footer>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -208,9 +200,6 @@
     const db = getFirestore(app);
     const galleryContainer = document.getElementById("photoGallery");
     const mySkyUserId = localStorage.getItem("mySkyUserId");
-
-    // Mobile Menu
-    document.getElementById('mobile-menu').onclick = () => document.getElementById('nav-list').classList.toggle('active');
 
     const q = query(collection(db, "photos"), orderBy("date", "desc"));
 
@@ -244,7 +233,6 @@
                     </div>
                 </div>
             `;
-
             galleryContainer.appendChild(card);
 
             // FIXED LIKE LOGIC
@@ -264,25 +252,48 @@
                     localStorage.setItem(likedKey, "true");
                     btn.classList.add("liked");
                 }
-
                 await updateDoc(doc(db, "photos", id), { likes: newCount });
             };
 
             if (isOwner) {
                 card.querySelector(`#del-${id}`).onclick = async () => {
-                    if (confirm("Delete your sky photo?")) await deleteDoc(doc(db, "photos", id));
+                    if (confirm("Delete this photo?")) await deleteDoc(doc(db, "photos", id));
                 };
             }
         });
     });
 
-    // Zoom Function
+    // RESTORED ZOOM PILL LOGIC
     window.openZoom = (url) => {
+        let currentScale = 1;
         const overlay = document.createElement('div');
-        overlay.style = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:2000;display:flex;justify-content:center;align-items:center;cursor:zoom-out;";
-        overlay.innerHTML = `<img src="${url}" style="max-width:90%;max-height:90%;border-radius:10px;transform:scale(1);transition:0.3s;" id="zImg">`;
-        overlay.onclick = () => overlay.remove();
+        overlay.style = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:2000;display:flex;flex-direction:column;justify-content:center;align-items:center;";
+        
+        overlay.innerHTML = `
+            <div style="flex-grow:1; display:flex; align-items:center; justify-content:center; width:100%; overflow:hidden;">
+                <img src="${url}" id="zImg" style="max-width:90%; max-height:80%; border-radius:10px; transition:0.2s;">
+            </div>
+            <div class="zoom-controls" style="margin-bottom:30px; background:white; padding:10px 25px; border-radius:40px; display:flex; gap:15px; align-items:center;">
+                <button id="zOut" style="background:none; border:none; cursor:pointer; font-size:20px;">➖</button>
+                <span id="zPerc" style="font-weight:700; color:#2d2d6a;">100%</span>
+                <button id="zIn" style="background:none; border:none; cursor:pointer; font-size:20px;">➕</button>
+                <button id="zClose" style="background:#ff4757; color:white; border:none; padding:8px 15px; border-radius:20px; cursor:pointer; font-weight:600;">Close</button>
+            </div>
+        `;
         document.body.appendChild(overlay);
+
+        const img = overlay.querySelector('#zImg');
+        const txt = overlay.querySelector('#zPerc');
+
+        overlay.querySelector('#zIn').onclick = () => { if(currentScale < 3) currentScale += 0.25; update(); };
+        overlay.querySelector('#zOut').onclick = () => { if(currentScale > 0.5) currentScale -= 0.25; update(); };
+        overlay.querySelector('#zClose').onclick = () => overlay.remove();
+        overlay.onclick = (e) => { if(e.target === overlay) overlay.remove(); };
+
+        function update() {
+            img.style.transform = `scale(${currentScale})`;
+            txt.innerText = `${Math.round(currentScale * 100)}%`;
+        }
     };
 </script>
 </body>
