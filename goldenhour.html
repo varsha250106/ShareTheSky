@@ -19,14 +19,12 @@
             display: flex; justify-content: center; align-items: center;
         }
 
-        /* Navigation - Fixed Z-Index */
         .exit-btn {
             position: absolute; top: 20px; left: 20px; 
             color: white; z-index: 2000; text-decoration: none; 
             background: rgba(0,0,0,0.6); padding: 10px 18px; 
             border-radius: 25px; font-size: 14px;
             backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);
-            transition: 0.3s;
         }
 
         #game-container {
@@ -39,25 +37,43 @@
             position: relative; width: 320px; height: 450px;
             border: 12px solid #1a1a1a; border-radius: 30px;
             overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            background: var(--day); transition: background 1.5s ease;
+            background: var(--day); transition: background 1s ease;
         }
+
+        /* NEW: Shooting Star Animation */
+        #shooting-star {
+            position: absolute; width: 100px; height: 2px;
+            background: linear-gradient(to right, white, transparent);
+            top: 100px; left: -100px; transform: rotate(-25deg);
+            opacity: 0; z-index: 5;
+        }
+        .star-animate { animation: shoot 0.8s linear; }
+        @keyframes shoot {
+            0% { left: -100px; opacity: 1; }
+            100% { left: 400px; opacity: 0; }
+        }
+
+        /* NEW: Lightning Effect */
+        #lightning {
+            position: absolute; inset: 0; background: #e0ccff;
+            opacity: 0; z-index: 4; pointer-events: none;
+        }
+        .lightning-bolt { animation: bolt 0.2s ease-in-out 2; }
+        @keyframes bolt { 0%, 100% { opacity: 0; } 50% { opacity: 0.6; } }
 
         .sun-moon {
             position: absolute; width: 50px; height: 50px;
             border-radius: 50%; left: 50%; transform: translateX(-50%);
-            top: 60px; transition: 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            top: 60px; transition: 1.5s ease;
         }
 
         .landscape {
             position: absolute; bottom: 0; width: 200%; height: 120px;
-            background: linear-gradient(to top, #000 30%, transparent);
+            background: linear-gradient(to top, #000 40%, transparent);
             animation: moveBg 15s linear infinite;
         }
 
-        @keyframes moveBg {
-            from { transform: translateX(0); }
-            to { transform: translateX(-50%); }
-        }
+        @keyframes moveBg { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
         .shutter-btn {
             width: 75px; height: 75px; border-radius: 50%;
@@ -65,15 +81,10 @@
             cursor: pointer; margin-top: 30px;
             display: flex; justify-content: center; align-items: center;
         }
-
         .shutter-inner { width: 55px; height: 55px; background: white; border-radius: 50%; }
 
-        #flash {
-            position: absolute; inset: 0; background: white;
-            opacity: 0; pointer-events: none; z-index: 100;
-        }
+        #flash { position: absolute; inset: 0; background: white; opacity: 0; pointer-events: none; z-index: 100; }
 
-        /* Polaroid Result */
         .polaroid {
             position: absolute; width: 270px; background: #fff;
             padding: 12px 12px 30px 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.9);
@@ -82,55 +93,40 @@
             z-index: 1500; color: #222; text-align: center;
         }
         .polaroid.active { transform: rotate(-3deg) translateY(-20px); }
-        
-        /* Image Container to prevent blank spaces */
-        .img-wrap {
-            width: 100%; height: 270px; background: #eee; 
-            border-radius: 2px; overflow: hidden;
-        }
+        .img-wrap { width: 100%; height: 270px; background: #eee; overflow: hidden; }
         .polaroid img { width: 100%; height: 100%; object-fit: cover; }
-
-        .polaroid-label { 
-            font-family: 'Brush Script MT', cursive; font-size: 1.6rem; 
-            margin: 15px 0 10px; color: #444; 
-        }
-
-        .retry-btn {
-            border: none; background: #333; color: white;
-            padding: 8px 25px; border-radius: 20px; cursor: pointer;
-        }
+        .polaroid-label { font-family: 'Brush Script MT', cursive; font-size: 1.6rem; margin: 15px 0 10px; color: #444; }
+        .retry-btn { border: none; background: #333; color: white; padding: 8px 25px; border-radius: 20px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <a href="index.html" class="exit-btn">
-        <i class="fas fa-arrow-left"></i> Exit Game
-    </a>
+    <a href="index.html" class="exit-btn"><i class="fas fa-arrow-left"></i> Exit Game</a>
 
     <div id="game-container">
         <div id="viewfinder">
             <div id="flash"></div>
+            <div id="lightning"></div>
+            <div id="shooting-star"></div>
             <div id="sky-obj" class="sun-moon"></div>
             <div class="landscape"></div>
         </div>
 
         <div id="result-card" class="polaroid">
-            <div class="img-wrap">
-                <img id="photo-output" src="" alt="Snapshot">
-            </div>
+            <div class="img-wrap"><img id="photo-output" src="" alt="Snapshot"></div>
             <div id="photo-caption" class="polaroid-label">Snapshot</div>
             <button class="retry-btn" onclick="restart()">Take Another</button>
         </div>
 
-        <button class="shutter-btn" id="capture">
-            <div class="shutter-inner"></div>
-        </button>
+        <button class="shutter-btn" id="capture"><div class="shutter-inner"></div></button>
     </div>
 
 <script>
     const viewfinder = document.getElementById('viewfinder');
     const skyObj = document.getElementById('sky-obj');
     const flash = document.getElementById('flash');
+    const lightning = document.getElementById('lightning');
+    const star = document.getElementById('shooting-star');
     const resultCard = document.getElementById('result-card');
     const photoOutput = document.getElementById('photo-output');
     const photoCaption = document.getElementById('photo-caption');
@@ -139,30 +135,36 @@
     let time = 0;
     let active = true;
 
-    // Updated gallery links (Higher reliability)
     const gallery = {
         day: "https://images.unsplash.com/photo-1513002749550-c59d786b8e6c?auto=format&fit=crop&w=500&q=80",
         golden: "https://images.unsplash.com/photo-1470252649358-96940c9353d9?auto=format&fit=crop&w=500&q=80",
-        night: "https://images.unsplash.com/photo-1472552947727-b40f05a3962d?auto=format&fit=crop&w=500&q=80"
+        night: "https://images.unsplash.com/photo-1472552947727-b40f05a3962d?auto=format&fit=crop&w=500&q=80",
+        rainbow: "https://images.unsplash.com/photo-1435224639532-680fa285098b?auto=format&fit=crop&w=500&q=80",
+        storm: "https://images.unsplash.com/photo-1551250935-71c96eaf7581?auto=format&fit=crop&w=500&q=80",
+        star: "https://images.unsplash.com/photo-1444330267643-c51b3921d30c?auto=format&fit=crop&w=500&q=80"
     };
 
-    // PRELOAD IMAGES to prevent the "blank snapshot" issue
-    Object.values(gallery).forEach(src => {
-        const img = new Image();
-        img.src = src;
-    });
+    // Preload all
+    Object.values(gallery).forEach(src => { const img = new Image(); img.src = src; });
 
     function update() {
         if (!active) return;
-        time = (time + 1) % 600;
+        time = (time + 1) % 1000; // Longer cycle for more situations
 
-        if (time < 200) { 
+        // Visual Effects Logic
+        if (time === 850) star.classList.add('star-animate');
+        if (time === 930) star.classList.remove('star-animate');
+        if (time === 700 || time === 710) lightning.classList.add('lightning-bolt');
+        if (time === 750) lightning.classList.remove('lightning-bolt');
+
+        // Sky Cycle
+        if (time < 300) { 
             viewfinder.style.background = "var(--day)";
             skyObj.style.background = "#fff700";
             skyObj.style.top = "60px";
             skyObj.style.boxShadow = "0 0 40px #fff700";
         } 
-        else if (time >= 200 && time < 400) { 
+        else if (time >= 300 && time < 600) { 
             viewfinder.style.background = "var(--golden)";
             skyObj.style.background = "#ffcc00";
             skyObj.style.top = "150px";
@@ -180,32 +182,35 @@
     captureBtn.onclick = () => {
         if (!active) return;
         active = false;
-
         flash.style.opacity = "1";
         setTimeout(() => flash.style.opacity = "0", 150);
 
-        // Logic check
-        if (time >= 220 && time < 380) {
+        // SITUATION ENGINE
+        if (time >= 840 && time <= 880) {
+            photoOutput.src = gallery.star;
+            photoCaption.innerText = "Shooting Star! ✨";
+        } else if (time >= 690 && time <= 720) {
+            photoOutput.src = gallery.storm;
+            photoCaption.innerText = "Electric Storm ⚡";
+        } else if (time >= 280 && time < 320) {
+            photoOutput.src = gallery.rainbow;
+            photoCaption.innerText = "Morning Rainbow 🌈";
+        } else if (time >= 320 && time < 580) {
             photoOutput.src = gallery.golden;
             photoCaption.innerText = "Perfect Golden Hour";
-        } else if (time < 220) {
+        } else if (time < 280) {
             photoOutput.src = gallery.day;
-            photoCaption.innerText = "Morning Light";
+            photoCaption.innerText = "Daylight View";
         } else {
             photoOutput.src = gallery.night;
-            photoCaption.innerText = "Starlit Night";
+            photoCaption.innerText = "Quiet Night";
         }
-
         resultCard.classList.add('active');
     };
 
     function restart() {
         resultCard.classList.remove('active');
-        setTimeout(() => {
-            time = 0;
-            active = true;
-            update();
-        }, 300);
+        setTimeout(() => { time = 0; active = true; update(); }, 300);
     }
 
     update();
