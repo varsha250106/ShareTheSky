@@ -4121,3 +4121,26 @@ header {
         background: white;
     }
 }
+@media (max-width: 768px) {
+    .menu-icon {
+        display: block;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: #2d2d6a; /* Matches your logo color */
+    }
+
+    .nav-links {
+        display: none; /* Hidden until clicked */
+        width: 100%;
+        flex-direction: column;
+        background: white;
+        text-align: center;
+        padding: 15px 0;
+        position: relative; 
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+
+    .nav-links.active {
+        display: flex; /* Shows the menu when 'active' class is added */
+    }
+}
