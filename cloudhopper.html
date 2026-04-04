@@ -9,92 +9,62 @@
         :root {
             --primary: #a18cd1;
             --secondary: #fbc2eb;
-            --dark: #1a1a4a;
-            --glass: rgba(255, 255, 255, 0.1);
+            --dark: #0f0f2d;
             --gold: #ffd700;
         }
 
         body { 
-            margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; 
+            margin: 0; font-family: 'Segoe UI', sans-serif; 
             background: #0f0f2d; color: white;
             height: 100vh; overflow: hidden; touch-action: none;
         }
 
-        /* --- GAME LAYOUT --- */
         #game-container {
-            position: relative;
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(to bottom, #0f0f2d 0%, #2d2d6a 100%);
+            position: relative; width: 100vw; height: 100vh;
+            display: flex; justify-content: center; align-items: center;
         }
 
         canvas {
-            background: transparent;
+            background: linear-gradient(to bottom, #0f0f2d 0%, #2d2d6a 100%);
             box-shadow: 0 0 50px rgba(0,0,0,0.5);
-            max-height: 90vh;
-            aspect-ratio: 7/10;
-            border-radius: 20px;
-            display: block;
+            max-width: 100%; max-height: 100%;
+            display: block; border-radius: 15px;
         }
 
-        /* --- HUD (Heads Up Display) --- */
+        /* HUD - Top Stats */
         .hud {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            right: 20px;
-            display: flex;
-            justify-content: space-between;
-            pointer-events: none;
-            z-index: 5;
+            position: absolute; top: 20px; left: 0; width: 100%;
+            display: flex; justify-content: space-around; pointer-events: none; z-index: 5;
         }
 
         .stat-card {
-            background: var(--glass);
-            backdrop-filter: blur(10px);
-            padding: 10px 20px;
-            border-radius: 15px;
-            border: 1px solid rgba(255,255,255,0.2);
-            text-align: center;
+            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(8px);
+            padding: 8px 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);
+            text-align: center; min-width: 80px;
         }
 
-        .energy-bar-bg {
-            width: 120px; height: 8px; background: rgba(255,255,255,0.2);
-            border-radius: 4px; margin-top: 5px; overflow: hidden;
+        .energy-bar {
+            width: 100px; height: 6px; background: rgba(255,255,255,0.2);
+            border-radius: 3px; margin-top: 5px; overflow: hidden;
         }
 
         #energy-fill {
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, var(--secondary), var(--primary));
-            transition: width 0.3s ease-out;
+            width: 100%; height: 100%; background: var(--secondary);
+            transition: width 0.2s;
         }
 
-        /* --- OVERLAYS --- */
+        /* Overlays */
         .overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(15, 15, 45, 0.85);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 10;
-            text-align: center;
-            padding: 20px;
-            border-radius: 20px;
+            position: absolute; inset: 0; background: rgba(15, 15, 45, 0.9);
+            display: flex; flex-direction: column; justify-content: center;
+            align-items: center; z-index: 10; text-align: center;
         }
 
         .btn-start {
-            background: white; color: var(--dark);
-            border: none; padding: 15px 40px; border-radius: 50px;
-            font-weight: 800; cursor: pointer; font-size: 1.1rem;
-            margin-top: 20px; transition: 0.3s;
+            background: white; color: #0f0f2d; border: none;
+            padding: 15px 35px; border-radius: 50px; font-weight: 800;
+            cursor: pointer; font-size: 1.1rem; margin-top: 20px;
         }
-
-        .btn-start:hover { transform: scale(1.1); box-shadow: 0 0 20px var(--primary); }
 
         .hidden { display: none !important; }
     </style>
@@ -104,26 +74,26 @@
 <div id="game-container">
     <div class="hud">
         <div class="stat-card">
-            <small style="text-transform: uppercase; letter-spacing: 1px;">Energy</small>
-            <div class="energy-bar-bg"><div id="energy-fill"></div></div>
+            <small>ENERGY</small>
+            <div class="energy-bar"><div id="energy-fill"></div></div>
         </div>
         <div class="stat-card">
-            <small style="text-transform: uppercase; letter-spacing: 1px;">Stars</small>
-            <div id="score-text" style="font-size: 1.5rem; font-weight: 800; color: var(--gold);">0</div>
+            <small>STARS</small>
+            <div id="score-text" style="font-size: 1.2rem; font-weight: 800; color: var(--gold);">0</div>
         </div>
     </div>
 
     <div id="start-overlay" class="overlay">
-        <i class="fas fa-moon" style="font-size: 3rem; color: var(--secondary); margin-bottom: 20px;"></i>
-        <h1 style="margin: 0;">Sky Collector</h1>
-        <p style="opacity: 0.8;">Collect stars to keep your light alive.</p>
-        <button class="btn-start" onclick="startGame()">BEGIN JOURNEY</button>
+        <i class="fas fa-star" style="color: var(--gold); font-size: 3rem; margin-bottom: 10px;"></i>
+        <h1>Sky Collector</h1>
+        <p>Keep your light alive!</p>
+        <button class="btn-start" id="beginBtn">BEGIN JOURNEY</button>
     </div>
 
     <div id="death-overlay" class="overlay hidden">
-        <h2 id="death-msg">The Light Faded...</h2>
-        <div style="font-size: 3rem; margin: 10px 0;">✨ <span id="final-score">0</span></div>
-        <button class="btn-start" onclick="location.reload()">TRY AGAIN</button>
+        <h2>The Light Faded</h2>
+        <h1 id="final-score" style="color: var(--gold);">0</h1>
+        <button class="btn-start" onclick="location.reload()">RETRY</button>
     </div>
 
     <canvas id="gameCanvas" width="350" height="500"></canvas>
@@ -135,180 +105,104 @@
     const energyFill = document.getElementById('energy-fill');
     const scoreText = document.getElementById('score-text');
 
-    // Game Constants & State
     let gameActive = false;
     let score = 0;
     let energy = 100;
-    let decayRate = 0.12; // Progressive difficulty
     
-    let player = { 
-        x: 155, y: 300, w: 40, h: 25, 
-        vx: 0, vy: 0, 
-        jump: -10, grav: 0.38 
-    };
-
+    let player = { x: 155, y: 350, w: 40, h: 25, vx: 0, vy: 0, jump: -10, grav: 0.4 };
     let platforms = [];
     let stars = [];
-    let particles = [];
-    let bgStars = Array.from({length: 40}, () => ({
-        x: Math.random() * 350, 
-        y: Math.random() * 500, 
-        s: Math.random() * 2,
-        o: Math.random()
-    }));
 
-    // Input Handling
     let keys = {};
     window.addEventListener('keydown', e => keys[e.code] = true);
     window.addEventListener('keyup', e => keys[e.code] = false);
-    
+
+    // Fixed Mobile Touch
     canvas.addEventListener('touchstart', e => {
+        e.preventDefault();
         const rect = canvas.getBoundingClientRect();
         const touchX = e.touches[0].clientX - rect.left;
-        keys[touchX < rect.width/2 ? 'ArrowLeft' : 'ArrowRight'] = true;
-    });
-    canvas.addEventListener('touchend', () => { 
-        keys['ArrowLeft'] = false; keys['ArrowRight'] = false; 
+        if (touchX < rect.width / 2) {
+            keys['ArrowLeft'] = true; keys['ArrowRight'] = false;
+        } else {
+            keys['ArrowRight'] = true; keys['ArrowLeft'] = false;
+        }
+    }, {passive: false});
+
+    canvas.addEventListener('touchend', () => {
+        keys['ArrowLeft'] = false; keys['ArrowRight'] = false;
     });
 
-    function createPlatform(y, isFirst = false) {
-        let w = isFirst ? 100 : 60 + Math.random() * 20;
-        let x = Math.random() * (canvas.width - w);
-        platforms.push({ x, y, w, h: 10 });
-
-        if (!isFirst && Math.random() > 0.4) {
-            stars.push({
-                x: x + w/2, y: y - 30,
-                baseY: y - 30,
-                collected: false,
-                angle: Math.random() * Math.PI * 2
-            });
+    function createPlatform(y) {
+        let x = Math.random() * (canvas.width - 70);
+        platforms.push({ x: x, y: y, w: 70, h: 10 });
+        if (Math.random() > 0.4) {
+            stars.push({ x: x + 35, y: y - 25, baseY: y - 25, gathered: false });
         }
     }
 
-    function spawnBurst(x, y) {
-        for(let i=0; i<10; i++) {
-            particles.push({
-                x, y, 
-                vx: (Math.random()-0.5)*6, 
-                vy: (Math.random()-0.5)*6,
-                life: 1.0
-            });
-        }
+    function init() {
+        platforms = []; stars = []; score = 0; energy = 100;
+        player.x = 155; player.y = 350; player.vy = 0;
+        platforms.push({ x: 140, y: 420, w: 70, h: 10 });
+        for (let i = 0; i < 7; i++) createPlatform(i * 75);
     }
 
-    function startGame() {
-        document.getElementById('start-overlay').classList.add('hidden');
-        gameActive = true;
-        // Initial setup
-        platforms = []; stars = [];
-        createPlatform(400, true);
-        for(let i=1; i<7; i++) createPlatform(400 - (i * 80));
-        requestAnimationFrame(update);
-    }
-
-    function update() {
+    function loop() {
         if (!gameActive) return;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // 1. Background Stars
-        ctx.fillStyle = "white";
-        bgStars.forEach(s => {
-            ctx.globalAlpha = s.o;
-            ctx.fillRect(s.x, s.y, s.s, s.s);
-        });
-        ctx.globalAlpha = 1.0;
+        // Energy Logic
+        energy -= 0.15;
+        energyFill.style.width = energy + "%";
+        if (energy <= 0) endGame();
 
-        // 2. Progressive Difficulty & Energy
-        energy -= decayRate + (score * 0.001); 
-        energyFill.style.width = Math.max(0, energy) + "%";
-        if (energy <= 0) endGame("The sky went dark...");
-
-        // 3. Player Physics
+        // Player Movement
         player.vy += player.grav;
         player.y += player.vy;
-        
-        if (keys['ArrowLeft']) player.vx = -6;
-        else if (keys['ArrowRight']) player.vx = 6;
-        else player.vx *= 0.8;
+        if (keys['ArrowLeft']) player.vx = -5;
+        else if (keys['ArrowRight']) player.vx = 5;
+        else player.vx *= 0.85;
         player.x += player.vx;
 
-        // Screen Wrap
         if (player.x < -20) player.x = canvas.width;
         if (player.x > canvas.width) player.x = -20;
 
-        // 4. Platforms & Scrolling
+        // Platforms
         platforms.forEach((p, i) => {
-            ctx.fillStyle = "rgba(161, 140, 209, 0.8)";
-            ctx.beginPath();
-            ctx.roundRect(p.x, p.y, p.w, p.h, 5);
-            ctx.fill();
+            ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+            ctx.fillRect(p.x, p.y, p.w, p.h);
 
-            // Collision
-            if (player.vy > 0 && 
-                player.x + 30 > p.x && player.x < p.x + p.w &&
+            if (player.vy > 0 && player.x + 30 > p.x && player.x < p.x + p.w &&
                 player.y + player.h > p.y && player.y + player.h < p.y + p.h + 10) {
                 player.vy = player.jump;
             }
 
-            // Scroll Logic
-            if (player.y < 200) {
-                let diff = 200 - player.y;
+            if (player.y < 250) {
+                let diff = 250 - player.y;
                 player.y += diff;
                 p.y += diff;
                 stars.forEach(s => { s.y += diff; s.baseY += diff; });
-                bgStars.forEach(s => s.y = (s.y + diff * 0.1) % canvas.height);
-                if (p.y > canvas.height) {
-                    platforms.splice(i, 1);
-                    createPlatform(0);
-                }
+                if (p.y > canvas.height) { platforms.splice(i, 1); createPlatform(0); }
             }
         });
 
-        // 5. Stars & Magnetism
+        // Stars
         stars.forEach((s, i) => {
-            if (!s.collected) {
-                // Magnet Logic
-                let dx = (player.x + 20) - s.x;
-                let dy = (player.y + 12) - s.y;
-                let dist = Math.sqrt(dx*dx + dy*dy);
+            if (!s.gathered) {
+                s.y = s.baseY + Math.sin(Date.now()/200) * 5;
+                ctx.fillStyle = "#ffd700";
+                ctx.beginPath(); ctx.arc(s.x, s.y, 6, 0, Math.PI*2); ctx.fill();
 
-                if (dist < 60) { // Magnet pull distance
-                    s.x += dx * 0.15;
-                    s.y += dy * 0.15;
-                } else {
-                    s.y = s.baseY + Math.sin(Date.now()/200 + s.angle) * 5;
-                }
-
-                // Draw Star
-                ctx.fillStyle = var(--gold);
-                ctx.shadowBlur = 15; ctx.shadowColor = var(--gold);
-                ctx.beginPath();
-                ctx.arc(s.x, s.y, 6, 0, Math.PI*2);
-                ctx.fill();
-                ctx.shadowBlur = 0;
-
-                // Collection
+                let dist = Math.sqrt((player.x+20 - s.x)**2 + (player.y+12 - s.y)**2);
                 if (dist < 30) {
-                    s.collected = true;
-                    energy = Math.min(100, energy + 15);
-                    score++;
-                    scoreText.innerText = score;
-                    spawnBurst(s.x, s.y);
+                    s.gathered = true; energy = Math.min(100, energy + 15);
+                    score++; scoreText.innerText = score;
                 }
             }
-            if (s.y > canvas.height) stars.splice(i, 1);
         });
 
-        // 6. Particles
-        particles.forEach((p, i) => {
-            p.x += p.vx; p.y += p.vy; p.life -= 0.03;
-            ctx.fillStyle = `rgba(255, 215, 0, ${p.life})`;
-            ctx.fillRect(p.x, p.y, 3, 3);
-            if (p.life <= 0) particles.splice(i, 1);
-        });
-
-        // 7. Player (Cloud)
+        // Player
         ctx.fillStyle = "white";
         ctx.beginPath();
         ctx.arc(player.x+10, player.y+15, 10, 0, Math.PI*2);
@@ -316,16 +210,22 @@
         ctx.arc(player.x+30, player.y+15, 10, 0, Math.PI*2);
         ctx.fill();
 
-        if (player.y > canvas.height) endGame("Fell from the sky...");
-        requestAnimationFrame(update);
+        if (player.y > canvas.height) endGame();
+        requestAnimationFrame(loop);
     }
 
-    function endGame(msg) {
+    function endGame() {
         gameActive = false;
-        document.getElementById('death-msg').innerText = msg;
-        document.getElementById('final-score').innerText = score;
         document.getElementById('death-overlay').classList.remove('hidden');
+        document.getElementById('final-score').innerText = score;
     }
+
+    document.getElementById('beginBtn').onclick = () => {
+        document.getElementById('start-overlay').classList.add('hidden');
+        gameActive = true;
+        init();
+        loop();
+    };
 </script>
 </body>
 </html>
