@@ -19,105 +19,111 @@
             color: var(--dark); display: flex; flex-direction: column; height: 100vh;
         }
 
-        /* --- HEADER --- */
+        /* --- NAVIGATION MENU --- */
         header {
             display: flex; justify-content: space-between; align-items: center; 
-            padding: 10px 5%; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 12px 5%; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky; top: 0; z-index: 1000;
         }
-        .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.2rem; }
+        
+        /* Floating Logo & Redirect */
+        .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .logo img { 
+            width: 35px; 
+            animation: floatUpDown 3s ease-in-out infinite; 
+        }
+        .logo span { font-weight: 800; font-size: 1.4rem; color: var(--dark); }
+
+        @keyframes floatUpDown {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .nav-links { display: flex; align-items: center; gap: 25px; }
+        .nav-links a { text-decoration: none; color: #555; font-weight: 600; font-size: 0.95rem; transition: 0.3s; }
+        .nav-links a:hover { color: var(--primary); }
+
+        /* Dropdown Explore Menu */
+        .dropdown { position: relative; display: inline-block; }
+        .dropbtn { background: none; border: none; font-family: inherit; font-size: 0.95rem; font-weight: 600; color: #555; cursor: pointer; }
+        .dropdown-content {
+            display: none; position: absolute; right: 0; background-color: white; 
+            min-width: 160px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); border-radius: 12px; z-index: 1;
+        }
+        .dropdown-content a { color: #555; padding: 12px 16px; display: block; border-radius: 12px; }
+        .dropdown-content a:hover { background-color: #f8f9fa; color: var(--primary); }
+        .dropdown:hover .dropdown-content { display: block; }
 
         /* --- MAIN LAYOUT --- */
         .main-wrapper { 
-            display: flex; flex: 1; padding: 20px; gap: 20px; max-width: 1400px; margin: 0 auto; width: 100%;
+            display: flex; flex: 1; padding: 25px; gap: 25px; max-width: 1400px; margin: 0 auto; width: 100%;
         }
 
-        /* SIDEBAR (Rules & Stats) */
-        .sidebar { 
-            width: 300px; display: flex; flex-direction: column; gap: 20px; 
-        }
+        .sidebar { width: 280px; display: flex; flex-direction: column; gap: 20px; }
         .panel { 
             background: var(--glass); padding: 20px; border-radius: 20px; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid white;
         }
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: center; }
-        .stat-box { background: white; padding: 10px; border-radius: 12px; }
-        .stat-box span { display: block; font-size: 1.2rem; font-weight: 800; color: var(--primary); }
 
-        /* GAME BOARD */
+        /* GRID STYLING */
         .game-area { 
             flex: 1; display: flex; flex-direction: column; align-items: center;
-            background: white; border-radius: 30px; padding: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.03);
+            background: white; border-radius: 30px; padding: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.03);
         }
-
-        .controls { margin-bottom: 20px; display: flex; gap: 10px; }
-        .btn { 
-            padding: 10px 20px; border-radius: 30px; border: 2px solid var(--primary);
-            background: white; cursor: pointer; font-weight: 700; transition: 0.3s;
-        }
-        .btn:hover, .btn.active { background: var(--primary); color: white; }
-
-        /* THE GRID */
-        .memory-grid { 
-            display: grid; gap: 12px; perspective: 1000px; margin: auto;
-        }
-        .card { width: 85px; height: 85px; position: relative; transform-style: preserve-3d; transition: 0.6s; cursor: pointer; }
+        .memory-grid { display: grid; gap: 10px; perspective: 1000px; margin: auto; }
+        
+        /* Adjusted card size for 8x8 neatness */
+        .card { width: 70px; height: 70px; position: relative; transform-style: preserve-3d; transition: 0.6s; cursor: pointer; }
         .card.flipped { transform: rotateY(180deg); }
-        .card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 12px; }
-        .card-front { background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; }
-        .card-back { background: #f0f0f0; transform: rotateY(180deg); display: flex; align-items: center; justify-content: center; overflow: hidden; border: 2px solid white; }
+        .card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 10px; }
+        .card-front { background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem; }
+        .card-back { background: #f0f0f0; transform: rotateY(180deg); display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid #ddd; }
         .card-back img { width: 100%; height: 100%; object-fit: cover; }
-
-        /* INSTRUCTIONS HOVER */
-        .rule-item { 
-            display: flex; align-items: flex-start; gap: 12px; margin-bottom: 15px; 
-            transition: 0.3s; padding: 10px; border-radius: 12px;
-        }
-        .rule-item:hover { background: white; transform: translateX(5px); }
-        .rule-item i { color: var(--primary); margin-top: 4px; }
-        .rule-item h4 { margin: 0; font-size: 0.9rem; }
-        .rule-item p { margin: 0; font-size: 0.8rem; color: #666; }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo"><img src="https://img.icons8.com/fluency/48/cloud.png" width="30"> ShareTheSky</div>
-    <div style="font-weight: 600; color: var(--primary);">Sky Match Mini</div>
+    <a href="index.html" class="logo">
+        <img src="https://img.icons8.com/fluency/48/cloud.png" alt="Cloud Logo">
+        <span>ShareTheSky</span>
+    </a>
+    <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="gallery.html">Gallery</a>
+        <div class="dropdown">
+            <button class="dropbtn">Explore <i class="fa-solid fa-chevron-down"></i></button>
+            <div class="dropdown-content">
+                <a href="upload.html">Upload</a>
+                <a href="skymatch.html">Sky Match</a>
+                <a href="about.html">About Me</a>
+            </div>
+        </div>
+    </nav>
 </header>
 
 <div class="main-wrapper">
     <div class="sidebar">
         <div class="panel">
-            <h3 style="margin-top:0">Dashboard</h3>
-            <div class="stats-grid">
-                <div class="stat-box">Moves<span id="moves">0</span></div>
-                <div class="stat-box">Matches<span id="matches">0</span></div>
+            <h3 style="margin:0 0 15px 0">Dashboard</h3>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; text-align:center;">
+                <div style="background:white; padding:10px; border-radius:12px;">Moves<span id="moves" style="display:block; font-size:1.3rem; font-weight:800; color:var(--primary)">0</span></div>
+                <div style="background:white; padding:10px; border-radius:12px;">Matches<span id="matches" style="display:block; font-size:1.3rem; font-weight:800; color:var(--primary)">0</span></div>
             </div>
-            <p style="text-align:center; font-size:0.8rem; margin-top:15px;">Goal: Match <span id="total-req">0</span> pairs</p>
         </div>
-
         <div class="panel">
-            <h3>Instructions</h3>
-            <div class="rule-item">
-                <i class="fa-solid fa-clone"></i>
-                <div><h4>Find Pairs</h4><p>Match two sky photos to lock them in.</p></div>
-            </div>
-            <div class="rule-item">
-                <i class="fa-solid fa-bolt"></i>
-                <div><h4>Thunder</h4><p>Resets unmatched cards instantly.</p></div>
-            </div>
-            <div class="rule-item">
-                <i class="fa-solid fa-eye"></i>
-                <div><h4>Vision</h4><p>Briefly reveals all card positions.</p></div>
-            </div>
+            <h3 style="margin:0 0 15px 0">Instructions</h3>
+            <p style="font-size:0.85rem; line-height:1.6; color:#666;">
+                Click on the cards to reveal sky photos. Find all <strong><span id="target-count">0</span></strong> pairs to clear the sky!
+            </p>
         </div>
     </div>
 
     <div class="game-area">
-        <div class="controls">
+        <div style="margin-bottom:25px; display:flex; gap:12px;">
             <button class="btn" onclick="initGame(4)">4 × 4</button>
             <button class="btn" onclick="initGame(6)">6 × 6</button>
-            <button class="btn" onclick="initGame(8)">8 × 8</button>
+            <button class="btn" onclick="initGame(8)" style="background:var(--primary); color:white;">8 × 8</button>
         </div>
         <div class="memory-grid" id="game-grid"></div>
     </div>
@@ -136,65 +142,43 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    let flipped = [], moveCount = 0, matchCount = 0, isLock = false, required = 0;
+    let flipped = [], moveCount = 0, matchCount = 0, isLock = false, pairsNeeded = 0;
 
-    async function initGame(size = 4) {
+    async function initGame(size = 8) {
         const grid = document.getElementById('game-grid');
-        grid.innerHTML = "<p>Loading...</p>";
+        grid.innerHTML = "<p>Clearing the sky...</p>";
         
-        // Reset States
         moveCount = 0; matchCount = 0; flipped = []; isLock = false;
         document.getElementById('moves').innerText = "0";
         document.getElementById('matches').innerText = "0";
 
-        const total = size * size;
-        const powerCount = (size === 8) ? 4 : 2;
-        required = (total - powerCount) / 2;
-        document.getElementById('total-req').innerText = required;
+        pairsNeeded = (size * size) / 2;
+        document.getElementById('target-count').innerText = pairsNeeded;
 
-        const snap = await getDocs(query(collection(db, "photos"), limit(required)));
+        const snap = await getDocs(query(collection(db, "photos"), limit(pairsNeeded)));
         let photos = []; snap.forEach(doc => photos.push(doc.data().url));
 
-        let deck = [...photos, ...photos].map(url => ({ type: 'photo', val: url }));
-        const powers = ['fa-bolt', 'fa-eye'];
-        for(let i=0; i < powerCount; i++) deck.push({ type: 'power', val: powers[i % 2] });
+        // Fallback if Firebase is short on photos
+        while(photos.length < pairsNeeded) photos.push(photos[0] || "https://via.placeholder.com/100");
 
-        deck.sort(() => Math.random() - 0.5);
+        let deck = [...photos, ...photos].sort(() => Math.random() - 0.5);
+        
         grid.innerHTML = "";
-        grid.style.gridTemplateColumns = `repeat(${size}, 85px)`;
+        grid.style.gridTemplateColumns = `repeat(${size}, ${size === 8 ? '70px' : '85px'})`;
 
-        deck.forEach(item => {
+        deck.forEach(url => {
             const card = document.createElement('div');
             card.className = 'card';
-            card.dataset.type = item.type; card.dataset.val = item.val;
-            card.innerHTML = `
-                <div class="card-front"><i class="fa-solid fa-cloud"></i></div>
-                <div class="card-back">${item.type === 'photo' ? `<img src="${item.val}">` : `<i class="fa-solid ${item.val}" style="color:gold; font-size:1.5rem;"></i>`}</div>
-            `;
+            card.dataset.val = url;
+            card.innerHTML = `<div class="card-front"><i class="fa-solid fa-cloud"></i></div><div class="card-back"><img src="${url}"></div>`;
             card.onclick = handleFlip;
             grid.appendChild(card);
         });
     }
 
     function handleFlip() {
-        if (isLock || this.classList.contains('flipped') || this.dataset.done) return;
+        if (isLock || this.classList.contains('flipped')) return;
         this.classList.add('flipped');
-
-        // Power-up Logic
-        if (this.dataset.type === 'power') {
-            isLock = true;
-            setTimeout(() => {
-                if (this.dataset.val === 'fa-bolt') {
-                    document.querySelectorAll('.card.flipped:not([data-done])').forEach(c => c.classList.remove('flipped'));
-                } else {
-                    const hidden = document.querySelectorAll('.card:not(.flipped)');
-                    hidden.forEach(c => c.classList.add('flipped'));
-                    setTimeout(() => hidden.forEach(c => { if(!c.dataset.done) c.classList.remove('flipped'); }), 1000);
-                }
-                this.style.opacity = "0.2"; isLock = false;
-            }, 600);
-            return;
-        }
 
         flipped.push(this);
         if (flipped.length === 2) {
@@ -203,9 +187,8 @@
             const [c1, c2] = flipped;
             if (c1.dataset.val === c2.dataset.val) {
                 matchCount++; document.getElementById('matches').innerText = matchCount;
-                c1.dataset.done = "true"; c2.dataset.done = "true";
                 flipped = []; isLock = false;
-                if (matchCount === required) alert("Sky Cleared!");
+                if (matchCount === pairsNeeded) alert("Sky Cleared!");
             } else {
                 setTimeout(() => { c1.classList.remove('flipped'); c2.classList.remove('flipped'); flipped = []; isLock = false; }, 800);
             }
@@ -213,7 +196,7 @@
     }
 
     window.initGame = initGame;
-    window.onload = () => initGame(4);
+    window.onload = () => initGame(8);
 </script>
 </body>
 </html>
