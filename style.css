@@ -2976,3 +2976,52 @@ footer {
     color: #555;
     font-weight: 500;
 }
+/* Container for the boxes */
+.info-section {
+    display: flex;
+    justify-content: center;
+    align-items: stretch; /* Makes all boxes the same height */
+    gap: 25px;
+    margin: 50px auto;
+    padding: 20px;
+    max-width: 1200px;
+    flex-wrap: wrap;
+}
+
+/* Individual Box Styling */
+.info-box {
+    background: rgba(255, 255, 255, 0.4); /* Translucent background */
+    backdrop-filter: blur(12px); /* Blur effect for the "glass" look */
+    -webkit-backdrop-filter: blur(12px); /* Safari support */
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    padding: 30px;
+    width: 320px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    
+    /* Animation Transition */
+    transition: all 0.3s ease-in-out;
+    cursor: default;
+}
+
+/* --- HOVER ANIMATION --- */
+.info-box:hover {
+    transform: translateY(-10px); /* Lifts the box up */
+    background: rgba(255, 255, 255, 0.6); /* Becomes slightly more opaque */
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12); /* Stronger shadow for depth */
+    border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+/* Text inside the boxes */
+.info-box h3 {
+    font-size: 1.3rem;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.info-box p {
+    font-size: 1rem;
+    color: #555;
+    line-height: 1.6;
+}
