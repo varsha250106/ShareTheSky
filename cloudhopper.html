@@ -9,272 +9,323 @@
         :root {
             --primary: #a18cd1;
             --secondary: #fbc2eb;
-            --dark: #2d2d6a;
-            --bg: #f8f9fc;
+            --dark: #1a1a4a;
+            --glass: rgba(255, 255, 255, 0.1);
             --gold: #ffd700;
         }
 
         body { 
-            margin: 0; font-family: 'Segoe UI', sans-serif; 
-            background-color: var(--bg); color: var(--dark);
-            min-height: 100vh; overflow-x: hidden; overscroll-behavior-y: contain; 
+            margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; 
+            background: #0f0f2d; color: white;
+            height: 100vh; overflow: hidden; touch-action: none;
         }
 
-        header {
-            display: flex; justify-content: space-between; align-items: center; 
-            padding: 12px 5%; background: white; box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        /* --- GAME LAYOUT --- */
+        #game-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(to bottom, #0f0f2d 0%, #2d2d6a 100%);
         }
 
-        .main-container {
-            display: grid; grid-template-columns: 300px 1fr; gap: 40px;
-            padding: 20px 5%; max-width: 1200px; margin: 0 auto;
+        canvas {
+            background: transparent;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            max-height: 90vh;
+            aspect-ratio: 7/10;
+            border-radius: 20px;
+            display: block;
         }
 
-        /* UI Elements */
-        .sidebar { display: flex; flex-direction: column; gap: 20px; }
-        .dashboard-card {
-            background: white; border-radius: 20px; padding: 25px;
-            text-align: center; box-shadow: 0 8px 30px rgba(0,0,0,0.02);
-            border: 1.5px solid #f0edff;
+        /* --- HUD (Heads Up Display) --- */
+        .hud {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+            z-index: 5;
         }
 
-        .meter-container {
-            width: 100%; height: 12px; background: #eee; border-radius: 10px;
-            margin-top: 10px; overflow: hidden;
+        .stat-card {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.2);
+            text-align: center;
         }
-        #lightMeter {
-            width: 100%; height: 100%; background: linear-gradient(90deg, #fbc2eb, #a18cd1);
+
+        .energy-bar-bg {
+            width: 120px; height: 8px; background: rgba(255,255,255,0.2);
+            border-radius: 4px; margin-top: 5px; overflow: hidden;
+        }
+
+        #energy-fill {
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, var(--secondary), var(--primary));
             transition: width 0.3s ease-out;
         }
 
-        .game-section { 
-            background: white; border-radius: 30px; padding: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.03); display: flex; 
-            flex-direction: column; align-items: center; position: relative;
+        /* --- OVERLAYS --- */
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(15, 15, 45, 0.85);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            text-align: center;
+            padding: 20px;
+            border-radius: 20px;
         }
 
-        .canvas-area { position: relative; width: 100%; max-width: 350px; aspect-ratio: 7/10; }
-        #gameCanvas { 
-            background: linear-gradient(to bottom, #1a1a4a 0%, #2d2d6a 100%); 
-            border-radius: 20px; width: 100%; height: 100%; display: block; touch-action: none; 
+        .btn-start {
+            background: white; color: var(--dark);
+            border: none; padding: 15px 40px; border-radius: 50px;
+            font-weight: 800; cursor: pointer; font-size: 1.1rem;
+            margin-top: 20px; transition: 0.3s;
         }
 
-        #overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(45, 45, 106, 0.9); border-radius: 20px;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            color: white; z-index: 10; text-align: center; padding: 20px;
-        }
+        .btn-start:hover { transform: scale(1.1); box-shadow: 0 0 20px var(--primary); }
 
-        .btn-action {
-            background: white; color: var(--primary); border: none; padding: 15px 45px;
-            border-radius: 50px; font-weight: 800; cursor: pointer; margin-top: 20px;
-            transition: transform 0.2s;
-        }
-        .btn-action:hover { transform: scale(1.05); }
-
-        @media (max-width: 900px) { 
-            .main-container { grid-template-columns: 1fr; } 
-            .sidebar { order: 2; }
-        }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-<header>
-    <a href="#" class="logo">
-        <img src="https://img.icons8.com/fluency/48/star.png" width="30">
-        <span style="margin-left: 10px; font-weight: 800; color: var(--dark);">ShareTheSky</span>
-    </a>
-</header>
-
-<div class="main-container">
-    <div class="sidebar">
-        <div class="dashboard-card">
-            <div style="font-size: 0.75rem; font-weight: 700; opacity: 0.7; letter-spacing: 1px;">LIGHT ENERGY</div>
-            <div class="meter-container"><div id="lightMeter"></div></div>
+<div id="game-container">
+    <div class="hud">
+        <div class="stat-card">
+            <small style="text-transform: uppercase; letter-spacing: 1px;">Energy</small>
+            <div class="energy-bar-bg"><div id="energy-fill"></div></div>
         </div>
-        <div class="dashboard-card">
-            <div style="font-size: 0.75rem; font-weight: 700; opacity: 0.7; letter-spacing: 1px;">FRAGMENTS</div>
-            <div style="font-size: 2.5rem; font-weight: 800; color: var(--primary);" id="fragCount">0</div>
+        <div class="stat-card">
+            <small style="text-transform: uppercase; letter-spacing: 1px;">Stars</small>
+            <div id="score-text" style="font-size: 1.5rem; font-weight: 800; color: var(--gold);">0</div>
         </div>
     </div>
 
-    <div class="game-section">
-        <h2 style="margin: 0 0 15px 0; color: var(--dark);">Sky Collector</h2>
-        <div class="canvas-area">
-            <div id="overlay">
-                <i class="fas fa-star" style="color: var(--gold); font-size: 3rem; margin-bottom: 15px;"></i>
-                <h2>Collect the Stars</h2>
-                <p>Don't let your light run out!</p>
-                <button class="btn-action" id="startBtn">START JOURNEY</button>
-            </div>
-            <canvas id="gameCanvas" width="350" height="500"></canvas>
-        </div>
+    <div id="start-overlay" class="overlay">
+        <i class="fas fa-moon" style="font-size: 3rem; color: var(--secondary); margin-bottom: 20px;"></i>
+        <h1 style="margin: 0;">Sky Collector</h1>
+        <p style="opacity: 0.8;">Collect stars to keep your light alive.</p>
+        <button class="btn-start" onclick="startGame()">BEGIN JOURNEY</button>
     </div>
+
+    <div id="death-overlay" class="overlay hidden">
+        <h2 id="death-msg">The Light Faded...</h2>
+        <div style="font-size: 3rem; margin: 10px 0;">✨ <span id="final-score">0</span></div>
+        <button class="btn-start" onclick="location.reload()">TRY AGAIN</button>
+    </div>
+
+    <canvas id="gameCanvas" width="350" height="500"></canvas>
 </div>
 
 <script>
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
-    const overlay = document.getElementById('overlay');
+    const energyFill = document.getElementById('energy-fill');
+    const scoreText = document.getElementById('score-text');
 
-    let gameRunning = false;
-    let light = 100;
-    let fragments = 0;
-    let player = { x: 155, y: 350, w: 40, h: 30, vx: 0, vy: 0, jump: -10, grav: 0.35 };
+    // Game Constants & State
+    let gameActive = false;
+    let score = 0;
+    let energy = 100;
+    let decayRate = 0.12; // Progressive difficulty
+    
+    let player = { 
+        x: 155, y: 300, w: 40, h: 25, 
+        vx: 0, vy: 0, 
+        jump: -10, grav: 0.38 
+    };
+
     let platforms = [];
     let stars = [];
     let particles = [];
-    let bgStars = Array.from({length: 50}, () => ({x: Math.random()*350, y: Math.random()*500, s: Math.random()*2}));
+    let bgStars = Array.from({length: 40}, () => ({
+        x: Math.random() * 350, 
+        y: Math.random() * 500, 
+        s: Math.random() * 2,
+        o: Math.random()
+    }));
 
+    // Input Handling
     let keys = {};
-    window.onkeydown = e => keys[e.code] = true;
-    window.onkeyup = e => keys[e.code] = false;
-
+    window.addEventListener('keydown', e => keys[e.code] = true);
+    window.addEventListener('keyup', e => keys[e.code] = false);
+    
     canvas.addEventListener('touchstart', e => {
-        e.preventDefault();
         const rect = canvas.getBoundingClientRect();
         const touchX = e.touches[0].clientX - rect.left;
         keys[touchX < rect.width/2 ? 'ArrowLeft' : 'ArrowRight'] = true;
-    }, {passive: false});
+    });
+    canvas.addEventListener('touchend', () => { 
+        keys['ArrowLeft'] = false; keys['ArrowRight'] = false; 
+    });
 
-    canvas.addEventListener('touchend', () => { keys['ArrowLeft'] = false; keys['ArrowRight'] = false; });
+    function createPlatform(y, isFirst = false) {
+        let w = isFirst ? 100 : 60 + Math.random() * 20;
+        let x = Math.random() * (canvas.width - w);
+        platforms.push({ x, y, w, h: 10 });
 
-    function spawnPlatform(y) {
-        let px = Math.random() * (canvas.width - 70);
-        platforms.push({ x: px, y: y, w: 70, h: 12 });
-        if (Math.random() > 0.5) {
-            stars.push({ x: px + 35, y: y - 25, gathered: false, phase: Math.random() * Math.PI * 2 });
-        }
-    }
-
-    function createParticles(x, y) {
-        for(let i=0; i<8; i++) {
-            particles.push({
-                x: x, y: y, 
-                vx: (Math.random()-0.5)*4, vy: (Math.random()-0.5)*4,
-                life: 1.0, color: '#ffd700'
+        if (!isFirst && Math.random() > 0.4) {
+            stars.push({
+                x: x + w/2, y: y - 30,
+                baseY: y - 30,
+                collected: false,
+                angle: Math.random() * Math.PI * 2
             });
         }
     }
 
-    function init() {
-        platforms = []; stars = []; particles = []; light = 100; fragments = 0;
-        player.x = 155; player.y = 350; player.vy = 0;
-        document.getElementById('fragCount').innerText = "0";
-        platforms.push({ x: 140, y: 420, w: 70, h: 12 });
-        for (let i = 0; i < 7; i++) spawnPlatform(i * 75);
+    function spawnBurst(x, y) {
+        for(let i=0; i<10; i++) {
+            particles.push({
+                x, y, 
+                vx: (Math.random()-0.5)*6, 
+                vy: (Math.random()-0.5)*6,
+                life: 1.0
+            });
+        }
     }
 
-    function loop() {
-        if (!gameRunning) return;
+    function startGame() {
+        document.getElementById('start-overlay').classList.add('hidden');
+        gameActive = true;
+        // Initial setup
+        platforms = []; stars = [];
+        createPlatform(400, true);
+        for(let i=1; i<7; i++) createPlatform(400 - (i * 80));
+        requestAnimationFrame(update);
+    }
+
+    function update() {
+        if (!gameActive) return;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Draw Background Stars (Parallax)
+        // 1. Background Stars
         ctx.fillStyle = "white";
         bgStars.forEach(s => {
-            ctx.globalAlpha = 0.3;
+            ctx.globalAlpha = s.o;
             ctx.fillRect(s.x, s.y, s.s, s.s);
-            ctx.globalAlpha = 1.0;
         });
+        ctx.globalAlpha = 1.0;
 
-        // Light Decay
-        light -= 0.12;
-        document.getElementById('lightMeter').style.width = light + "%";
-        if (light <= 0) gameOver("The sky went dark...");
+        // 2. Progressive Difficulty & Energy
+        energy -= decayRate + (score * 0.001); 
+        energyFill.style.width = Math.max(0, energy) + "%";
+        if (energy <= 0) endGame("The sky went dark...");
 
-        // Player Movement
+        // 3. Player Physics
         player.vy += player.grav;
         player.y += player.vy;
-        if (keys['ArrowLeft']) player.vx = -5.5;
-        else if (keys['ArrowRight']) player.vx = 5.5;
-        else player.vx *= 0.85;
+        
+        if (keys['ArrowLeft']) player.vx = -6;
+        else if (keys['ArrowRight']) player.vx = 6;
+        else player.vx *= 0.8;
         player.x += player.vx;
 
-        if (player.x < -player.w) player.x = canvas.width;
-        if (player.x > canvas.width) player.x = -player.w;
+        // Screen Wrap
+        if (player.x < -20) player.x = canvas.width;
+        if (player.x > canvas.width) player.x = -20;
 
-        // Platforms
+        // 4. Platforms & Scrolling
         platforms.forEach((p, i) => {
-            ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+            ctx.fillStyle = "rgba(161, 140, 209, 0.8)";
             ctx.beginPath();
-            ctx.roundRect(p.x, p.y, p.w, p.h, 6);
+            ctx.roundRect(p.x, p.y, p.w, p.h, 5);
             ctx.fill();
 
-            if (player.vy > 0 && player.x < p.x + p.w && player.x + player.w > p.x && 
-                player.y + player.h > p.y && player.y + player.h < p.y + p.h + 15) {
+            // Collision
+            if (player.vy > 0 && 
+                player.x + 30 > p.x && player.x < p.x + p.w &&
+                player.y + player.h > p.y && player.y + player.h < p.y + p.h + 10) {
                 player.vy = player.jump;
             }
 
-            if (player.y < 250) {
-                let diff = 250 - player.y;
+            // Scroll Logic
+            if (player.y < 200) {
+                let diff = 200 - player.y;
                 player.y += diff;
                 p.y += diff;
-                stars.forEach(s => s.y += diff);
-                bgStars.forEach(s => s.y = (s.y + diff*0.2) % 500);
-                if (p.y > canvas.height) { platforms.splice(i, 1); spawnPlatform(0); }
+                stars.forEach(s => { s.y += diff; s.baseY += diff; });
+                bgStars.forEach(s => s.y = (s.y + diff * 0.1) % canvas.height);
+                if (p.y > canvas.height) {
+                    platforms.splice(i, 1);
+                    createPlatform(0);
+                }
             }
         });
 
-        // Stars
+        // 5. Stars & Magnetism
         stars.forEach((s, i) => {
-            if (!s.gathered) {
-                let hover = Math.sin(Date.now() / 200 + s.phase) * 5;
-                ctx.fillStyle = "#ffd700";
-                ctx.shadowBlur = 15; ctx.shadowColor = "#ffd700";
+            if (!s.collected) {
+                // Magnet Logic
+                let dx = (player.x + 20) - s.x;
+                let dy = (player.y + 12) - s.y;
+                let dist = Math.sqrt(dx*dx + dy*dy);
+
+                if (dist < 60) { // Magnet pull distance
+                    s.x += dx * 0.15;
+                    s.y += dy * 0.15;
+                } else {
+                    s.y = s.baseY + Math.sin(Date.now()/200 + s.angle) * 5;
+                }
+
+                // Draw Star
+                ctx.fillStyle = var(--gold);
+                ctx.shadowBlur = 15; ctx.shadowColor = var(--gold);
                 ctx.beginPath();
-                ctx.arc(s.x, s.y + hover, 7, 0, Math.PI * 2);
+                ctx.arc(s.x, s.y, 6, 0, Math.PI*2);
                 ctx.fill();
                 ctx.shadowBlur = 0;
 
-                let dx = player.x + 20 - s.x;
-                let dy = player.y + 15 - (s.y + hover);
-                if (Math.sqrt(dx*dx + dy*dy) < 35) {
-                    s.gathered = true;
-                    light = Math.min(100, light + 20);
-                    fragments++;
-                    document.getElementById('fragCount').innerText = fragments;
-                    createParticles(s.x, s.y);
+                // Collection
+                if (dist < 30) {
+                    s.collected = true;
+                    energy = Math.min(100, energy + 15);
+                    score++;
+                    scoreText.innerText = score;
+                    spawnBurst(s.x, s.y);
                 }
             }
             if (s.y > canvas.height) stars.splice(i, 1);
         });
 
-        // Particles
+        // 6. Particles
         particles.forEach((p, i) => {
-            p.x += p.vx; p.y += p.vy; p.life -= 0.02;
-            ctx.globalAlpha = p.life;
-            ctx.fillStyle = p.color;
+            p.x += p.vx; p.y += p.vy; p.life -= 0.03;
+            ctx.fillStyle = `rgba(255, 215, 0, ${p.life})`;
             ctx.fillRect(p.x, p.y, 3, 3);
-            if(p.life <= 0) particles.splice(i, 1);
+            if (p.life <= 0) particles.splice(i, 1);
         });
-        ctx.globalAlpha = 1.0;
 
-        // Player (Cloud)
+        // 7. Player (Cloud)
         ctx.fillStyle = "white";
         ctx.beginPath();
-        ctx.arc(player.x+10, player.y+15, 12, 0, Math.PI*2);
-        ctx.arc(player.x+20, player.y+10, 15, 0, Math.PI*2);
-        ctx.arc(player.x+30, player.y+15, 12, 0, Math.PI*2);
+        ctx.arc(player.x+10, player.y+15, 10, 0, Math.PI*2);
+        ctx.arc(player.x+20, player.y+10, 14, 0, Math.PI*2);
+        ctx.arc(player.x+30, player.y+15, 10, 0, Math.PI*2);
         ctx.fill();
 
-        if (player.y > canvas.height) gameOver("Lost in the clouds...");
-        requestAnimationFrame(loop);
+        if (player.y > canvas.height) endGame("Fell from the sky...");
+        requestAnimationFrame(update);
     }
 
-    function gameOver(msg) {
-        gameRunning = false;
-        overlay.style.display = 'flex';
-        overlay.innerHTML = `<h2 style="margin-bottom:5px;">Game Over</h2><p>${msg}</p><div style="font-size:2rem; margin:15px 0;">✨ ${fragments}</div><button class="btn-action" onclick="location.reload()">TRY AGAIN</button>`;
+    function endGame(msg) {
+        gameActive = false;
+        document.getElementById('death-msg').innerText = msg;
+        document.getElementById('final-score').innerText = score;
+        document.getElementById('death-overlay').classList.remove('hidden');
     }
-
-    document.getElementById('startBtn').onclick = () => {
-        overlay.style.display = 'none';
-        gameRunning = true;
-        init();
-        loop();
-    };
 </script>
 </body>
 </html>
