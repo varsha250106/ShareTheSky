@@ -4258,3 +4258,44 @@ header {
 .dropdown:hover .dropdown-content {
     display: block !important;
 }
+/* --- STEP 1: Fix the Navigation Links --- */
+.nav-links a, .dropbtn {
+    text-decoration: none;
+    color: #555;
+    margin-left: 25px; /* This is fine for the main header... */
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: 0.3s;
+    background: none; 
+    border: none; 
+    cursor: pointer;
+}
+
+/* --- STEP 2: The Vertical Dropdown Fix (CRITICAL) --- */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: white;
+    min-width: 160px;
+    box-shadow: 0px 10px 25px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    padding: 10px 0;
+    z-index: 2000;
+}
+
+/* This is the part you likely need to add/fix */
+.dropdown-content a {
+    color: #444;
+    padding: 12px 20px;
+    margin: 0 !important; /* THIS REMOVES THE 25px MARGIN INSIDE THE MENU */
+    display: block !important; /* THIS FORCES THE VERTICAL STACK */
+    text-decoration: none;
+    text-align: center; /* Centers the text like your Upload page */
+}
+
+.dropdown-content a:hover {
+    background-color: #f8f9ff;
+    color: var(--primary-purple);
+}
