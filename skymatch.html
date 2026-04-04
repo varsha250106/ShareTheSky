@@ -18,7 +18,7 @@
 
         body { margin: 0; font-family: var(--main-font); background-color: var(--bg-light); text-align: center; color: var(--dark-text); overflow-x: hidden; }
 
-        /* --- 1. ANIMATED CLOUD LOGO --- */
+        /* --- HEADER & ANIMATION --- */
         header {
             display: flex; justify-content: space-between; align-items: center; padding: 15px 5%;
             background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px);
@@ -27,11 +27,7 @@
         .logo a { text-decoration: none; display: flex; align-items: center; gap: 10px; }
         .logo span { font-weight: 800; color: var(--dark-text); font-size: 1.5rem; }
         
-        .floating-cloud { 
-            width: 35px; 
-            animation: cloudFloat 3s ease-in-out infinite; /* Added Float Animation */
-        }
-        
+        .floating-cloud { width: 35px; animation: cloudFloat 3s ease-in-out infinite; }
         @keyframes cloudFloat {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-8px); }
@@ -50,57 +46,53 @@
         .dropdown-content a:hover { background-color: #f1f1f1; color: var(--primary-purple); }
         .dropdown:hover .dropdown-content { display: block; }
 
-        /* --- 2. BIG NEAT PURPLE TITLE --- */
-        .game-container { max-width: 1100px; margin: 30px auto; padding: 20px; }
+        /* --- UI ELEMENTS --- */
+        .game-container { width: 95%; max-width: 1000px; margin: 30px auto; padding: 20px; }
         h1.game-title { 
-            font-size: 4rem; 
-            font-weight: 800; 
-            color: var(--deep-purple); /* Neat Purple Color */
-            margin-bottom: 30px;
-            letter-spacing: -1.5px;
-            text-transform: capitalize;
+            font-size: 4rem; font-weight: 800; color: var(--deep-purple); 
+            margin-bottom: 20px; letter-spacing: -1.5px;
         }
 
-        /* --- SELECTORS --- */
-        .controls-wrapper { display: flex; justify-content: center; gap: 20px; margin-bottom: 35px; }
-        .custom-select { position: relative; width: 170px; text-align: left; }
+        .controls-wrapper { display: flex; justify-content: center; gap: 20px; margin-bottom: 30px; }
+        .custom-select { position: relative; width: 160px; text-align: left; }
         .select-trigger {
-            background: white; padding: 12px 20px; border-radius: 40px; cursor: pointer;
-            box-shadow: 0 8px 25px rgba(161, 140, 209, 0.1); border: 1px solid rgba(161, 140, 209, 0.2);
+            background: white; padding: 10px 18px; border-radius: 40px; cursor: pointer;
+            box-shadow: 0 8px 20px rgba(161, 140, 209, 0.1); border: 1px solid rgba(161, 140, 209, 0.2);
             display: flex; justify-content: space-between; align-items: center;
         }
-        .trigger-text label { display: block; font-size: 0.65rem; text-transform: uppercase; font-weight: 800; color: var(--primary-purple); }
-        .selected-text { font-weight: 700; font-size: 0.95rem; }
-        .chevron { font-size: 0.8rem; color: var(--primary-purple); transition: 0.3s; }
+        .selected-text { font-weight: 700; font-size: 0.9rem; }
+        .chevron { font-size: 0.7rem; color: var(--primary-purple); transition: 0.3s; }
         .custom-select.active .chevron { transform: rotate(180deg); }
 
         .options-menu {
             position: absolute; top: 115%; left: 0; width: 100%; background: white;
-            border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             display: none; z-index: 100; padding: 5px; border: 1px solid #eee;
         }
-        .option { padding: 10px 15px; border-radius: 12px; cursor: pointer; font-weight: 600; transition: 0.2s; }
+        .option { padding: 8px 12px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 0.85rem; }
         .option:hover { background: var(--primary-purple); color: white; }
         .custom-select.active .options-menu { display: block; }
 
-        /* --- GRID SETUP --- */
-        .memory-grid { display: grid; gap: 12px; margin: 0 auto; perspective: 1000px; }
-        .card { aspect-ratio: 1/1; position: relative; transform-style: preserve-3d; transition: 0.6s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
+        /* --- THE FIXED GRID --- */
+        .memory-grid { 
+            display: grid; 
+            gap: 10px; 
+            margin: 0 auto; 
+            justify-content: center; /* Keeps it centered and neat */
+            perspective: 1000px; 
+        }
+        
+        .card { aspect-ratio: 1/1; position: relative; transform-style: preserve-3d; transition: 0.6s; cursor: pointer; }
         .card.flipped { transform: rotateY(180deg); }
-        .card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 15px; }
-        .card-front { background: linear-gradient(135deg, var(--primary-purple), var(--secondary-pink)); color: white; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+        .card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 12px; }
+        .card-front { background: linear-gradient(135deg, var(--primary-purple), var(--secondary-pink)); color: white; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
         .card-back { background: white; transform: rotateY(180deg); border: 2px solid white; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .card-back img { width: 100%; height: 100%; object-fit: cover; }
 
         .card.power-up .card-back { background: #fff9e6; border-color: var(--accent-gold); }
-        .power-icon { font-size: 2rem; color: var(--accent-gold); }
+        .power-icon { font-size: 1.8rem; color: var(--accent-gold); }
 
-        /* Filters */
-        .filter-retro img { filter: sepia(0.5) contrast(1.1); }
-        .filter-golden img { filter: saturate(1.8) brightness(1.1) sepia(0.2); }
-        .filter-moody img { filter: contrast(1.4) brightness(0.7) saturate(0.6); }
-
-        .stats { font-weight: 700; color: #777; margin: 20px 0; font-size: 1.1rem; }
+        .stats { font-weight: 700; color: #777; margin: 15px 0; }
     </style>
 </head>
 <body>
@@ -115,7 +107,7 @@
     <nav class="nav-links">
         <a href="index.html">Home</a>
         <div class="dropdown">
-            <button class="dropbtn">Explore <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem;"></i></button>
+            <button class="dropbtn">Explore <i class="fa-solid fa-chevron-down"></i></button>
             <div class="dropdown-content">
                 <a href="gallery.html">Gallery</a>
                 <a href="upload.html">Upload</a>
@@ -132,7 +124,7 @@
     <div class="controls-wrapper">
         <div class="custom-select" id="gridSelect">
             <div class="select-trigger" onclick="toggleDropdown('gridSelect')">
-                <div class="trigger-text"><label>Grid</label><div class="selected-text">4 × 4</div></div>
+                <span class="selected-text">4 × 4</span>
                 <i class="fa-solid fa-chevron-down chevron"></i>
             </div>
             <div class="options-menu">
@@ -141,22 +133,9 @@
                 <div class="option" onclick="updateSelection('gridSelect', '8 × 8', 8)">8 × 8</div>
             </div>
         </div>
-
-        <div class="custom-select" id="vibeSelect">
-            <div class="select-trigger" onclick="toggleDropdown('vibeSelect')">
-                <div class="trigger-text"><label>Vibe</label><div class="selected-text">Original</div></div>
-                <i class="fa-solid fa-chevron-down chevron"></i>
-            </div>
-            <div class="options-menu">
-                <div class="option" onclick="updateSelection('vibeSelect', 'Original', 'none')">Original</div>
-                <div class="option" onclick="updateSelection('vibeSelect', 'Retro 🎥', 'retro')">Retro 🎥</div>
-                <div class="option" onclick="updateSelection('vibeSelect', 'Golden ☀️', 'golden')">Golden ☀️</div>
-                <div class="option" onclick="updateSelection('vibeSelect', 'Moody ⛈️', 'moody')">Moody ⛈️</div>
-            </div>
         </div>
-    </div>
 
-    <p class="stats">Moves: <span id="move-count">0</span> | Matches: <span id="match-count">0</span> / <span id="total-matches">8</span></p>
+    <p class="stats">Moves: <span id="move-count">0</span> | Matches: <span id="match-count">0</span> / <span id="total-matches"></span></p>
     <div class="memory-grid" id="game-grid"></div>
 </div>
 
@@ -173,43 +152,33 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    let flippedCards = [], moves = 0, matches = 0, lockBoard = false, currentVibe = 'none', requiredMatches = 0;
+    let flippedCards = [], moves = 0, matches = 0, lockBoard = false, requiredMatches = 0;
 
     async function initGame(size = 4) {
-        const totalCards = size * size;
-        
-        // --- FIXED 8x8 & 6x6 FILL LOGIC ---
-        // Ensuring powerCount is always even if totalCards is even, so remaining slots are even for pairs
+        const totalSlots = size * size;
+        // Clean math: 8x8 = 64 slots. 4 Powerups + 30 pairs (60 cards) = 64.
         const powerCount = (size === 8) ? 4 : 2; 
-        requiredMatches = (totalCards - powerCount) / 2;
+        requiredMatches = (totalSlots - powerCount) / 2;
         
         document.getElementById('total-matches').innerText = requiredMatches;
+        moves = 0; matches = 0; flippedCards = []; lockBoard = false;
         document.getElementById('move-count').innerText = "0";
         document.getElementById('match-count').innerText = "0";
-        moves = 0; matches = 0; flippedCards = []; lockBoard = false;
 
         const snap = await getDocs(query(collection(db, "photos"), limit(60)));
         let photos = [];
         snap.forEach(doc => photos.push(doc.data().url));
-        
-        // Pick unique photos for the number of pairs needed
         photos = photos.sort(() => 0.5 - Math.random()).slice(0, requiredMatches);
+        
         let deck = [...photos, ...photos].map(url => ({ type: 'photo', val: url }));
-        
-        const powerIcons = ['fa-bolt', 'fa-eye', 'fa-snowflake'];
-        for(let i=0; i<powerCount; i++) deck.push({ type: 'power', val: powerIcons[i % 3] });
+        const powerIcons = ['fa-bolt', 'fa-eye', 'fa-bolt', 'fa-eye']; // Thunder + Eye
+        for(let i=0; i<powerCount; i++) deck.push({ type: 'power', val: powerIcons[i] });
 
-        // Final shuffle
         deck = deck.sort(() => 0.5 - Math.random());
-        
         const grid = document.getElementById('game-grid');
         grid.innerHTML = "";
         grid.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
-        
-        // Adjust grid width based on size
-        if(size === 4) grid.style.maxWidth = "520px";
-        else if(size === 6) grid.style.maxWidth = "750px";
-        else grid.style.maxWidth = "950px";
+        grid.style.width = (size * 80) + "px"; // Fixed width to force neat rows
 
         deck.forEach(item => {
             const card = document.createElement('div');
@@ -220,7 +189,6 @@
             card.addEventListener('click', flipCard);
             grid.appendChild(card);
         });
-        applyVibe();
     }
 
     function flipCard() {
@@ -230,16 +198,20 @@
         if (this.dataset.type === 'power') {
             lockBoard = true;
             setTimeout(() => {
-                if(this.dataset.val === 'fa-eye') {
+                if(this.dataset.val === 'fa-bolt') { // THUNDER POWERUP
+                    alert("⚡ Thunder Strike! Unmatched cards reset!");
+                    const active = document.querySelectorAll('.card.flipped:not([data-matched="true"])');
+                    active.forEach(c => c.classList.remove('flipped'));
+                } else if(this.dataset.val === 'fa-eye') { // EYE POWERUP
                     const cards = document.querySelectorAll('.card:not(.flipped)');
                     cards.forEach(c => c.classList.add('flipped'));
                     setTimeout(() => {
                         cards.forEach(c => { if(!c.dataset.matched) c.classList.remove('flipped'); });
-                        lockBoard = false;
                     }, 1200);
-                } else { lockBoard = false; }
-                this.style.opacity = "0.4";
-            }, 500);
+                }
+                this.style.opacity = "0.3";
+                lockBoard = false;
+            }, 600);
             return;
         }
 
@@ -249,14 +221,9 @@
             const [c1, c2] = flippedCards;
             if (c1.dataset.val === c2.dataset.val) {
                 matches++; document.getElementById('match-count').innerText = matches;
-                c1.dataset.matched = true; c2.dataset.matched = true;
+                c1.dataset.matched = "true"; c2.dataset.matched = "true";
                 flippedCards = [];
-                if(matches === requiredMatches) {
-                    setTimeout(() => { 
-                        alert(`✨ Sky Cleared! ✨\nFound all ${requiredMatches} pairs in ${moves} moves.`); 
-                        initGame(parseInt(document.querySelector('#gridSelect .selected-text').innerText[0])); 
-                    }, 500);
-                }
+                if(matches === requiredMatches) setTimeout(() => alert("✨ Sky Cleared!"), 500);
             } else {
                 lockBoard = true;
                 setTimeout(() => { c1.classList.remove('flipped'); c2.classList.remove('flipped'); flippedCards = []; lockBoard = false; }, 1000);
@@ -264,24 +231,13 @@
         }
     }
 
-    window.toggleDropdown = (id) => {
-        document.querySelectorAll('.custom-select').forEach(s => { if(s.id !== id) s.classList.remove('active'); });
-        document.getElementById(id).classList.toggle('active');
-    };
-
+    window.toggleDropdown = (id) => document.getElementById(id).classList.toggle('active');
     window.updateSelection = (id, label, val) => {
-        document.getElementById(id).querySelector('.selected-text').innerText = label;
+        document.querySelector(`#${id} .selected-text`).innerText = label;
         document.getElementById(id).classList.remove('active');
-        if(id === 'gridSelect') initGame(val); else { currentVibe = val; applyVibe(); }
+        initGame(val);
     };
 
-    function applyVibe() {
-        const grid = document.getElementById('game-grid');
-        grid.classList.remove('filter-retro', 'filter-golden', 'filter-moody');
-        if(currentVibe !== 'none') grid.classList.add(`filter-${currentVibe}`);
-    }
-
-    window.onclick = (e) => { if(!e.target.closest('.custom-select')) document.querySelectorAll('.custom-select').forEach(s => s.classList.remove('active')); };
     initGame(4);
 </script>
 </body>
