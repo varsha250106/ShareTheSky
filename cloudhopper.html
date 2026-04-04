@@ -136,77 +136,118 @@
         </div>
     </div>
 </div>
-    <script>
+   <script>
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
 
-    // 1. The "Cute Cloud" Character
+    // 1. Game State
     let player = {
         x: canvas.width / 2 - 20,
-        y: canvas.height - 100,
-        width: 40,
-        height: 30,
-        vx: 0,          // Velocity X (Left/Right)
-        vy: 0,          // Velocity Y (Up/Down)
-        jumpForce: -8,  // How high we bounce
-        gravity: 0.3    // How fast we fall
+        y: canvas.height - 150,
+        width: 40, height: 30,
+        vx: 0, vy: 0,
+        jumpForce: -9, gravity: 0.3
     };
 
-    // 2. Input Handling (Laptop & Mobile)
+    let platforms = [];
+    let score = 0;
+    let bestClimb = localStorage.getItem('cloudHopperBest') || 0;
+    document.getElementById('bestClimb').innerText = bestClimb + "m";
+
+    // 2. Create Initial Platforms
+    function createPlatforms() {
+        platforms = [];
+        // Starter platform directly under the player
+        platforms.push({ x: player.x - 10, y: player.y + 50, width: 70, height: 12 });
+        
+        // Random platforms above
+        for (let i = 0; i < 6; i++) {
+            platforms.push({
+                x: Math.random() * (canvas.width - 70),
+                y: i * 80,
+                width: 70, height: 12
+            });
+        }
+    }
+
+    // 3. Movement Handling
     let keys = {};
     window.addEventListener('keydown', e => keys[e.code] = true);
     window.addEventListener('keyup', e => keys[e.code] = false);
 
-    // Simple Mobile Touch (Tap left/right side of canvas)
-    canvas.addEventListener('touchstart', e => {
-        const touchX = e.touches[0].clientX - canvas.getBoundingClientRect().left;
-        if (touchX < canvas.width / 2) player.vx = -5;
-        else player.vx = 5;
-    });
+    function update() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    function drawPlayer() {
+        // Physics
+        player.vy += player.gravity;
+        player.y += player.vy;
+
+        if (keys['ArrowLeft']) player.vx = -5;
+        else if (keys['ArrowRight']) player.vx = 5;
+        else player.vx *= 0.85;
+        player.x += player.vx;
+
+        // Screen Wrap
+        if (player.x + player.width < 0) player.x = canvas.width;
+        if (player.x > canvas.width) player.x = -player.width;
+
+        // 4. Collision & Camera Logic
+        platforms.forEach(plat => {
+            // Collision Detection
+            if (player.vy > 0 && 
+                player.x < plat.x + plat.width &&
+                player.x + player.width > plat.x &&
+                player.y + player.height > plat.y &&
+                player.y + player.height < plat.y + plat.height + 10) {
+                player.vy = player.jumpForce;
+            }
+
+            // Draw Platforms
+            ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+            ctx.beginPath();
+            ctx.roundRect(plat.x, plat.y, plat.width, plat.height, 8);
+            ctx.fill();
+
+            // Move Camera Down
+            if (player.y < canvas.height / 2) {
+                let diff = canvas.height / 2 - player.y;
+                player.y += diff;
+                plat.y += diff;
+                score += 1;
+                document.getElementById('currentHeight').innerText = Math.floor(score/10) + "m";
+
+                // Recycle platforms
+                if (plat.y > canvas.height) {
+                    plat.y = 0;
+                    plat.x = Math.random() * (canvas.width - plat.width);
+                }
+            }
+        });
+
+        // Draw Player (The Cute Cloud)
         ctx.fillStyle = "white";
-        // Drawing a fluffy cloud shape using 3 circles
         ctx.beginPath();
         ctx.arc(player.x + 10, player.y + 15, 12, 0, Math.PI * 2);
         ctx.arc(player.x + 20, player.y + 10, 15, 0, Math.PI * 2);
         ctx.arc(player.x + 30, player.y + 15, 12, 0, Math.PI * 2);
         ctx.fill();
-
-        // Tiny cute eyes
         ctx.fillStyle = "#2d2d6a";
         ctx.fillRect(player.x + 15, player.y + 12, 3, 3);
         ctx.fillRect(player.x + 25, player.y + 12, 3, 3);
-    }
 
-    function update() {
-        // Clear Canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        // Apply Gravity
-        player.vy += player.gravity;
-        player.y += player.vy;
-
-        // Handle Left/Right Movement (Laptop)
-        if (keys['ArrowLeft']) player.vx = -5;
-        else if (keys['ArrowRight']) player.vx = 5;
-        else player.vx *= 0.9; // Friction (slows down when you let go)
-
-        player.x += player.vx;
-
-        // Wrap around screen (Go off left, come out right)
-        if (player.x + player.width < 0) player.x = canvas.width;
-        if (player.x > canvas.width) player.x = -player.width;
-
-        // Ground Bounce (Temporary for testing)
-        if (player.y + player.height > canvas.height) {
-            player.vy = player.jumpForce;
+        // Game Over Logic
+        if (player.y > canvas.height) {
+            if (Math.floor(score/10) > bestClimb) {
+                localStorage.setItem('cloudHopperBest', Math.floor(score/10));
+            }
+            alert("Game Over! Score: " + Math.floor(score/10) + "m");
+            location.reload(); 
         }
 
-        drawPlayer();
-        requestAnimationFrame(update); // Constant Loop
+        requestAnimationFrame(update);
     }
 
+    createPlatforms();
     update();
 </script>
 
