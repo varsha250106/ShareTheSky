@@ -10,7 +10,6 @@
             --primary-purple: #a18cd1;
             --dark-text: #2d2d6a;
             --bg-light: #f8f9fa;
-            /* Using the exact font stack from your home page */
             --main-font: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
@@ -18,10 +17,9 @@
             margin: 0;
             font-family: var(--main-font);
             background-color: var(--bg-light);
-            color: var(--dark-text);
         }
 
-        /* --- Header & Navigation (Exact Font Sync) --- */
+        /* --- Header & Navigation (Synced with Home) --- */
         header {
             display: flex;
             justify-content: space-between;
@@ -34,34 +32,49 @@
             z-index: 1000;
         }
 
-        .logo a { text-decoration: none; display: flex; align-items: center; gap: 10px; }
-        .logo span { 
-            font-weight: 700; 
-            color: var(--dark-text); 
-            font-size: 1.25rem;
-            letter-spacing: -0.5px;
+        .logo a { 
+            text-decoration: none; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            transition: transform 0.3s ease;
         }
         
+        .logo a:hover { transform: scale(1.05); }
+
+        .logo span { 
+            font-weight: 800; 
+            color: var(--dark-text); 
+            font-size: 1.5rem; 
+            letter-spacing: -1px;
+        }
+        
+        .floating-cloud {
+            width: 35px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
         .nav-links { display: flex; align-items: center; }
         
-        /* Font styling for Nav Items */
         .nav-links a, .dropbtn {
             text-decoration: none;
             color: #555;
             margin-left: 25px;
             font-size: 0.95rem;
-            font-weight: 600; /* Matching home page weight */
+            font-weight: 600;
             transition: 0.3s;
             font-family: var(--main-font);
-            cursor: pointer;
-            background: none;
-            border: none;
+            background: none; border: none; cursor: pointer;
         }
 
         .nav-links a:hover, .dropbtn:hover { color: var(--primary-purple); }
 
-        /* Dropdown Structure */
-        .dropdown { position: relative; display: inline-block; }
+        .dropdown { position: relative; }
         .dropdown-content {
             display: none;
             position: absolute;
@@ -72,21 +85,13 @@
             box-shadow: 0px 10px 25px rgba(0,0,0,0.1);
             border-radius: 12px;
             margin-top: 15px;
-            padding: 8px 0;
-            border: 1px solid #eee;
+            overflow: hidden;
         }
 
-        .dropdown-content a {
-            color: #444;
-            padding: 10px 20px;
-            margin: 0;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
+        .dropdown-content a { color: #444; padding: 12px 20px; margin: 0; display: block; }
         .dropdown:hover .dropdown-content { display: block; }
-        
-        /* --- Photo Grid --- */
+
+        /* --- Grid & Cards --- */
         .pinterest-grid {
             column-count: 4;
             column-gap: 20px;
@@ -94,9 +99,6 @@
             max-width: 1400px;
             margin: 0 auto;
         }
-
-        @media (max-width: 1100px) { .pinterest-grid { column-count: 3; } }
-        @media (max-width: 768px) { .pinterest-grid { column-count: 2; } }
 
         .pin-card {
             break-inside: avoid;
@@ -108,7 +110,7 @@
             transition: 0.3s ease;
         }
 
-        .pin-card:hover { transform: translateY(-8px); box-shadow: 0 12px 20px rgba(0,0,0,0.1); }
+        .pin-card:hover { transform: translateY(-8px); }
         .pin-img { width: 100%; display: block; cursor: zoom-in; }
 
         .pin-footer { padding: 15px; display: flex; justify-content: space-between; align-items: center; }
@@ -116,7 +118,6 @@
         
         .like-container { display: flex; align-items: center; gap: 6px; cursor: pointer; color: #bbb; transition: 0.2s; }
         .like-container.liked { color: #ff4757; }
-        .like-container span { font-size: 0.9rem; font-weight: 700; }
     </style>
 </head>
 <body>
@@ -124,16 +125,16 @@
 <header>
     <div class="logo">
         <a href="index.html">
-            <img src="https://img.icons8.com/fluency/48/cloud.png" alt="Logo">
+            <img src="https://img.icons8.com/fluency/48/cloud.png" class="floating-cloud">
             <span>ShareTheSky</span>
         </a>
     </div>
     <nav class="nav-links">
         <a href="index.html">Home</a>
         <div class="dropdown">
-            <button class="dropbtn">Explore <i class="fa-solid fa-chevron-down" style="font-size: 0.8rem; margin-left: 5px;"></i></button>
+            <button class="dropbtn">Explore ▾</button>
             <div class="dropdown-content">
-                <a href="gallery.html" style="color: var(--primary-purple); background: #f8f9ff;">Gallery</a>
+                <a href="gallery.html" style="color:var(--primary-purple); font-weight:bold;">Gallery</a>
                 <a href="upload.html">Upload</a>
                 <a href="about.html">About Me</a>
             </div>
@@ -142,9 +143,7 @@
 </header>
 
 <h1 style="text-align:center; margin-top:50px; font-weight: 800; letter-spacing: -1px;">Community Sky Gallery</h1>
-
-<div id="photoGallery" class="pinterest-grid">
-    </div>
+<div id="photoGallery" class="pinterest-grid"></div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -154,33 +153,26 @@
         apiKey: "AIzaSyDxgtNzywhjYGR7R2XMVobR73-SioT6v98", 
         projectId: "sharethesky-a9c7d",
         authDomain: "sharethesky-a9c7d.firebaseapp.com",
-        storageBucket: "sharethesky-a9c7d.appspot.com"
+        storageBucket: "sharethesky-a9c7d.appspot.com",
+        messagingSenderId: "1047232389865",
+        appId: "1:1047232389865:web:37694bf13bcef31f570678"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Track visitors locally to allow likes without login
     let visitorId = localStorage.getItem('visitorId') || 'v_' + Math.random().toString(36).substr(2, 9);
     localStorage.setItem('visitorId', visitorId);
 
-    // CRITICAL: This query fetches ALL photos in the collection
     function loadAllPhotos() {
         const q = query(collection(db, "photos"), orderBy("date", "desc"));
-        
         onSnapshot(q, (snap) => {
             const container = document.getElementById("photoGallery");
             container.innerHTML = "";
-            
-            if(snap.empty) {
-                container.innerHTML = "<p style='grid-column: 1/-1; text-align:center; color:#999;'>No photos found in the database.</p>";
-                return;
-            }
-
             snap.forEach(docSnap => {
                 const data = docSnap.data();
                 const id = docSnap.id;
-                const likes = data.likes || [];
+                const likes = Array.isArray(data.likes) ? data.likes : []; // Safe check
                 const isLiked = likes.includes(visitorId);
 
                 container.innerHTML += `
@@ -207,6 +199,5 @@
 
     loadAllPhotos();
 </script>
-
 </body>
 </html>
