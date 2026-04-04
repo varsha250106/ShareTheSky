@@ -262,7 +262,7 @@
                 matches++; document.getElementById('matches').innerText = matches;
                 c1.dataset.done = "true"; c2.dataset.done = "true";
                 flipped = []; isLock = false;
-                if (matches === totalPairs) setTimeout(() => alert("Sky Clear!"), 500);
+                if (matches === totalPairs) setTimeout(() => alert(Great job! You cleared the sky in ${moves} moves.), 500);
             } else {
                 setTimeout(() => { c1.classList.remove('flipped'); c2.classList.remove('flipped'); flipped = []; isLock = false; }, 800);
             }
