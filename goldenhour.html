@@ -3,12 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cloud Flyer - ShareTheSky</title>
+    <title>Cotton Loop - ShareTheSky</title>
     <style>
-        :root { 
-            --mist-pink: rgba(255, 182, 213, 0.6); 
-            --mist-cyan: rgba(180, 245, 255, 0.6); 
-        }
         body { 
             margin: 0; padding: 0; overflow: hidden; 
             background: #f0f4f8; font-family: 'Segoe UI', sans-serif; 
@@ -19,7 +15,6 @@
         #game-container { 
             position: relative; width: 450px; height: 85vh;
             max-width: 95vw; 
-            /* Matches the gradient in the Sky Match image */
             background: linear-gradient(180deg, #ffffff 0%, #d4e3ff 100%); 
             border-radius: 40px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.05); overflow: hidden;
@@ -37,7 +32,7 @@
         #score-board { 
             position: absolute; top: 40px; font-size: 3.5rem; 
             font-weight: 200; letter-spacing: 8px; color: #5a7fa3;
-            opacity: 0.8;
+            opacity: 0.6;
         }
 
         .card { 
@@ -53,8 +48,6 @@
             letter-spacing: 2px; cursor: pointer; margin-top: 25px; 
             transition: 0.3s ease; 
         }
-
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(90, 127, 163, 0.3); }
     </style>
 </head>
 <body>
@@ -64,9 +57,9 @@
         <div class="ui">
             <div id="score-board">00</div>
             <div id="start-menu" class="card">
-                <h1 style="font-weight: 400; margin: 0; letter-spacing: 2px;">CLOUD FLYER</h1>
-                <p style="opacity: 0.7; font-size: 0.9rem; margin: 15px 0;">Glide through the matching mists</p>
-                <button class="btn" onclick="startGame()">Fly Again</button>
+                <h1 style="font-weight: 400; margin: 0;">COTTON LOOP</h1>
+                <p style="opacity: 0.7; font-size: 0.9rem; margin: 15px 0;">Jump through the matching hoops</p>
+                <button class="btn" onclick="startGame()">Start Game</button>
             </div>
         </div>
     </div>
@@ -90,16 +83,16 @@
     }
     resize();
 
-    let flyer, mists, sparkles, gameActive, score, frame;
+    let cottonBall, hoops, sparkles, gameActive, score, frame;
 
     class Particle {
         constructor(x, y, color) {
             this.x = x; this.y = y;
-            this.size = Math.random() * 3 + 1;
+            this.size = Math.random() * 5 + 2;
             this.speedX = -Math.random() * 2 - 1;
-            this.color = color; this.opacity = 0.5;
+            this.color = color; this.opacity = 0.6;
         }
-        update() { this.x += this.speedX; this.opacity -= 0.01; }
+        update() { this.x += this.speedX; this.opacity -= 0.02; }
         draw() {
             ctx.globalAlpha = this.opacity; ctx.fillStyle = this.color;
             ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill();
@@ -107,73 +100,75 @@
         }
     }
 
-    class Mist {
+    class Hoop {
         constructor() {
-            this.radius = 75;
-            this.x = viewW + 120;
-            this.y = Math.random() * (viewH - 250) + 125;
+            this.radius = 60;
+            this.x = viewW + 100;
+            this.y = Math.random() * (viewH - 200) + 100;
             this.type = Math.random() > 0.5 ? 'pink' : 'cyan';
-            this.color = this.type === 'pink' ? 'rgba(255, 182, 213, 0.5)' : 'rgba(180, 245, 255, 0.5)';
+            this.color = this.type === 'pink' ? '#ffb6d5' : '#b4f5ff';
             this.passed = false;
         }
         draw() {
             ctx.save();
-            ctx.fillStyle = this.color;
-            ctx.filter = 'blur(12px)';
+            ctx.lineWidth = 10;
+            ctx.strokeStyle = this.color;
+            ctx.lineCap = 'round';
             
-            // Soft layered cloud clusters
+            // Draw a dashed "cotton-thread" loop
+            ctx.setLineDash([15, 10]);
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2);
-            ctx.arc(this.x + 30, this.y - 15, this.radius * 0.8, 0, Math.PI*2);
-            ctx.arc(this.x - 20, this.y + 10, this.radius * 0.9, 0, Math.PI*2);
-            ctx.fill();
+            ctx.stroke();
             
-            ctx.filter = 'none';
-            ctx.fillStyle = "rgba(255, 255, 255, 0.25)";
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.radius * 0.35, 0, Math.PI*2);
-            ctx.fill();
+            // Subtle glow around the hoop
+            ctx.globalAlpha = 0.2;
+            ctx.lineWidth = 20;
+            ctx.stroke();
             ctx.restore();
         }
-        update() { this.x -= 2.6; }
+        update() { this.x -= 2.8; }
     }
 
-    class Flyer {
+    class CottonBall {
         constructor() { 
             this.x = 90; this.y = viewH / 2; 
             this.v = 0; 
             this.type = 'pink';
-            this.color = 'rgba(255, 182, 213, 1)'; 
+            this.color = '#ffb6d5'; 
         }
         draw() {
             ctx.save();
-            ctx.shadowBlur = 12; ctx.shadowColor = this.color;
-            
-            // Person/Glider Core
             ctx.fillStyle = "white";
-            ctx.beginPath();
-            ctx.roundRect(this.x - 20, this.y - 4, 40, 8, 10);
-            ctx.fill();
-            
-            // Aura Core
+            // Drawing the "Fluffy Cotton Ball" using multiple small circles
+            for(let i=0; i<6; i++) {
+                let angle = (i / 6) * Math.PI * 2;
+                let ox = Math.cos(angle) * 10;
+                let oy = Math.sin(angle) * 10;
+                ctx.beginPath();
+                ctx.arc(this.x + ox, this.y + oy, 12, 0, Math.PI*2);
+                ctx.fill();
+            }
+            // Center core that shows current color
             ctx.fillStyle = this.color;
             ctx.beginPath();
-            ctx.arc(this.x + 18, this.y, 4, 0, Math.PI*2);
+            ctx.arc(this.x, this.y, 8, 0, Math.PI*2);
             ctx.fill();
             ctx.restore();
         }
         update() {
-            this.v += 0.15; 
-            if (this.v > 5) this.v = 5; 
+            this.v += 0.18; 
+            if (this.v > 6) this.v = 6; 
             this.y += this.v;
-            if (frame % 4 === 0) sparkles.push(new Particle(this.x - 10, this.y, this.color));
+            // Trails
+            if (frame % 3 === 0) sparkles.push(new Particle(this.x - 10, this.y, this.color));
             if (this.y > viewH || this.y < 0) endGame();
         }
     }
 
     function startGame() {
         resize();
-        flyer = new Flyer(); mists = []; sparkles = [];
+        cottonBall = new CottonBall(); hoops = []; sparkles = [];
         score = 0; frame = 0; gameActive = true;
         startMenu.style.display = 'none'; scoreBoard.innerText = "00";
         animate();
@@ -183,24 +178,24 @@
         if (!gameActive) return;
         ctx.clearRect(0, 0, viewW, viewH);
 
-        flyer.update(); flyer.draw();
+        cottonBall.update(); cottonBall.draw();
 
-        if (frame % 130 === 0) mists.push(new Mist());
+        if (frame % 110 === 0) hoops.push(new Hoop());
 
-        mists.forEach((m, i) => {
-            m.update(); m.draw();
+        hoops.forEach((h, i) => {
+            h.update(); h.draw();
             
-            let dist = Math.hypot(flyer.x - m.x, flyer.y - m.y);
-            if (!m.passed && dist < 65) {
-                if (m.type === flyer.type) {
-                    score++; m.passed = true;
-                    // Color flip logic
-                    flyer.type = (flyer.type === 'pink' ? 'cyan' : 'pink');
-                    flyer.color = (flyer.type === 'pink' ? 'rgba(255, 182, 213, 1)' : 'rgba(180, 245, 255, 1)');
+            let dist = Math.hypot(cottonBall.x - h.x, cottonBall.y - h.y);
+            if (!h.passed && dist < 50) {
+                if (h.type === cottonBall.type) {
+                    score++; h.passed = true;
+                    // Change cotton ball color
+                    cottonBall.type = (cottonBall.type === 'pink' ? 'cyan' : 'pink');
+                    cottonBall.color = (cottonBall.type === 'pink' ? '#ffb6d5' : '#b4f5ff');
                     scoreBoard.innerText = score < 10 ? "0" + score : score;
                 } else { endGame(); }
             }
-            if (m.x < -200) mists.splice(i, 1);
+            if (h.x < -100) hoops.splice(i, 1);
         });
 
         sparkles.forEach((s, i) => { s.update(); s.draw(); if (s.opacity <= 0) sparkles.splice(i, 1); });
@@ -211,15 +206,10 @@
         if (!gameActive) return;
         gameActive = false;
         startMenu.style.display = 'block';
-        startMenu.innerHTML = `
-            <h2 style="font-weight:400; color:#5a7fa3; margin:0;">DRIFT ENDED</h2>
-            <p style="margin:10px 0; opacity:0.6;">Score: ${score}</p>
-            <button class="btn" onclick="startGame()">Fly Again</button>
-        `;
+        startMenu.innerHTML = `<h2 style="font-weight:400; color:#5a7fa3; margin:0;">DRIFT ENDED</h2><p style="margin:10px 0; opacity:0.6;">Score: ${score}</p><button class="btn" onclick="startGame()">Fly Again</button>`;
     }
 
-    const jump = (e) => { if (gameActive) { if (e) e.preventDefault(); flyer.v = -4.1; } };
-    window.addEventListener('keydown', (e) => { if (e.code === 'Space') jump(e); });
+    const jump = (e) => { if (gameActive) { if (e) e.preventDefault(); cottonBall.v = -4.5; } };
     window.addEventListener('touchstart', (e) => jump(e), { passive: false });
     window.addEventListener('mousedown', () => jump());
     window.addEventListener('resize', resize);
