@@ -27,82 +27,70 @@
 
         header {
             display: flex; justify-content: space-between; align-items: center; 
-            padding: 15px 8%; background: white; box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            padding: 10px 5%; background: white; box-shadow: 0 2px 15px rgba(0,0,0,0.05);
             position: sticky; top: 0; z-index: 1000;
         }
-        .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-        .logo img { width: 35px; animation: float 3s ease-in-out infinite; }
-        .logo span { font-weight: 800; font-size: 1.5rem; color: var(--dark); }
+        .logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+        .logo img { width: 30px; animation: float 3s ease-in-out infinite; }
+        .logo span { font-weight: 800; font-size: 1.2rem; color: var(--dark); }
 
-        .nav-links { display: flex; align-items: center; gap: 30px; }
-        .nav-links a, .dropbtn { 
-            text-decoration: none; color: #444; font-weight: 600; 
-            font-size: 1rem; transition: 0.3s; background: none; border: none; cursor: pointer;
-        }
-        .nav-links a:hover, .dropdown:hover .dropbtn { color: var(--primary); }
-
-        .dropdown { position: relative; display: inline-block; }
-        .dropdown-content {
-            display: none; position: absolute; right: 0; background-color: white; 
-            min-width: 180px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
-            border-radius: 15px; z-index: 1; padding: 10px 0; border: 1px solid #f0f0f0;
-        }
-        .dropdown-content a { color: #555; padding: 12px 20px; display: block; text-decoration: none; font-size: 0.95rem; }
-        .dropdown-content a:hover { background-color: #fcfaff; color: var(--primary); }
-        .dropdown:hover .dropdown-content { display: block; }
-
-        /* --- LAYOUT --- */
+        /* --- RESPONSIVE LAYOUT --- */
         .main-container {
-            display: flex; padding: 40px 8%; gap: 40px; flex: 1; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box;
+            display: flex; padding: 20px 5%; gap: 20px; flex: 1; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box;
         }
 
-        .sidebar { width: 320px; display: flex; flex-direction: column; gap: 20px; flex-shrink: 0; }
-        .card-panel { background: white; padding: 25px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
+        @media (max-width: 900px) {
+            .main-container { flex-direction: column; padding: 15px; }
+            .sidebar { width: 100% !important; order: 2; }
+            .game-section { order: 1; }
+            header { padding: 10px 15px; }
+            .nav-links { gap: 15px; }
+        }
+
+        .sidebar { width: 300px; display: flex; flex-direction: column; gap: 20px; flex-shrink: 0; }
+        .card-panel { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
         
-        .stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
-        .stat-pill { background: #fcfaff; padding: 12px; border-radius: 15px; text-align: center; border: 1px solid #f0edff; }
-        .stat-pill span { display: block; font-size: 1.4rem; font-weight: 800; color: var(--primary); }
+        .stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .stat-pill { background: #fcfaff; padding: 10px; border-radius: 12px; text-align: center; border: 1px solid #f0edff; }
+        .stat-pill span { display: block; font-size: 1.2rem; font-weight: 800; color: var(--primary); }
 
-        /* --- RULES SECTION --- */
-        .rule-item {
-            display: flex; align-items: flex-start; gap: 12px; padding: 12px;
-            border-radius: 16px; transition: 0.3s; margin-bottom: 8px; border: 1px solid transparent;
-        }
-        .rule-item:hover { background: #fcfaff; transform: translateY(-3px); border-color: var(--primary); }
-        .rule-icon {
-            width: 35px; height: 35px; background: #f4f0ff; color: var(--primary);
-            display: flex; align-items: center; justify-content: center;
-            border-radius: 10px; font-size: 1rem; flex-shrink: 0;
-        }
-        .rule-text h4 { margin: 0 0 2px 0; font-size: 0.95rem; color: var(--dark); }
-        .rule-text p { margin: 0; font-size: 0.8rem; color: #777; line-height: 1.3; }
+        .rule-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px; border-radius: 12px; margin-bottom: 5px; }
+        .rule-icon { width: 30px; height: 30px; background: #f4f0ff; color: var(--primary); display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 0.9rem; flex-shrink: 0; }
+        .rule-text h4 { margin: 0; font-size: 0.9rem; }
+        .rule-text p { margin: 0; font-size: 0.75rem; color: #777; }
 
         /* --- GAME SECTION --- */
-        .game-section { flex: 1; display: flex; flex-direction: column; }
+        .game-section { flex: 1; display: flex; flex-direction: column; min-width: 0; }
         .game-card { 
-            background: white; width: 100%; border-radius: 32px; padding: 30px; 
+            background: white; width: 100%; border-radius: 24px; padding: 20px; 
             box-shadow: 0 15px 50px rgba(0,0,0,0.02); display: flex; flex-direction: column; align-items: center;
             box-sizing: border-box;
         }
 
-        .btn-group { display: flex; gap: 10px; margin-bottom: 30px; }
+        .btn-group { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; }
         .mode-btn {
-            padding: 10px 18px; border-radius: 12px; border: 2.5px solid #f0f0f0;
-            background: white; cursor: pointer; font-weight: 700; transition: 0.3s; color: #666; font-size: 0.85rem;
+            padding: 8px 14px; border-radius: 10px; border: 2px solid #f0f0f0;
+            background: white; cursor: pointer; font-weight: 700; transition: 0.3s; color: #666; font-size: 0.8rem;
         }
         .mode-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
         .restart-btn { border-color: #ff9a9e; color: #ff9a9e; }
 
-        /* --- GRID SIZING --- */
-        .memory-grid { display: grid; gap: 10px; perspective: 1000px; width: 100%; margin: 0 auto; }
-        .grid-small { max-width: 500px; } /* Neater 4x4 */
-        .grid-large { max-width: 850px; }
+        /* --- GRID SCALING --- */
+        .memory-grid { 
+            display: grid; 
+            gap: 8px; 
+            perspective: 1000px; 
+            width: 100%; 
+            margin: 0 auto;
+        }
+        .grid-small { max-width: 400px; } 
+        .grid-large { max-width: 100%; }
 
-        .card { position: relative; transform-style: preserve-3d; transition: 0.6s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; aspect-ratio: 1/1; }
+        .card { position: relative; transform-style: preserve-3d; transition: 0.6s; cursor: pointer; aspect-ratio: 1/1; }
         .card.flipped { transform: rotateY(180deg); }
-        .card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 10px; }
-        .card-front { background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem; }
-        .card-back { background: #fff; transform: rotateY(180deg); display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1.5px solid #eee; }
+        .card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 8px; }
+        .card-front { background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; color: white; font-size: 1rem; }
+        .card-back { background: #fff; transform: rotateY(180deg); display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid #eee; }
         .card-back img { width: 100%; height: 100%; object-fit: cover; }
     </style>
 </head>
@@ -113,24 +101,12 @@
         <img src="https://img.icons8.com/fluency/48/cloud.png" alt="Cloud Logo">
         <span>ShareTheSky</span>
     </a>
-    <nav class="nav-links">
-        <a href="index.html">Home</a>
-        <div class="dropdown">
-            <button class="dropbtn">Explore <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; margin-left:5px;"></i></button>
-            <div class="dropdown-content">
-                <a href="gallery.html">Gallery</a>
-                <a href="upload.html">Upload</a>
-                <a href="skymatch.html">Sky Match 🎮</a>
-                <a href="about.html">About Me</a>
-            </div>
-        </div>
-    </nav>
 </header>
 
 <div class="main-container">
     <div class="sidebar">
         <div class="card-panel">
-            <h3 style="margin:0">Dashboard</h3>
+            <h3 style="margin:0; font-size: 1.1rem;">Dashboard</h3>
             <div class="stat-row">
                 <div class="stat-pill">Moves<span id="moves">0</span></div>
                 <div class="stat-pill">Matches<span id="matches">0</span></div>
@@ -138,30 +114,22 @@
         </div>
 
         <div class="card-panel">
-            <h3 style="margin:0 0 15px 0">How to Play</h3>
+            <h3 style="margin:0 0 10px 0; font-size: 1.1rem;">How to Play</h3>
             <div class="rule-item">
                 <div class="rule-icon"><i class="fa-solid fa-clone"></i></div>
-                <div class="rule-text"><h4>Find Pairs</h4><p>Match identical sky photos.</p></div>
-            </div>
-            <div class="rule-item">
-                <div class="rule-icon"><i class="fa-solid fa-bolt"></i></div>
-                <div class="rule-text"><h4>Thunder</h4><p>Resets unmatched flips.</p></div>
-            </div>
-            <div class="rule-item">
-                <div class="rule-icon"><i class="fa-solid fa-eye"></i></div>
-                <div class="rule-text"><h4>Vision</h4><p>Briefly shows all cards.</p></div>
+                <div class="rule-text"><h4>Find Pairs</h4><p>Match sky photos.</p></div>
             </div>
         </div>
     </div>
 
     <div class="game-section">
         <div class="game-card">
-            <h1 style="margin:0 0 20px 0; font-size: 1.8rem; color: var(--dark);">Sky Match</h1>
+            <h2 style="margin:0 0 15px 0; font-size: 1.5rem;">Sky Match</h2>
             <div class="btn-group">
-                <button class="mode-btn" id="btn-4" onclick="initGame(4, 4)">4 × 4</button>
-                <button class="mode-btn" id="btn-6" onclick="initGame(6, 6)">6 × 6</button>
-                <button class="mode-btn" id="btn-8" onclick="initGame(8, 7)">8 × 7</button>
-                <button class="mode-btn restart-btn" onclick="restartGame()"><i class="fa-solid fa-rotate-right"></i> Restart</button>
+                <button class="mode-btn" id="btn-4" onclick="initGame(4, 4)">4×4</button>
+                <button class="mode-btn" id="btn-6" onclick="initGame(6, 6)">6×6</button>
+                <button class="mode-btn" id="btn-8" onclick="initGame(8, 7)">8×7</button>
+                <button class="mode-btn restart-btn" onclick="restartGame()"><i class="fa-solid fa-rotate-right"></i></button>
             </div>
             <div class="memory-grid" id="game-grid"></div>
         </div>
@@ -186,11 +154,11 @@
         currentCols = cols; currentRows = rows;
         document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
         const btnId = (cols === 8) ? 'btn-8' : `btn-${cols}`;
-        document.getElementById(btnId).classList.add('active');
+        if(document.getElementById(btnId)) document.getElementById(btnId).classList.add('active');
 
         const grid = document.getElementById('game-grid');
         grid.className = `memory-grid ${cols === 4 ? 'grid-small' : 'grid-large'}`;
-        grid.innerHTML = "<p>Clearing the sky...</p>";
+        grid.innerHTML = "<p>Loading...</p>";
         
         moves = 0; matches = 0; flipped = []; isLock = false;
         document.getElementById('moves').innerText = "0";
@@ -216,7 +184,7 @@
             card.className = 'card';
             card.dataset.type = item.type; card.dataset.val = item.val;
             card.innerHTML = `<div class="card-front"><i class="fa-solid fa-cloud"></i></div>
-                              <div class="card-back">${item.type === 'photo' ? `<img src="${item.val}">` : `<i class="fa-solid ${item.val}" style="color:gold; font-size:1.1rem;"></i>`}</div>`;
+                              <div class="card-back">${item.type === 'photo' ? `<img src="${item.val}">` : `<i class="fa-solid ${item.val}" style="color:gold;"></i>`}</div>`;
             card.onclick = handleFlip;
             grid.appendChild(card);
         });
