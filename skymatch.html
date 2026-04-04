@@ -19,7 +19,7 @@
             display: flex; flex-direction: column; min-height: 100vh;
         }
 
-        /* --- NAVIGATION (Matches Home Page Style) --- */
+        /* --- NAVIGATION --- */
         header {
             display: flex; justify-content: space-between; align-items: center; 
             padding: 15px 8%; background: white; box-shadow: 0 2px 15px rgba(0,0,0,0.05);
@@ -42,36 +42,27 @@
             min-width: 180px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
             border-radius: 15px; z-index: 1; padding: 10px 0; border: 1px solid #f0f0f0;
         }
-        .dropdown-content a { 
-            color: #555; padding: 12px 20px; display: block; font-size: 0.95rem;
-        }
+        .dropdown-content a { color: #555; padding: 12px 20px; display: block; text-decoration: none; font-size: 0.95rem; }
         .dropdown-content a:hover { background-color: #fcfaff; color: var(--primary); }
         .dropdown:hover .dropdown-content { display: block; }
 
-        /* --- LAYOUT WRAPPER --- */
+        /* --- LAYOUT --- */
         .main-container {
-            display: flex; padding: 40px 8%; gap: 40px; flex: 1; max-width: 1600px; margin: 0 auto; width: 100%;
+            display: flex; padding: 40px 8%; gap: 40px; flex: 1; max-width: 1600px; margin: 0 auto; width: 100%; box-sizing: border-box;
         }
 
-        /* --- SIDEBAR: DASHBOARD & NEAT RULES --- */
-        .sidebar { width: 340px; display: flex; flex-direction: column; gap: 25px; }
+        .sidebar { width: 340px; display: flex; flex-direction: column; gap: 25px; flex-shrink: 0; }
         .card-panel { background: white; padding: 25px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
         
         .stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
         .stat-pill { background: #fcfaff; padding: 15px; border-radius: 18px; text-align: center; border: 1px solid #f0edff; }
         .stat-pill span { display: block; font-size: 1.6rem; font-weight: 800; color: var(--primary); }
 
-        /* NEAT HOVERABLE RULES */
         .rule-item {
             display: flex; align-items: flex-start; gap: 15px; padding: 15px;
-            border-radius: 18px; transition: all 0.3s ease; cursor: default; margin-bottom: 10px;
-            border: 1px solid transparent;
+            border-radius: 18px; transition: 0.3s; margin-bottom: 10px;
         }
-        .rule-item:hover {
-            background: white; transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(161, 140, 209, 0.12);
-            border-color: var(--primary);
-        }
+        .rule-item:hover { background: #fcfaff; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
         .rule-icon {
             width: 40px; height: 40px; background: #f4f0ff; color: var(--primary);
             display: flex; align-items: center; justify-content: center;
@@ -81,30 +72,41 @@
         .rule-text p { margin: 0; font-size: 0.85rem; color: #777; line-height: 1.4; }
 
         /* --- GAME SECTION --- */
-        .game-section { flex: 1; display: flex; flex-direction: column; align-items: center; }
+        .game-section { flex: 1; display: flex; flex-direction: column; }
         .game-card { 
             background: white; width: 100%; border-radius: 32px; padding: 40px; 
             box-shadow: 0 15px 50px rgba(0,0,0,0.02); display: flex; flex-direction: column; align-items: center;
+            box-sizing: border-box;
         }
 
-        .btn-group { display: flex; gap: 12px; margin: 25px 0 35px 0; }
+        .btn-group { display: flex; gap: 12px; margin: 25px 0 35px 0; flex-wrap: wrap; justify-content: center; }
         .mode-btn {
-            padding: 12px 24px; border-radius: 14px; border: 2px solid #eee;
+            padding: 12px 24px; border-radius: 14px; border: 2.5px solid #f0f0f0;
             background: white; cursor: pointer; font-weight: 700; transition: 0.3s; color: #666;
         }
         .mode-btn:hover { border-color: var(--primary); color: var(--primary); }
-        .mode-btn.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 8px 20px rgba(161, 140, 209, 0.25); }
+        .mode-btn.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 8px 20px rgba(161, 140, 209, 0.2); }
+        .restart-btn { border-color: #ff9a9e; color: #ff9a9e; }
+        .restart-btn:hover { background: #fff5f5; border-color: #ff9a9e; color: #ff9a9e; }
 
-        /* --- MEMORY GRID --- */
-        .memory-grid { display: grid; gap: 15px; perspective: 1000px; }
-        .card { position: relative; transform-style: preserve-3d; transition: 0.6s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
+        /* --- CORRECTED NEAT GRID --- */
+        .memory-grid { 
+            display: grid; 
+            gap: 12px; 
+            perspective: 1000px; 
+            width: 100%; 
+            max-width: 800px; /* Limits 8x8 stretch */
+            margin: 0 auto;
+        }
+        
+        .card { position: relative; transform-style: preserve-3d; transition: 0.6s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; aspect-ratio: 1/1; }
         .card.flipped { transform: rotateY(180deg); }
         .card-front, .card-back { 
             position: absolute; width: 100%; height: 100%; backface-visibility: hidden; 
-            border-radius: 16px; 
+            border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.03);
         }
-        .card-front { background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.8rem; }
-        .card-back { background: #fff; transform: rotateY(180deg); display: flex; align-items: center; justify-content: center; overflow: hidden; border: 2px solid #eee; }
+        .card-front { background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; }
+        .card-back { background: #fff; transform: rotateY(180deg); display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1.5px solid #eee; }
         .card-back img { width: 100%; height: 100%; object-fit: cover; }
     </style>
 </head>
@@ -141,40 +143,29 @@
 
         <div class="card-panel">
             <h3 style="margin:0 0 20px 0">How to Play</h3>
-            
             <div class="rule-item">
                 <div class="rule-icon"><i class="fa-solid fa-clone"></i></div>
-                <div class="rule-text">
-                    <h4>Find Pairs</h4>
-                    <p>Match identical sky photos to lock them in.</p>
-                </div>
+                <div class="rule-text"><h4>Find Pairs</h4><p>Match identical sky photos to lock them in.</p></div>
             </div>
-
             <div class="rule-item">
                 <div class="rule-icon"><i class="fa-solid fa-bolt"></i></div>
-                <div class="rule-text">
-                    <h4>Thunder Power</h4>
-                    <p>Resets unmatched cards instantly for a fresh start.</p>
-                </div>
+                <div class="rule-text"><h4>Thunder Power</h4><p>Resets unmatched cards instantly.</p></div>
             </div>
-
             <div class="rule-item">
                 <div class="rule-icon"><i class="fa-solid fa-eye"></i></div>
-                <div class="rule-text">
-                    <h4>Sky Vision</h4>
-                    <p>Briefly reveals all card positions for a quick peek.</p>
-                </div>
+                <div class="rule-text"><h4>Sky Vision</h4><p>Briefly reveals all card positions.</p></div>
             </div>
         </div>
     </div>
 
     <div class="game-section">
         <div class="game-card">
-            <h1 style="margin:0; font-size: 2.2rem;">Sky Match</h1>
+            <h1 style="margin:0; font-size: 2.2rem; color: var(--dark);">Sky Match</h1>
             <div class="btn-group">
                 <button class="mode-btn" id="btn-4" onclick="initGame(4)">4 × 4</button>
                 <button class="mode-btn" id="btn-6" onclick="initGame(6)">6 × 6</button>
                 <button class="mode-btn" id="btn-8" onclick="initGame(8)">8 × 8</button>
+                <button class="mode-btn restart-btn" onclick="restartGame()"><i class="fa-solid fa-rotate-right"></i> Restart</button>
             </div>
             <div class="memory-grid" id="game-grid"></div>
         </div>
@@ -193,21 +184,20 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    let flipped = [], moves = 0, matches = 0, isLock = false, totalPairs = 0;
+    let flipped = [], moves = 0, matches = 0, isLock = false, totalPairs = 0, currentSize = 8;
 
     async function initGame(size = 8) {
-        // Fix: Reset button colors
+        currentSize = size;
         document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(`btn-${size}`).classList.add('active');
 
         const grid = document.getElementById('game-grid');
-        grid.innerHTML = "<p>Clearing the sky...</p>";
+        grid.innerHTML = "<p style='color:var(--primary); font-weight:600;'>Loading the sky...</p>";
         
         moves = 0; matches = 0; flipped = []; isLock = false;
         document.getElementById('moves').innerText = "0";
         document.getElementById('matches').innerText = "0";
 
-        let cardSize = size === 4 ? 120 : (size === 6 ? 95 : 75);
         const totalCards = size * size;
         const powerCount = size === 8 ? 4 : 2; 
         totalPairs = (totalCards - powerCount) / 2;
@@ -221,15 +211,14 @@
 
         deck.sort(() => Math.random() - 0.5);
         grid.innerHTML = "";
-        grid.style.gridTemplateColumns = `repeat(${size}, ${cardSize}px)`;
+        grid.style.gridTemplateColumns = `repeat(${size}, 1fr)`; /* Responsive neat layout */
 
         deck.forEach(item => {
             const card = document.createElement('div');
             card.className = 'card';
-            card.style.width = card.style.height = `${cardSize}px`;
             card.dataset.type = item.type; card.dataset.val = item.val;
             card.innerHTML = `<div class="card-front"><i class="fa-solid fa-cloud"></i></div>
-                              <div class="card-back">${item.type === 'photo' ? `<img src="${item.val}">` : `<i class="fa-solid ${item.val}" style="color:gold; font-size:1.5rem;"></i>`}</div>`;
+                              <div class="card-back">${item.type === 'photo' ? `<img src="${item.val}">` : `<i class="fa-solid ${item.val}" style="color:gold; font-size:1.2rem;"></i>`}</div>`;
             card.onclick = handleFlip;
             grid.appendChild(card);
         });
@@ -249,7 +238,7 @@
                     hidden.forEach(c => c.classList.add('flipped'));
                     setTimeout(() => hidden.forEach(c => { if(!c.dataset.done) c.classList.remove('flipped'); }), 1200);
                 }
-                this.style.opacity = "0.3"; this.dataset.done = "true"; isLock = false;
+                this.style.opacity = "0.4"; this.dataset.done = "true"; isLock = false;
             }, 600);
             return;
         }
@@ -263,13 +252,14 @@
                 matches++; document.getElementById('matches').innerText = matches;
                 c1.dataset.done = "true"; c2.dataset.done = "true";
                 flipped = []; isLock = false;
-                if (matches === totalPairs) alert("Sky Cleared!");
+                if (matches === totalPairs) setTimeout(() => alert("Perfect Match! The sky is clear."), 500);
             } else {
                 setTimeout(() => { c1.classList.remove('flipped'); c2.classList.remove('flipped'); flipped = []; isLock = false; }, 800);
             }
         }
     }
 
+    window.restartGame = () => initGame(currentSize);
     window.initGame = initGame;
     window.onload = () => initGame(8);
 </script>
