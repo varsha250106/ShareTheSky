@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cloud Chaser Ultra - ShareTheSky</title>
+    <title>Cloud Chaser: Sky-Streak</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --p: #ff7eb3; --c: #7afcff; --storm: #444; }
+        :root { --p: #ff7eb3; --c: #7afcff; }
         body { margin: 0; padding: 0; overflow: hidden; font-family: 'Segoe UI', sans-serif; height: 100vh; touch-action: none; background: #000; }
         .exit-btn { position: absolute; top: 20px; left: 20px; color: white; text-decoration: none; background: rgba(0,0,0,0.3); padding: 10px 20px; border-radius: 25px; z-index: 100; }
         #game-container { position: relative; width: 400px; height: 600px; max-width: 100vw; max-height: 85vh; margin: auto; top: 50%; transform: translateY(-50%); }
@@ -15,7 +15,6 @@
         #score-board { position: absolute; top: 20px; font-size: 2.5rem; font-weight: bold; }
         .card { background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(15px); padding: 30px; border-radius: 25px; text-align: center; pointer-events: auto; border: 1px solid rgba(255,255,255,0.2); }
         .btn { background: white; border: none; padding: 12px 30px; border-radius: 25px; font-weight: bold; cursor: pointer; margin-top: 15px; }
-        #overdrive-ui { position: absolute; bottom: 20px; color: #ffeb3b; font-weight: bold; opacity: 0; transition: 0.3s; }
     </style>
 </head>
 <body>
@@ -26,11 +25,10 @@
         <canvas id="gameCanvas"></canvas>
         <div class="ui">
             <div id="score-board">0</div>
-            <div id="overdrive-ui">⚡ OVERDRIVE 2X ⚡</div>
             <div id="start-menu" class="card">
-                <h2>Cloud Chaser Ultra</h2>
-                <p>Spacebar or Tap to float<br>Match Rings | Avoid Storms</p>
-                <button class="btn" onclick="startGame()">Start Flight</button>
+                <h2>Sky-Streak</h2>
+                <p>Spacebar / Tap to Rise<br>Fly through the Wide Aura Rings</p>
+                <button class="btn" onclick="startGame()">Begin Flight</button>
             </div>
         </div>
     </div>
@@ -40,34 +38,24 @@
     const ctx = canvas.getContext('2d');
     const scoreBoard = document.getElementById('score-board');
     const startMenu = document.getElementById('start-menu');
-    const overdriveUI = document.getElementById('overdrive-ui');
 
     const dpr = window.devicePixelRatio || 1;
     canvas.width = 400 * dpr; canvas.height = 600 * dpr;
     ctx.scale(dpr, dpr);
 
-    let cloud, rings, sparkles, obstacles, gameActive, score, frame, combo, speedMult;
+    let cloud, rings, sparkles, gameActive, score, frame, speedMult;
 
-    // Balanced Physics Constants
-    const GRAVITY = 0.15;      
+    const GRAVITY = 0.16;      
     const JUMP_STRENGTH = -4.2; 
-    const MAX_FALL_SPEED = 7;  
-
-    const skyThemes = [
-        { top: '#4facfe', bottom: '#00f2fe' }, 
-        { top: '#ff7e5f', bottom: '#feb47b' }, 
-        { top: '#2c3e50', bottom: '#000000' }  
-    ];
 
     class Sparkle {
-        constructor(x, y, color, isPoof = false) {
+        constructor(x, y, color) {
             this.x = x; this.y = y;
-            this.size = Math.random() * (isPoof ? 8 : 4);
-            this.speedX = isPoof ? (Math.random()-0.5)*10 : Math.random() * -2;
-            this.speedY = isPoof ? (Math.random()-0.5)*10 : (Math.random()-0.5)*1;
+            this.size = Math.random() * 3 + 1;
+            this.speedX = Math.random() * -4 - 2; // Move back fast for "speed" effect
             this.color = color; this.opacity = 1;
         }
-        update() { this.x += this.speedX; this.y += this.speedY; this.opacity -= 0.02; }
+        update() { this.x += this.speedX; this.opacity -= 0.03; }
         draw() {
             ctx.globalAlpha = this.opacity; ctx.fillStyle = this.color;
             ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill();
@@ -75,88 +63,83 @@
         }
     }
 
-    class Obstacle {
-        constructor() {
-            this.x = 450; this.y = Math.random() * 500 + 50;
-            this.size = 30;
-        }
-        draw() {
-            ctx.fillStyle = '#333'; ctx.shadowBlur = 15; ctx.shadowColor = '#000';
-            ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
-            ctx.arc(this.x+15, this.y-10, this.size*0.8, 0, Math.PI*2); ctx.fill();
-            ctx.shadowBlur = 0;
-        }
-        update() { this.x -= (3.8 * speedMult); }
-    }
-
     class Ring {
         constructor() {
             this.x = 450; this.y = Math.random() * 400 + 100;
+            this.width = 60; // BROADER RINGS
             this.color = ['#ff7eb3', '#7afcff'][Math.floor(Math.random()*2)];
             this.passed = false;
         }
         draw() {
-            ctx.strokeStyle = this.color; ctx.lineWidth = 6; ctx.setLineDash([5, 10]);
-            ctx.beginPath(); ctx.ellipse(this.x, this.y, 22, 65, 0, 0, Math.PI*2); ctx.stroke();
+            ctx.strokeStyle = this.color; ctx.lineWidth = 8;
+            ctx.setLineDash([15, 5]); // Long dashes for "tunnel" look
+            // Draw a wider rectangle with rounded corners (the broad ring)
+            ctx.beginPath();
+            ctx.roundRect(this.x, this.y - 45, this.width, 90, 15);
+            ctx.stroke();
         }
-        update() { this.x -= (3.2 * speedMult); }
+        update() { this.x -= (3.5 * speedMult); }
     }
 
-    class Cloud {
+    class Cloud { // MODIFIED TO BE A STREAK
         constructor() { this.x = 60; this.y = 300; this.v = 0; this.color = '#ff7eb3'; }
         draw() {
-            ctx.shadowBlur = (combo >= 5) ? 40 : 20; ctx.shadowColor = this.color;
+            ctx.save();
+            ctx.shadowBlur = 15; ctx.shadowColor = this.color;
             ctx.fillStyle = "white";
-            ctx.beginPath(); ctx.arc(this.x, this.y, 22, 0, Math.PI*2); ctx.fill();
-            ctx.strokeStyle = this.color; ctx.lineWidth = 4; ctx.stroke(); ctx.shadowBlur = 0;
+            
+            // Draw a horizontal pill shape (The Sky-Streak)
+            ctx.beginPath();
+            ctx.roundRect(this.x - 20, this.y - 8, 50, 16, 10);
+            ctx.fill();
+            
+            // Add a small "core" glow
+            ctx.fillStyle = this.color;
+            ctx.beginPath();
+            ctx.arc(this.x + 15, this.y, 5, 0, Math.PI*2);
+            ctx.fill();
+            ctx.restore();
         }
         update() {
             this.v += GRAVITY; 
-            if (this.v > MAX_FALL_SPEED) this.v = MAX_FALL_SPEED; 
+            if (this.v > 7) this.v = 7; 
             this.y += this.v;
-            if (frame % 2 === 0) sparkles.push(new Sparkle(this.x, this.y, this.color));
+            // Constant trail for speed effect
+            sparkles.push(new Sparkle(this.x - 10, this.y, this.color));
             if (this.y > 600 || this.y < 0) endGame();
         }
     }
 
     function startGame() {
-        cloud = new Cloud(); rings = []; sparkles = []; obstacles = [];
-        score = 0; frame = 0; combo = 0; speedMult = 1;
+        cloud = new Cloud(); rings = []; sparkles = [];
+        score = 0; frame = 0; speedMult = 1;
         gameActive = true; startMenu.style.display = 'none'; animate();
     }
 
     function animate() {
         if (!gameActive) return;
-        let themeIdx = Math.min(2, Math.floor(score / 10));
         let grad = ctx.createLinearGradient(0, 0, 0, 600);
-        grad.addColorStop(0, skyThemes[themeIdx].top); grad.addColorStop(1, skyThemes[themeIdx].bottom);
+        grad.addColorStop(0, '#4facfe'); grad.addColorStop(1, '#00f2fe');
         ctx.fillStyle = grad; ctx.fillRect(0,0,400,600);
 
         cloud.update(); cloud.draw();
-        speedMult = (combo >= 5) ? 1.6 : 1;
-        overdriveUI.style.opacity = (combo >= 5) ? 1 : 0;
+        speedMult = 1 + (score * 0.05);
 
-        if (frame % 110 === 0) rings.push(new Ring());
-        if (frame % 280 === 0) obstacles.push(new Obstacle());
+        if (frame % 90 === 0) rings.push(new Ring());
 
         rings.forEach((r, i) => {
             r.update(); r.draw();
-            if (!r.passed && r.x < cloud.x + 25 && r.x > cloud.x - 25) {
-                if (Math.abs(r.y - cloud.y) < 70) {
+            // Check collision with the broader ring area
+            if (!r.passed && cloud.x > r.x && cloud.x < r.x + r.width) {
+                if (Math.abs(r.y - cloud.y) < 50) {
                     if (r.color === cloud.color) {
-                        score += (combo >= 5 ? 2 : 1); combo++; r.passed = true;
+                        score++; r.passed = true;
                         cloud.color = (cloud.color === '#ff7eb3' ? '#7afcff' : '#ff7eb3');
                         scoreBoard.innerText = score;
                     } else { endGame(); }
                 }
             }
-            if (r.x < -50) rings.splice(i, 1);
-        });
-
-        obstacles.forEach((o, i) => {
-            o.update(); o.draw();
-            if (Math.hypot(o.x - cloud.x, o.y - cloud.y) < 45) endGame();
-            if (o.x < -100) obstacles.splice(i, 1);
+            if (r.x < -100) rings.splice(i, 1);
         });
 
         sparkles.forEach((s, i) => { s.update(); s.draw(); if (s.opacity <= 0) sparkles.splice(i, 1); });
@@ -164,43 +147,18 @@
     }
 
     function endGame() {
-        if (!gameActive) return;
         gameActive = false;
-        for(let i=0; i<20; i++) sparkles.push(new Sparkle(cloud.x, cloud.y, cloud.color, true));
         setTimeout(() => {
             startMenu.style.display = 'block';
-            startMenu.innerHTML = `<h2>Skyward Bound</h2><p>Final Score: ${score}</p><button class="btn" onclick="startGame()">Fly Again</button>`;
-        }, 1000);
-        function poofLoop() {
-            ctx.clearRect(0,0,400,600);
-            sparkles.forEach((s, i) => { s.update(); s.draw(); if (s.opacity <= 0) sparkles.splice(i,1); });
-            if (sparkles.length > 0) requestAnimationFrame(poofLoop);
-        }
-        poofLoop();
+            startMenu.innerHTML = `<h2>Mists Hit</h2><p>Score: ${score}</p><button class="btn" onclick="startGame()">Restart</button>`;
+        }, 500);
     }
 
-    // --- REFINED INPUT HANDLING ---
+    // MULTI-DEVICE CONTROLS
     const jump = () => { if (gameActive) cloud.v = JUMP_STRENGTH; };
-
-    // Keyboard (Spacebar)
-    window.addEventListener('keydown', (e) => {
-        if (e.code === 'Space') {
-            e.preventDefault(); // Prevents page from scrolling down
-            jump();
-        }
-    });
-
-    // Touch & Mouse
-    window.addEventListener('touchstart', (e) => {
-        if (gameActive) {
-            e.preventDefault();
-            jump();
-        }
-    }, { passive: false });
-
-    window.addEventListener('mousedown', (e) => {
-        if (gameActive) jump();
-    });
+    window.addEventListener('keydown', (e) => { if (e.code === 'Space') { e.preventDefault(); jump(); } });
+    window.addEventListener('touchstart', (e) => { e.preventDefault(); jump(); }, { passive: false });
+    window.addEventListener('mousedown', () => jump());
 
 </script>
 </body>
