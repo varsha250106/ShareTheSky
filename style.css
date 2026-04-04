@@ -3195,3 +3195,127 @@ footer {
     color: #94a3b8;
     font-size: 0.85rem;
 }
+:root {
+  --primary-purple: #7047eb; /* Main purple color for links and buttons */
+  --light-gray-bg: #f5f8fa; /* Light background behind the card */
+  --nav-text: #666;          /* Gray text for inactive links */
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Poppins', sans-serif; /* Your chosen font */
+  background-color: var(--light-gray-bg);
+  color: #333;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- Header & Navigation Styles --- */
+header {
+  background-color: white;
+  padding: 15px 5%; /* Top/Bottom padding, and side padding */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Subtle shadow like ref 2 */
+  position: relative;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px; /* Separates logo from centered nav */
+}
+
+/* Style for the cloud emoji/icon in the logo */
+.logo-icon::before {
+  content: '☁️'; 
+  font-size: 1.4rem;
+}
+
+.logo a {
+  text-decoration: none;
+  color: #1a1a1a;
+  font-weight: 600;
+  font-size: 1.6rem;
+}
+
+.nav-links {
+  display: flex;
+  justify-content: center; /* Crucial: Centers the navigation links */
+  list-style: none;
+  gap: 25px; /* Spacing between links */
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--nav-text);
+  font-weight: 400;
+  font-size: 1rem;
+  transition: color 0.2s ease-in-out;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  color: var(--primary-purple);
+  font-weight: 600; /* Active link gets bolder purple text */
+}
+
+/* --- Main Content (Upload Box) --- */
+.upload-container {
+  flex: 1; /* Makes main take remaining vertical space */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+/* The card style around the drop area */
+.upload-card {
+  background-color: white;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); /* Stronger shadow on the card itself */
+  width: 100%;
+  max-width: 500px; /* Optional: Sets a max width for the card */
+  text-align: center;
+}
+
+/* The actual dashed drop zone */
+.upload-box {
+  border: 2px dashed #ccc; /* Thicker dashed border like your reference */
+  border-radius: 15px;
+  padding: 40px;
+  cursor: pointer;
+  background-color: #fafafa;
+  transition: border-color 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.upload-box:hover {
+  border-color: var(--primary-purple);
+}
+
+/* Style for the centered sky icon */
+.upload-icon {
+  font-size: 6rem; /* Adjust if using emoji/SVG directly */
+  margin-bottom: 20px;
+}
+
+/* Use this style if you are using an IMG tag for the sky icon */
+.upload-box img.sky-graphic {
+  max-width: 200px;
+  height: auto;
+  margin-bottom: 25px;
+}
+
+#uploadText {
+  color: #666;
+  font-size: 1.1rem;
+}
