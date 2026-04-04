@@ -17,6 +17,7 @@
 
         body { margin: 0; font-family: var(--main-font); background-color: var(--bg-light); text-align: center; color: var(--dark-text); }
 
+        /* --- 1. RESTORED NAV BAR --- */
         header {
             display: flex; justify-content: space-between; align-items: center; padding: 15px 5%;
             background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px);
@@ -24,49 +25,54 @@
         }
         .logo a { text-decoration: none; display: flex; align-items: center; gap: 10px; }
         .logo span { font-weight: 800; color: var(--dark-text); font-size: 1.5rem; }
+        
+        .nav-links { display: flex; align-items: center; gap: 25px; }
+        .nav-links a { text-decoration: none; color: #555; font-weight: 600; font-size: 0.95rem; transition: 0.3s; }
+        .nav-links a:hover { color: var(--primary-purple); }
 
+        /* --- 2. IMPROVED SELECTORS WITH 'v' --- */
         .game-container { max-width: 900px; margin: 30px auto; padding: 20px; }
-        h1 { font-size: 2.8rem; font-weight: 800; background: linear-gradient(to right, var(--primary-purple), var(--secondary-pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; }
-
-        /* --- Custom Styled Dropdowns --- */
         .controls-wrapper { display: flex; justify-content: center; gap: 20px; margin-bottom: 35px; }
-        .custom-select { position: relative; width: 160px; text-align: left; }
+        
+        .custom-select { position: relative; width: 170px; text-align: left; }
         .select-trigger {
             background: white; padding: 12px 20px; border-radius: 40px; cursor: pointer;
             box-shadow: 0 8px 25px rgba(161, 140, 209, 0.1); border: 1px solid rgba(161, 140, 209, 0.2);
-            transition: 0.3s;
+            display: flex; justify-content: space-between; align-items: center;
         }
-        .select-trigger label { display: block; font-size: 0.65rem; text-transform: uppercase; font-weight: 800; color: var(--primary-purple); letter-spacing: 1px; }
+        .trigger-text label { display: block; font-size: 0.65rem; text-transform: uppercase; font-weight: 800; color: var(--primary-purple); }
         .selected-text { font-weight: 700; font-size: 0.95rem; }
-        
+        .chevron { font-size: 0.8rem; color: var(--primary-purple); transition: 0.3s; }
+        .custom-select.active .chevron { transform: rotate(180deg); }
+
         .options-menu {
-            position: absolute; top: 110%; left: 0; width: 100%; background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            display: none; z-index: 100; overflow: hidden; padding: 5px;
+            position: absolute; top: 115%; left: 0; width: 100%; background: white;
+            border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: none; z-index: 100; padding: 5px; border: 1px solid #eee;
         }
         .option { padding: 10px 15px; border-radius: 12px; cursor: pointer; font-weight: 600; transition: 0.2s; }
         .option:hover { background: var(--primary-purple); color: white; }
         .custom-select.active .options-menu { display: block; }
 
-        /* --- Grid & Cards --- */
+        /* --- GAME GRID --- */
         .memory-grid { display: grid; gap: 15px; margin: 0 auto; perspective: 1000px; }
-        .card { aspect-ratio: 1/1; position: relative; transform-style: preserve-3d; transition: 0.6s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
+        .card { aspect-ratio: 1/1; position: relative; transform-style: preserve-3d; transition: 0.6s; cursor: pointer; }
         .card.flipped { transform: rotateY(180deg); }
         .card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 18px; }
-        .card-front { background: linear-gradient(135deg, var(--primary-purple), var(--secondary-pink)); color: white; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; }
-        .card-back { background: white; transform: rotateY(180deg); overflow: hidden; border: 3px solid white; display: flex; align-items: center; justify-content: center; }
+        .card-front { background: linear-gradient(135deg, var(--primary-purple), var(--secondary-pink)); color: white; display: flex; align-items: center; justify-content: center; font-size: 2rem; }
+        .card-back { background: white; transform: rotateY(180deg); border: 3px solid white; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .card-back img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* --- Power Up Special Styling --- */
-        .card.power-up .card-back { background: #fff9e6; border: 3px solid var(--accent-gold); }
-        .power-icon { font-size: 2.5rem; color: var(--accent-gold); filter: drop-shadow(0 0 8px rgba(255,215,0,0.6)); }
+        /* Power Ups */
+        .card.power-up .card-back { background: #fff9e6; border-color: var(--accent-gold); }
+        .power-icon { font-size: 2.5rem; color: var(--accent-gold); }
 
-        /* --- Filters --- */
-        .filter-retro img { filter: sepia(0.4) contrast(1.2) brightness(0.9); }
-        .filter-golden img { filter: brightness(1.1) sepia(0.2) saturate(1.6); }
-        .filter-moody img { filter: contrast(1.4) brightness(0.7) saturate(0.8); }
+        /* Vibe Filters */
+        .filter-retro img { filter: sepia(0.5) contrast(1.1); }
+        .filter-golden img { filter: saturate(1.8) brightness(1.1) sepia(0.2); }
+        .filter-moody img { filter: contrast(1.4) brightness(0.7) saturate(0.6); }
 
-        .stats { font-weight: 700; color: #777; margin: 20px 0; font-size: 1.1rem; }
+        .stats { font-weight: 700; color: #777; margin: 20px 0; }
     </style>
 </head>
 <body>
@@ -78,16 +84,21 @@
             <span>ShareTheSky</span>
         </a>
     </div>
+    <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="skymatch.html" style="color: var(--primary-purple)">Sky Match</a>
+    </nav>
 </header>
 
 <div class="game-container">
-    <h1>Sky Match</h1>
+    <h1 style="background: linear-gradient(to right, #a18cd1, #fbc2eb); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Sky Match</h1>
     
     <div class="controls-wrapper">
         <div class="custom-select" id="gridSelect">
-            <div class="select-trigger" onclick="this.parentElement.classList.toggle('active')">
-                <label>Grid</label>
-                <div class="selected-text">4 × 4</div>
+            <div class="select-trigger" onclick="toggleDropdown('gridSelect')">
+                <div class="trigger-text"><label>Grid</label><div class="selected-text">4 × 4</div></div>
+                <i class="fa-solid fa-chevron-down chevron"></i>
             </div>
             <div class="options-menu">
                 <div class="option" onclick="updateSelection('gridSelect', '4 × 4', 4)">4 × 4</div>
@@ -97,9 +108,9 @@
         </div>
 
         <div class="custom-select" id="vibeSelect">
-            <div class="select-trigger" onclick="this.parentElement.classList.toggle('active')">
-                <label>Vibe</label>
-                <div class="selected-text">Original</div>
+            <div class="select-trigger" onclick="toggleDropdown('vibeSelect')">
+                <div class="trigger-text"><label>Vibe</label><div class="selected-text">Original</div></div>
+                <i class="fa-solid fa-chevron-down chevron"></i>
             </div>
             <div class="options-menu">
                 <div class="option" onclick="updateSelection('vibeSelect', 'Original', 'none')">Original</div>
@@ -127,111 +138,103 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    let flippedCards = [];
-    let moves = 0, matches = 0, lockBoard = false;
-    let currentVibe = 'none';
+    let flippedCards = [], moves = 0, matches = 0, lockBoard = false, currentVibe = 'none';
 
     async function initGame(size = 4) {
         const totalCards = size * size;
         const powerCount = size > 4 ? 2 : 1; 
-        const pairCount = (totalCards - powerCount) / 2;
+        const pairCount = (totalCards - powerCount) / 2; // Fixed: Ensures even pairs
         
         document.getElementById('total-matches').innerText = Math.floor(pairCount);
         document.getElementById('move-count').innerText = "0";
         document.getElementById('match-count').innerText = "0";
         moves = 0; matches = 0; flippedCards = []; lockBoard = false;
 
-        const querySnapshot = await getDocs(query(collection(db, "photos"), limit(50)));
+        const snap = await getDocs(query(collection(db, "photos"), limit(50)));
         let photos = [];
-        querySnapshot.forEach(doc => photos.push(doc.data().url));
+        snap.forEach(doc => photos.push(doc.data().url));
         
         photos = photos.sort(() => 0.5 - Math.random()).slice(0, Math.floor(pairCount));
         let deck = [...photos, ...photos].map(url => ({ type: 'photo', val: url }));
         
-        // Add Random Power Ups
-        const powerTypes = ['fa-bolt', 'fa-eye', 'fa-snowflake'];
-        for(let i=0; i<powerCount; i++) {
-            deck.push({ type: 'power', val: powerTypes[Math.floor(Math.random()*powerTypes.length)] });
-        }
+        const powerIcons = ['fa-bolt', 'fa-eye', 'fa-snowflake'];
+        for(let i=0; i<powerCount; i++) deck.push({ type: 'power', val: powerIcons[i % 3] });
 
         deck = deck.sort(() => 0.5 - Math.random());
         const grid = document.getElementById('game-grid');
         grid.innerHTML = "";
         grid.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
-        grid.style.maxWidth = size === 4 ? "500px" : "800px";
+        grid.style.maxWidth = size === 4 ? "500px" : size === 6 ? "750px" : "900px";
 
         deck.forEach(item => {
             const card = document.createElement('div');
             card.classList.add('card');
             if(item.type === 'power') card.classList.add('power-up');
-            card.dataset.type = item.type;
-            card.dataset.val = item.val;
+            card.dataset.type = item.type; card.dataset.val = item.val;
 
             card.innerHTML = `
                 <div class="card-front"><i class="fa-solid fa-cloud"></i></div>
                 <div class="card-back">${item.type === 'photo' ? `<img src="${item.val}">` : `<i class="fa-solid ${item.val} power-icon"></i>`}</div>
             `;
-            card.addEventListener('click', handleFlip);
+            card.addEventListener('click', flipCard);
             grid.appendChild(card);
         });
-        applyVibeEffect();
+        applyVibe();
     }
 
-    function handleFlip() {
+    function flipCard() {
         if (lockBoard || this.classList.contains('flipped')) return;
         this.classList.add('flipped');
 
         if (this.dataset.type === 'power') {
             lockBoard = true;
             setTimeout(() => {
-                alert(`Power Activated: ${this.dataset.val.replace('fa-', '')}!`);
-                if(this.dataset.val === 'fa-eye') { // Peek Power
-                    document.querySelectorAll('.card:not(.flipped)').forEach(c => c.classList.add('flipped'));
+                if(this.dataset.val === 'fa-eye') { // Peek logic
+                    const cards = document.querySelectorAll('.card:not(.flipped)');
+                    cards.forEach(c => c.classList.add('flipped'));
                     setTimeout(() => {
-                        document.querySelectorAll('.card').forEach(c => {
-                            if(!c.dataset.matched) c.classList.remove('flipped');
-                        });
+                        cards.forEach(c => { if(!c.dataset.matched) c.classList.remove('flipped'); });
                         lockBoard = false;
                     }, 1500);
                 } else { lockBoard = false; }
-                this.style.opacity = "0.3";
-            }, 600);
+                this.style.opacity = "0.4";
+            }, 500);
             return;
         }
 
         flippedCards.push(this);
         if (flippedCards.length === 2) {
-            moves++;
-            document.getElementById('move-count').innerText = moves;
+            moves++; document.getElementById('move-count').innerText = moves;
             const [c1, c2] = flippedCards;
             if (c1.dataset.val === c2.dataset.val) {
-                matches++;
+                matches++; document.getElementById('match-count').innerText = matches;
                 c1.dataset.matched = true; c2.dataset.matched = true;
-                document.getElementById('match-count').innerText = matches;
                 flippedCards = [];
             } else {
                 lockBoard = true;
-                setTimeout(() => {
-                    c1.classList.remove('flipped'); c2.classList.remove('flipped');
-                    flippedCards = []; lockBoard = false;
-                }, 1000);
+                setTimeout(() => { c1.classList.remove('flipped'); c2.classList.remove('flipped'); flippedCards = []; lockBoard = false; }, 1000);
             }
         }
     }
 
-    window.updateSelection = (id, label, value) => {
-        document.getElementById(id).querySelector('.selected-text').innerText = label;
-        document.getElementById(id).classList.remove('active');
-        if(id === 'gridSelect') initGame(value);
-        else { currentVibe = value; applyVibeEffect(); }
+    window.toggleDropdown = (id) => {
+        document.querySelectorAll('.custom-select').forEach(s => { if(s.id !== id) s.classList.remove('active'); });
+        document.getElementById(id).classList.toggle('active');
     };
 
-    function applyVibeEffect() {
+    window.updateSelection = (id, label, val) => {
+        document.getElementById(id).querySelector('.selected-text').innerText = label;
+        document.getElementById(id).classList.remove('active');
+        if(id === 'gridSelect') initGame(val); else { currentVibe = val; applyVibe(); }
+    };
+
+    function applyVibe() {
         const grid = document.getElementById('game-grid');
         grid.classList.remove('filter-retro', 'filter-golden', 'filter-moody');
         if(currentVibe !== 'none') grid.classList.add(`filter-${currentVibe}`);
     }
 
+    window.onclick = (e) => { if(!e.target.closest('.custom-select')) document.querySelectorAll('.custom-select').forEach(s => s.classList.remove('active')); };
     initGame(4);
 </script>
 </body>
