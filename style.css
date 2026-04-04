@@ -4104,3 +4104,20 @@ header {
         transition: margin-top 0.3s ease;
     }
 }
+@media (max-width: 768px) {
+    /* Force the hamburger icon to be dark blue/black */
+    .menu-icon i {
+        color: #2d2d6a !important; 
+        display: block !important;
+        font-size: 1.8rem;
+    }
+
+    /* Ensure the header has enough height for the icon */
+    header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 20px;
+        background: white;
+    }
+}
