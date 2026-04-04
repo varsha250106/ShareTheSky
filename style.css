@@ -3530,3 +3530,31 @@ footer p {
 .dropdown:hover .dropdown-content {
     display: block;
 }
+/* This creates an invisible bridge between the button and the menu */
+.dropdown::after {
+    content: "";
+    position: absolute;
+    top: 100%; /* Starts at the bottom of the button */
+    left: 0;
+    width: 100%;
+    height: 20px; /* This covers the 'gap' area */
+    display: block;
+}
+
+/* Ensure the dropdown content is positioned correctly without a margin-top */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%; /* Makes sure it starts right where the button ends */
+    margin-top: 5px; /* A very small gap is fine as long as the ::after bridge exists */
+    background-color: white;
+    min-width: 140px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    z-index: 100;
+}
+
+/* Keeps the menu open when hovering over the button OR the invisible bridge */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
