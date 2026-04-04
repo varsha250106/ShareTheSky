@@ -30,6 +30,7 @@
             position: sticky;
             top: 0;
             z-index: 1000;
+            overflow: visible; /* Required for dropdown to show */
         }
 
         .logo a { 
@@ -74,7 +75,9 @@
 
         .nav-links a:hover, .dropbtn:hover { color: var(--primary-purple); }
 
+        /* --- Dropdown Fix (Prevents Disappearing) --- */
         .dropdown { position: relative; }
+        
         .dropdown-content {
             display: none;
             position: absolute;
@@ -84,11 +87,23 @@
             min-width: 160px;
             box-shadow: 0px 10px 25px rgba(0,0,0,0.1);
             border-radius: 12px;
-            margin-top: 15px;
-            overflow: hidden;
+            padding: 10px 0;
+            z-index: 2000;
         }
 
-        .dropdown-content a { color: #444; padding: 12px 20px; margin: 0; display: block; }
+        /* Invisible bridge to stop menu from closing on move-down */
+        .dropdown-content::before {
+            content: "";
+            position: absolute;
+            top: -20px;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: transparent;
+        }
+
+        .dropdown-content a { color: #444; padding: 12px 20px; margin: 0; display: block; text-decoration: none; }
+        .dropdown-content a:hover { background-color: #f8f9ff; color: var(--primary-purple); }
         .dropdown:hover .dropdown-content { display: block; }
 
         /* --- Grid & Cards --- */
@@ -101,6 +116,7 @@
         }
 
         .pin-card {
+            position: relative;
             break-inside: avoid;
             margin-bottom: 20px;
             background: white;
@@ -118,6 +134,33 @@
         
         .like-container { display: flex; align-items: center; gap: 6px; cursor: pointer; color: #bbb; transition: 0.2s; }
         .like-container.liked { color: #ff4757; }
+
+        /* --- Delete Button Style --- */
+        .delete-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #ff4757;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            transition: 0.3s;
+            opacity: 0;
+            z-index: 10;
+        }
+
+        .pin-card:hover .delete-btn { opacity: 1; }
+        .delete-btn:hover { background: #ff4757; color: white; transform: scale(1.1); }
+
+        @media (max-width: 1000px) { .pinterest-grid { column-count: 3; } }
+        @media (max-width: 768px) { .pinterest-grid { column-count: 2; } }
     </style>
 </head>
 <body>
@@ -134,7 +177,7 @@
         <div class="dropdown">
             <button class="dropbtn">Explore ▾</button>
             <div class="dropdown-content">
-                <a href="gallery.html">Gallery</a>
+                <a href="gallery.html" style="color:var(--primary-purple); font-weight:bold;">Gallery</a>
                 <a href="upload.html">Upload</a>
                 <a href="about.html">About Me</a>
             </div>
@@ -147,7 +190,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, onSnapshot, query, orderBy, doc, updateDoc, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, collection, onSnapshot, query, orderBy, doc, updateDoc, arrayUnion, arrayRemove, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = { 
         apiKey: "AIzaSyDxgtNzywhjYGR7R2XMVobR73-SioT6v98", 
@@ -161,8 +204,9 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    let visitorId = localStorage.getItem('visitorId') || 'v_' + Math.random().toString(36).substr(2, 9);
-    localStorage.setItem('visitorId', visitorId);
+    // Syncing with upload.html storage keys
+    let visitorId = localStorage.getItem("mySkyUserId") || localStorage.getItem('visitorId') || 'v_' + Math.random().toString(36).substr(2, 9);
+    localStorage.setItem("mySkyUserId", visitorId);
 
     function loadAllPhotos() {
         const q = query(collection(db, "photos"), orderBy("date", "desc"));
@@ -172,11 +216,13 @@
             snap.forEach(docSnap => {
                 const data = docSnap.data();
                 const id = docSnap.id;
-                const likes = Array.isArray(data.likes) ? data.likes : []; // Safe check
+                const likes = Array.isArray(data.likes) ? data.likes : [];
                 const isLiked = likes.includes(visitorId);
+                const isOwner = data.uploaderId === visitorId;
 
                 container.innerHTML += `
                     <div class="pin-card">
+                        ${isOwner ? `<button class="delete-btn" onclick="confirmDelete('${id}')" title="Delete your sky"><i class="fa-solid fa-trash-can"></i></button>` : ''}
                         <img src="${data.url}" class="pin-img" loading="lazy" onclick="window.open('${data.url}', '_blank')">
                         <div class="pin-footer">
                             <p class="pin-caption">${data.caption || 'Untitled Sky'}</p>
@@ -195,6 +241,16 @@
         await updateDoc(docRef, {
             likes: isLiked ? arrayRemove(visitorId) : arrayUnion(visitorId)
         });
+    };
+
+    window.confirmDelete = async (postId) => {
+        if (confirm("Remove this sky from the gallery? ☁️")) {
+            try {
+                await deleteDoc(doc(db, "photos", postId));
+            } catch (err) {
+                alert("Error deleting photo. Please try again.");
+            }
+        }
     };
 
     loadAllPhotos();
