@@ -3,54 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cloud Chaser - ShareTheSky</title>
+    <title>Cloud Chaser Ultra - ShareTheSky</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --sky-top: #4facfe; --sky-bottom: #00f2fe;
-            --pink: #ff7eb3; --cyan: #7afcff; --glass: rgba(255, 255, 255, 0.1);
-        }
-
-        body {
-            margin: 0; padding: 0; overflow: hidden;
-            background: linear-gradient(to bottom, var(--sky-top), var(--sky-bottom));
-            font-family: 'Segoe UI', sans-serif;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 100vh; color: white; touch-action: none;
-        }
-
-        .exit-btn {
-            position: absolute; top: 20px; left: 20px;
-            color: white; text-decoration: none; background: rgba(0,0,0,0.2);
-            padding: 10px 20px; border-radius: 25px; font-size: 14px; z-index: 100;
-        }
-
-        #game-container { position: relative; width: 400px; height: 600px; max-width: 100vw; max-height: 85vh; }
-
-        canvas {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 20px; border: 4px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            display: block; width: 100%; height: 100%;
-        }
-
-        .ui-overlay {
-            position: absolute; inset: 0; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; pointer-events: none;
-        }
-
-        #score-board { position: absolute; top: 20px; font-size: 2.5rem; font-weight: bold; text-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-
-        .start-card {
-            background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(20px);
-            padding: 30px; border-radius: 25px; text-align: center; pointer-events: auto;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .btn {
-            background: white; color: #333; border: none; padding: 12px 30px;
-            border-radius: 25px; font-weight: bold; cursor: pointer; margin-top: 20px;
-        }
+        :root { --p: #ff7eb3; --c: #7afcff; --storm: #444; }
+        body { margin: 0; padding: 0; overflow: hidden; font-family: 'Segoe UI', sans-serif; height: 100vh; touch-action: none; background: #000; }
+        .exit-btn { position: absolute; top: 20px; left: 20px; color: white; text-decoration: none; background: rgba(0,0,0,0.3); padding: 10px 20px; border-radius: 25px; z-index: 100; }
+        #game-container { position: relative; width: 400px; height: 600px; max-width: 100vw; max-height: 85vh; margin: auto; top: 50%; transform: translateY(-50%); }
+        canvas { border-radius: 20px; border: 4px solid rgba(255, 255, 255, 0.2); display: block; width: 100%; height: 100%; }
+        .ui { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; color: white; }
+        #score-board { position: absolute; top: 20px; font-size: 2.5rem; font-weight: bold; }
+        .card { background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(15px); padding: 30px; border-radius: 25px; text-align: center; pointer-events: auto; border: 1px solid rgba(255,255,255,0.2); }
+        .btn { background: white; border: none; padding: 12px 30px; border-radius: 25px; font-weight: bold; cursor: pointer; margin-top: 15px; }
+        #overdrive-ui { position: absolute; bottom: 20px; color: #ffeb3b; font-weight: bold; opacity: 0; transition: 0.3s; }
     </style>
 </head>
 <body>
@@ -59,11 +24,12 @@
 
     <div id="game-container">
         <canvas id="gameCanvas"></canvas>
-        <div class="ui-overlay">
+        <div class="ui">
             <div id="score-board">0</div>
-            <div id="start-menu" class="start-card">
-                <h2 style="margin: 0;">Cloud Chaser</h2>
-                <p>Tap to float. Match your cloud's<br>glow to the Aura Rings!</p>
+            <div id="overdrive-ui">⚡ OVERDRIVE 2X ⚡</div>
+            <div id="start-menu" class="card">
+                <h2>Cloud Chaser Ultra</h2>
+                <p>Match Rings | Avoid Storms<br>Hit 5 for Overdrive!</p>
                 <button class="btn" onclick="startGame()">Start Flight</button>
             </div>
         </div>
@@ -74,190 +40,145 @@
     const ctx = canvas.getContext('2d');
     const scoreBoard = document.getElementById('score-board');
     const startMenu = document.getElementById('start-menu');
+    const overdriveUI = document.getElementById('overdrive-ui');
 
-    // High DPI Retina display support
     const dpr = window.devicePixelRatio || 1;
-    canvas.width = 400 * dpr;
-    canvas.height = 600 * dpr;
+    canvas.width = 400 * dpr; canvas.height = 600 * dpr;
     ctx.scale(dpr, dpr);
 
-    // Game Variables
-    let cloud, rings, sparkles, gameActive, score, frame;
-    const gravity = 0.23;
-    const lift = -5.3;
-    const colors = ['#ff7eb3', '#7afcff']; // Pink and Cyan
+    let cloud, rings, sparkles, obstacles, gameActive, score, frame, combo, speedMult;
 
-    // 1. Particle Class for Sparkles
+    // 1. DAY-TO-NIGHT COLORS
+    const skyThemes = [
+        { top: '#4facfe', bottom: '#00f2fe' }, // Day
+        { top: '#ff7e5f', bottom: '#feb47b' }, // Sunset
+        { top: '#2c3e50', bottom: '#000000' }  // Night
+    ];
+
     class Sparkle {
-        constructor(x, y, color) {
-            this.x = x;
-            this.y = y;
-            this.size = Math.random() * 4 + 1; // Random size
-            this.speedX = Math.random() * -1.5 - 0.5; // Drift back
-            this.speedY = Math.random() * 0.8 - 0.4;
-            this.color = color;
-            this.opacity = 0.8;
-            this.fadeRate = 0.025; // How fast it fades
+        constructor(x, y, color, isPoof = false) {
+            this.x = x; this.y = y;
+            this.size = Math.random() * (isPoof ? 8 : 4);
+            this.speedX = isPoof ? (Math.random()-0.5)*10 : Math.random() * -2;
+            this.speedY = isPoof ? (Math.random()-0.5)*10 : (Math.random()-0.5)*1;
+            this.color = color; this.opacity = 1;
         }
-
+        update() { this.x += this.speedX; this.y += this.speedY; this.opacity -= 0.02; }
         draw() {
-            ctx.save();
-            ctx.globalAlpha = this.opacity;
-            ctx.fillStyle = this.color;
-            ctx.shadowBlur = 8;
-            ctx.shadowColor = this.color;
-            
-            // Draw a tiny star/sparkle shape
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.restore();
-        }
-
-        update() {
-            this.x += this.speedX;
-            this.y += this.speedY;
-            this.opacity -= this.fadeRate;
+            ctx.globalAlpha = this.opacity; ctx.fillStyle = this.color;
+            ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill();
+            ctx.globalAlpha = 1;
         }
     }
 
-    class Cloud {
+    class Obstacle { // 2. STORM HAZARDS
         constructor() {
-            this.x = 60;
-            this.y = 300;
-            this.velocity = 0;
-            this.size = 28;
-            this.color = colors[0];
+            this.x = 450; this.y = Math.random() * 500 + 50;
+            this.size = 35;
         }
-
         draw() {
-            ctx.save();
-            ctx.shadowBlur = 25;
-            ctx.shadowColor = this.color;
-            ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
-            
-            // Draw wispy cloud body
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.arc(this.x + 18, this.y - 10, this.size * 0.7, 0, Math.PI * 2);
-            ctx.arc(this.x + 18, this.y + 10, this.size * 0.7, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Glow Ring
-            ctx.strokeStyle = this.color;
-            ctx.lineWidth = 4;
-            ctx.stroke();
-            ctx.restore();
+            ctx.fillStyle = '#333'; ctx.shadowBlur = 15; ctx.shadowColor = '#000';
+            ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
+            ctx.arc(this.x+15, this.y-10, this.size*0.8, 0, Math.PI*2); ctx.fill();
+            ctx.shadowBlur = 0;
         }
-
-        update() {
-            this.velocity += gravity;
-            this.y += this.velocity;
-            
-            // 2. Spawn 1-2 new sparkles behind the cloud on every frame
-            if (frame % 2 === 0) sparkles.push(new Sparkle(this.x, this.y, this.color));
-            
-            if (this.y > (canvas.height / dpr)) endGame();
-            if (this.y < 0) { this.y = 0; this.velocity = 0; }
-        }
+        update() { this.x -= (4 * speedMult); }
     }
 
     class Ring {
         constructor() {
-            this.x = (canvas.width / dpr) + 50;
-            this.y = Math.random() * ((canvas.height / dpr) - 200) + 100;
-            this.width = 10;
-            this.color = colors[Math.floor(Math.random() * colors.length)];
+            this.x = 450; this.y = Math.random() * 400 + 100;
+            this.color = ['#ff7eb3', '#7afcff'][Math.floor(Math.random()*2)];
             this.passed = false;
         }
-
         draw() {
-            ctx.save();
-            ctx.shadowBlur = 15;
-            ctx.shadowColor = this.color;
-            ctx.strokeStyle = this.color;
-            ctx.lineWidth = 8;
-            ctx.lineCap = "round";
-            ctx.setLineDash([10, 15]); // Aura effect
-            
-            ctx.beginPath();
-            ctx.ellipse(this.x, this.y, 25, 65, 0, 0, Math.PI * 2);
-            ctx.stroke();
-            ctx.restore();
+            ctx.strokeStyle = this.color; ctx.lineWidth = 6; ctx.setLineDash([5, 10]);
+            ctx.beginPath(); ctx.ellipse(this.x, this.y, 20, 55, 0, 0, Math.PI*2); ctx.stroke();
         }
+        update() { this.x -= (3.5 * speedMult); }
+    }
 
-        update() { this.x -= 3.5; }
+    class Cloud {
+        constructor() { this.x = 60; this.y = 300; this.v = 0; this.color = '#ff7eb3'; }
+        draw() {
+            ctx.shadowBlur = (combo >= 5) ? 40 : 20; ctx.shadowColor = this.color;
+            ctx.fillStyle = "white";
+            ctx.beginPath(); ctx.arc(this.x, this.y, 25, 0, Math.PI*2); ctx.fill();
+            ctx.strokeStyle = this.color; ctx.lineWidth = 4; ctx.stroke(); ctx.shadowBlur = 0;
+        }
+        update() {
+            this.v += 0.25; this.y += this.v;
+            if (frame % 2 === 0) sparkles.push(new Sparkle(this.x, this.y, this.color));
+            if (this.y > 600 || this.y < 0) endGame();
+        }
     }
 
     function startGame() {
-        cloud = new Cloud();
-        rings = [];
-        sparkles = []; // 3. Reset Particle Array
-        score = 0;
-        frame = 0;
-        gameActive = true;
-        startMenu.style.display = 'none';
-        scoreBoard.innerText = "0";
-        animate();
+        cloud = new Cloud(); rings = []; sparkles = []; obstacles = [];
+        score = 0; frame = 0; combo = 0; speedMult = 1;
+        gameActive = true; startMenu.style.display = 'none'; animate();
     }
 
     function animate() {
         if (!gameActive) return;
-        ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
+        // 3. DYNAMIC BACKGROUND (Day-Night Transition)
+        let themeIdx = Math.min(2, Math.floor(score / 10));
+        let grad = ctx.createLinearGradient(0, 0, 0, 600);
+        grad.addColorStop(0, skyThemes[themeIdx].top); grad.addColorStop(1, skyThemes[themeIdx].bottom);
+        ctx.fillStyle = grad; ctx.fillRect(0,0,400,600);
 
-        // Update & Draw Sparkles first (behind the cloud)
-        sparkles.forEach((s, index) => {
-            s.update();
-            s.draw();
-            if (s.opacity <= 0 || s.x < -10) sparkles.splice(index, 1);
-        });
+        cloud.update(); cloud.draw();
 
-        // Update Cloud
-        cloud.update();
-        cloud.draw();
+        // 4. OVERDRIVE LOGIC
+        speedMult = (combo >= 5) ? 1.8 : 1;
+        overdriveUI.style.opacity = (combo >= 5) ? 1 : 0;
 
-        // Spawn Rings
         if (frame % 100 === 0) rings.push(new Ring());
+        if (frame % 250 === 0) obstacles.push(new Obstacle());
 
-        // Update Rings
-        rings.forEach((ring, index) => {
-            ring.update();
-            ring.draw();
-
-            // Collision Detection
-            if (!ring.passed && ring.x < cloud.x + 30) {
-                if (Math.abs(ring.y - cloud.y) < 70) {
-                    if (cloud.color === ring.color) {
-                        score++;
-                        scoreBoard.innerText = score;
-                        ring.passed = true;
-                        cloud.color = (cloud.color === colors[0]) ? colors[1] : colors[0];
-                    } else { endGame(); }
-                }
+        rings.forEach((r, i) => {
+            r.update(); r.draw();
+            if (!r.passed && r.x < cloud.x + 20 && Math.abs(r.y - cloud.y) < 60) {
+                if (r.color === cloud.color) {
+                    score += (combo >= 5 ? 2 : 1); combo++; r.passed = true;
+                    cloud.color = (cloud.color === '#ff7eb3' ? '#7afcff' : '#ff7eb3');
+                    scoreBoard.innerText = score;
+                } else { endGame(); }
             }
-            if (ring.x < -100) rings.splice(index, 1);
+            if (r.x < -50) rings.splice(i, 1);
         });
 
-        frame++;
-        requestAnimationFrame(animate);
+        obstacles.forEach((o, i) => {
+            o.update(); o.draw();
+            if (Math.hypot(o.x - cloud.x, o.y - cloud.y) < 50) endGame();
+            if (o.x < -100) obstacles.splice(i, 1);
+        });
+
+        sparkles.forEach((s, i) => { s.update(); s.draw(); if (s.opacity <= 0) sparkles.splice(i, 1); });
+
+        frame++; requestAnimationFrame(animate);
     }
 
     function endGame() {
+        if (!gameActive) return;
         gameActive = false;
-        startMenu.style.display = 'block';
-        startMenu.innerHTML = `
-            <h2 style="margin: 0; color: #ff4b2b;">Lost in the Mist</h2>
-            <p>Score: ${score}</p>
-            <button class="btn" onclick="startGame()">Try Again</button>
-        `;
+        // 5. SOFT POOF ANIMATION
+        for(let i=0; i<20; i++) sparkles.push(new Sparkle(cloud.x, cloud.y, cloud.color, true));
+        
+        setTimeout(() => {
+            startMenu.style.display = 'block';
+            startMenu.innerHTML = `<h2>Skyward Bound</h2><p>Final Score: ${score}</p><button class="btn" onclick="startGame()">Fly Again</button>`;
+        }, 1000);
+        
+        function poofLoop() {
+            ctx.clearRect(0,0,400,600);
+            sparkles.forEach((s, i) => { s.update(); s.draw(); if (s.opacity <= 0) sparkles.splice(i,1); });
+            if (sparkles.length > 0) requestAnimationFrame(poofLoop);
+        }
+        poofLoop();
     }
 
-    // Input Handling
-    const handleInput = () => { if (gameActive) cloud.velocity = lift; };
-    window.addEventListener('keydown', (e) => { if (e.code === 'Space') handleInput(); });
-    canvas.addEventListener('mousedown', handleInput);
-    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); handleInput(); });
-
+    window.onmousedown = window.ontouchstart = (e) => { if (gameActive) { e.preventDefault(); cloud.v = -5.5; } };
 </script>
 </body>
 </html>
