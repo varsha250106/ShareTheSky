@@ -2487,3 +2487,195 @@ header {
 }
 
 .pin-like-overlay.liked { background: #ff4757; color: white; }
+/* --- 1. FONTS & RESET --- */
+body { 
+    font-family: 'Inter', sans-serif; 
+    margin: 0; 
+    background: #f5f7fa; 
+    color: #333;
+    overflow-x: hidden; /* Prevents horizontal scrolling on mobile */
+}
+
+/* --- 2. THE BOUNCING LOGO ANIMATION --- */
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
+    100% { transform: translateY(0px); }
+}
+
+.floating-cloud {
+    animation: float 3s ease-in-out infinite;
+    width: 35px;
+    height: auto;
+}
+
+/* --- 3. HEADER & NAVIGATION --- */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 5%;
+    background: white;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+}
+
+.logo a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: #2d2d6a; /* Dark navy blue from your reference */
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+/* Desktop Navigation */
+.nav-links { 
+    display: flex; 
+    align-items: center; 
+    gap: 25px; 
+}
+
+.nav-links a { 
+    text-decoration: none; 
+    color: #4a4a8a; 
+    font-weight: 600; 
+    transition: 0.3s; 
+}
+
+.nav-links a:hover { 
+    color: #a18cd1; 
+}
+
+/* --- 4. DROPDOWN MENU --- */
+.dropdown { position: relative; display: inline-block; }
+
+.dropbtn {
+    background: none; border: none; color: #4a4a8a;
+    font-size: 16px; font-weight: 600; cursor: pointer;
+    padding: 10px; font-family: inherit;
+}
+
+.dropdown-content {
+    display: none; 
+    position: absolute; 
+    background-color: white;
+    min-width: 170px; 
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
+    border-radius: 12px; 
+    z-index: 100; 
+    right: 0; 
+    overflow: hidden;
+}
+
+.dropdown-content a { 
+    color: #333; 
+    padding: 12px 16px; 
+    display: block; 
+    font-size: 14px; 
+}
+
+.dropdown-content a:hover { 
+    background: #f8f6ff; 
+    color: #a18cd1; 
+}
+
+.dropdown:hover .dropdown-content { display: block; }
+
+/* --- 5. MOBILE VIEW (THREE BARS MENU) --- */
+.menu-toggle {
+    display: none; /* Hidden on laptop */
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.menu-toggle span {
+    width: 28px; 
+    height: 3px;
+    background-color: #2d2d6a;
+    border-radius: 3px;
+}
+
+@media (max-width: 768px) {
+    .menu-toggle { 
+        display: flex; /* Shows bars on mobile */
+    }
+
+    .nav-links {
+        display: none; /* Hidden until bars are clicked */
+        flex-direction: column;
+        position: absolute;
+        top: 70px; 
+        right: 5%;
+        background: white;
+        width: 220px;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    /* When the .active class is added via JavaScript */
+    .nav-links.active { 
+        display: flex; 
+    }
+}
+
+/* --- 6. PINTEREST GRID & CARDS --- */
+.pinterest-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px; 
+    padding: 20px 5%;
+    max-width: 1400px; 
+    margin: 0 auto;
+}
+
+.pin-card {
+    background: white; 
+    border-radius: 20px;
+    overflow: hidden; 
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+}
+
+.pin-image-wrapper { 
+    position: relative; 
+    aspect-ratio: 4 / 5; 
+    background: #eee; 
+}
+
+.pin-img { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+    cursor: zoom-in; 
+}
+
+/* --- 7. ZOOM PILL (IMAGE 10 STYLE) --- */
+.zoom-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.95); z-index: 2000;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+
+.zoom-pill {
+    background: white; 
+    padding: 12px 25px; 
+    border-radius: 40px;
+    display: flex; 
+    gap: 20px; 
+    align-items: center; 
+    margin-top: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.zoom-pill button { 
+    background: none; 
+    border: none; 
+    cursor: pointer; 
+    font-size: 20px; 
+}
