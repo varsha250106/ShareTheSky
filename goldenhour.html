@@ -2,15 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Color Pour - ShareTheSky</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --bg: #121212; --glass: rgba(255, 255, 255, 0.1); }
+        :root { --bg: #0d0d15; --accent: #ff7e5f; --glass: rgba(255, 255, 255, 0.1); }
         
         body { 
             margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white;
             display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;
+            overflow: hidden; touch-action: none;
         }
 
         .exit-btn {
@@ -18,176 +19,185 @@
             background: var(--glass); padding: 10px 18px; border-radius: 25px; font-size: 14px;
         }
 
+        /* Streak Counter */
+        .stats { position: absolute; top: 20px; right: 20px; text-align: right; }
+        #streak-count { font-size: 1.5rem; color: var(--accent); font-weight: bold; }
+
         /* Target UI */
-        .target-box { text-align: center; margin-bottom: 30px; }
+        .target-box { text-align: center; margin-bottom: 20px; }
         #target-display {
-            width: 80px; height: 80px; border-radius: 50%; margin: 10px auto;
-            border: 4px solid white; box-shadow: 0 0 20px rgba(255,255,255,0.2);
+            width: 70px; height: 70px; border-radius: 50%; margin: 10px auto;
+            border: 3px solid white; box-shadow: 0 0 20px rgba(255,255,255,0.2);
         }
 
         /* Mixing Jar */
         #jar {
-            width: 150px; height: 200px; border: 4px solid #fff; border-top: none;
+            width: 140px; height: 180px; border: 4px solid #fff; border-top: none;
             border-radius: 0 0 20px 20px; position: relative; overflow: hidden;
-            background: rgba(255,255,255,0.05); margin-bottom: 40px;
+            background: rgba(255,255,255,0.05); margin-bottom: 30px;
         }
         #liquid {
             position: absolute; bottom: 0; width: 100%; height: 0%;
             background: transparent; transition: height 0.1s linear, background 0.3s ease;
         }
 
-        /* Controls */
-        .tanks { display: flex; gap: 20px; }
-        .tank-wrapper { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        /* Dynamic Tanks */
+        .tanks { display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; }
+        .tank-wrapper { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 0.8rem; }
         .pour-btn {
-            width: 60px; height: 60px; border-radius: 50%; border: none; cursor: pointer;
-            transition: transform 0.1s; touch-action: none;
+            width: 55px; height: 55px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.2); 
+            cursor: pointer; transition: transform 0.1s; touch-action: none;
         }
-        .pour-btn:active { transform: scale(0.9); filter: brightness(1.2); }
+        .pour-btn:active { transform: scale(1.2); }
 
-        #white-btn { background: #ffffff; }
-        #pink-btn { background: #ff7eb3; }
-        #blue-btn { background: #7afcff; }
-
+        /* Results */
         .result-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.9);
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95);
             display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 100;
         }
-        .active { display: flex; }
+        .result-overlay.active { display: flex; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .mix-btn {
+            margin-top: 30px; padding: 12px 40px; border-radius: 30px; border: none; 
+            background: var(--accent); color: white; cursor: pointer; font-weight: bold;
+        }
     </style>
 </head>
 <body>
 
     <a href="index.html" class="exit-btn"><i class="fas fa-arrow-left"></i> Exit</a>
 
+    <div class="stats">
+        <div>STREAK</div>
+        <div id="streak-count">0</div>
+    </div>
+
     <div class="target-box">
-        <div>Target Color</div>
         <div id="target-display"></div>
-        <div id="target-name" style="font-size: 0.9rem; opacity: 0.7;">Dusk Lavender</div>
+        <div style="font-size: 0.8rem; opacity: 0.6;">Match this Sky Shade</div>
     </div>
 
     <div id="jar">
         <div id="liquid"></div>
     </div>
 
-    <div class="tanks">
-        <div class="tank-wrapper">
-            <button class="pour-btn" id="pink-btn"></button>
-            <span>Pink</span>
+    <div class="tanks" id="tank-container">
         </div>
-        <div class="tank-wrapper">
-            <button class="pour-btn" id="blue-btn"></button>
-            <span>Blue</span>
-        </div>
-        <div class="tank-wrapper">
-            <button class="pour-btn" id="white-btn"></button>
-            <span>White</span>
-        </div>
-    </div>
 
-    <button onclick="checkMatch()" style="margin-top: 40px; padding: 10px 30px; border-radius: 20px; border: none; background: #ff7e5f; color: white; cursor: pointer; font-weight: bold;">Mix & Compare</button>
+    <button class="mix-btn" onclick="checkMatch()">MIX & EVALUATE</button>
 
     <div id="result-screen" class="result-overlay">
-        <h2 id="accuracy-text">95% Match!</h2>
+        <h1 id="accuracy-text">0%</h1>
         <p id="feedback"></p>
-        <button onclick="resetGame()" style="padding: 10px 30px; border-radius: 20px; border: none; background: white; cursor: pointer;">Try Again</button>
+        <button class="mix-btn" style="background: white; color: black;" onclick="setupGame()">Next Level</button>
     </div>
 
 <script>
-    // Configuration
-    const colors = {
-        pink: { r: 255, g: 126, b: 179 },
-        blue: { r: 122, g: 252, b: 255 },
-        white: { r: 255, g: 255, b: 255 }
-    };
+    const skyLibrary = [
+        { name: "Sunset", r: 255, g: 126, b: 179 },
+        { name: "Cyan", r: 122, g: 252, b: 255 },
+        { name: "Cloud", r: 255, g: 255, b: 255 },
+        { name: "Indigo", r: 48, g: 43, b: 99 },
+        { name: "Gold", r: 255, g: 180, b: 0 },
+        { name: "Violet", r: 150, g: 120, b: 220 },
+        { name: "Storm", r: 100, g: 110, b: 130 },
+        { name: "Peach", r: 255, g: 218, b: 185 },
+        { name: "Deep Sea", r: 0, g: 105, b: 148 },
+        { name: "Neon Sun", r: 255, g: 255, b: 0 }
+    ];
 
+    let streak = 0;
     let target = { r: 0, g: 0, b: 0 };
-    let poured = { pink: 0, blue: 0, white: 0 };
-    let isPouring = false;
+    let poured = [0, 0, 0]; // Tracks volume for 3 active tanks
+    let activeTanks = [];
     let pourInterval;
 
     const liquid = document.getElementById('liquid');
+    const tankContainer = document.getElementById('tank-container');
 
     function setupGame() {
-        // Create a random target by mixing predefined ratios
-        const r1 = Math.random(), r2 = Math.random(), r3 = Math.random();
-        const total = r1 + r2 + r3;
-        target.r = Math.round((r1*colors.pink.r + r2*colors.blue.r + r3*colors.white.r) / total);
-        target.g = Math.round((r1*colors.pink.g + r2*colors.blue.g + r3*colors.white.g) / total);
-        target.b = Math.round((r1*colors.pink.b + r2*colors.blue.b + r3*colors.white.b) / total);
-        
-        document.getElementById('target-display').style.backgroundColor = `rgb(${target.r}, ${target.g}, ${target.b})`;
-        resetState();
-    }
-
-    function resetState() {
-        poured = { pink: 0, blue: 0, white: 0 };
+        document.getElementById('result-screen').classList.remove('active');
+        poured = [0, 0, 0];
         liquid.style.height = '0%';
         liquid.style.backgroundColor = 'transparent';
-        document.getElementById('result-screen').classList.remove('active');
+
+        // 1. Pick 3 random tanks
+        activeTanks = [...skyLibrary].sort(() => 0.5 - Math.random()).slice(0, 3);
+        
+        // 2. Build UI
+        tankContainer.innerHTML = '';
+        activeTanks.forEach((color, i) => {
+            const wrap = document.createElement('div');
+            wrap.className = 'tank-wrapper';
+            wrap.innerHTML = `
+                <button class="pour-btn" style="background:rgb(${color.r},${color.g},${color.b})"></button>
+                <span>${color.name}</span>
+            `;
+            const btn = wrap.querySelector('button');
+            btn.onmousedown = btn.ontouchstart = (e) => { e.preventDefault(); startPour(i); };
+            btn.onmouseup = btn.ontouchend = btn.onmouseleave = stopPour;
+            tankContainer.appendChild(wrap);
+        });
+
+        // 3. Create solvable target
+        const ratios = [Math.random(), Math.random(), Math.random()];
+        const sum = ratios.reduce((a, b) => a + b, 0);
+        target.r = Math.round(activeTanks.reduce((acc, c, i) => acc + (c.r * ratios[i]), 0) / sum);
+        target.g = Math.round(activeTanks.reduce((acc, c, i) => acc + (c.g * ratios[i]), 0) / sum);
+        target.b = Math.round(activeTanks.reduce((acc, c, i) => acc + (c.b * ratios[i]), 0) / sum);
+        
+        document.getElementById('target-display').style.backgroundColor = `rgb(${target.r},${target.g},${target.b})`;
     }
 
-    function startPour(type) {
-        isPouring = true;
+    function startPour(index) {
         pourInterval = setInterval(() => {
-            const totalPoured = poured.pink + poured.blue + poured.white;
-            if (totalPoured < 100) {
-                poured[type] += 2;
+            const total = poured.reduce((a, b) => a + b, 0);
+            if (total < 100) {
+                poured[index] += 2;
                 updateJar();
             }
         }, 50);
     }
 
-    function stopPour() {
-        clearInterval(pourInterval);
-        isPouring = false;
-    }
+    function stopPour() { clearInterval(pourInterval); }
 
     function updateJar() {
-        const total = poured.pink + poured.blue + poured.white;
+        const total = poured.reduce((a, b) => a + b, 0);
         if (total === 0) return;
 
-        // Calculate current mixed color
-        const r = Math.round((poured.pink*colors.pink.r + poured.blue*colors.blue.r + poured.white*colors.white.r) / total);
-        const g = Math.round((poured.pink*colors.pink.g + poured.blue*colors.blue.g + poured.white*colors.white.g) / total);
-        const b = Math.round((poured.pink*colors.pink.b + poured.blue*colors.blue.b + poured.white*colors.white.b) / total);
+        const r = Math.round(activeTanks.reduce((acc, c, i) => acc + (c.r * poured[i]), 0) / total);
+        const g = Math.round(activeTanks.reduce((acc, c, i) => acc + (c.g * poured[i]), 0) / total);
+        const b = Math.round(activeTanks.reduce((acc, c, i) => acc + (c.b * poured[i]), 0) / total);
 
         liquid.style.height = total + '%';
-        liquid.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+        liquid.style.backgroundColor = `rgb(${r},${g},${b})`;
     }
 
     function checkMatch() {
-        const total = poured.pink + poured.blue + poured.white;
-        if (total < 10) return alert("Pour some colors first!");
+        const total = poured.reduce((a, b) => a + b, 0);
+        if (total < 5) return;
 
-        const currentR = Math.round((poured.pink*colors.pink.r + poured.blue*colors.blue.r + poured.white*colors.white.r) / total);
-        const currentG = Math.round((poured.pink*colors.pink.g + poured.blue*colors.blue.g + poured.white*colors.white.g) / total);
-        const currentB = Math.round((poured.pink*colors.pink.b + poured.blue*colors.blue.b + poured.white*colors.white.b) / total);
+        const curR = Math.round(activeTanks.reduce((acc, c, i) => acc + (c.r * poured[i]), 0) / total);
+        const curG = Math.round(activeTanks.reduce((acc, c, i) => acc + (c.g * poured[i]), 0) / total);
+        const curB = Math.round(activeTanks.reduce((acc, c, i) => acc + (c.b * poured[i]), 0) / total);
 
-        // Euclidean distance for color accuracy
-        const diff = Math.sqrt(
-            Math.pow(target.r - currentR, 2) +
-            Math.pow(target.g - currentG, 2) +
-            Math.pow(target.b - currentB, 2)
-        );
-        
-        const accuracy = Math.max(0, Math.round(100 - (diff / 441) * 100));
-        
-        document.getElementById('accuracy-text').innerText = `${accuracy}% Match`;
-        document.getElementById('feedback').innerText = accuracy > 90 ? "You have a true designer's eye! 🌟" : "Keep practicing your color theory.";
+        const dist = Math.sqrt(Math.pow(target.r-curR,2)+Math.pow(target.g-curG,2)+Math.pow(target.b-curB,2));
+        const accuracy = Math.max(0, Math.round(100 - (dist / 441) * 100));
+
+        if (accuracy >= 90) {
+            streak++;
+            document.getElementById('feedback').innerText = "Perfect Chemistry! +1 Streak";
+        } else {
+            streak = 0;
+            document.getElementById('feedback').innerText = "Streak Broken! Try for 90%+";
+        }
+
+        document.getElementById('streak-count').innerText = streak;
+        document.getElementById('accuracy-text').innerText = accuracy + "%";
         document.getElementById('result-screen').classList.add('active');
     }
 
-    // Event Listeners for Mobile & Desktop
-    ['pink', 'blue', 'white'].forEach(color => {
-        const btn = document.getElementById(`${color}-btn`);
-        btn.addEventListener('mousedown', () => startPour(color));
-        btn.addEventListener('touchstart', (e) => { e.preventDefault(); startPour(color); });
-        btn.addEventListener('mouseup', stopPour);
-        btn.addEventListener('touchend', stopPour);
-    });
-
-    function resetGame() { setupGame(); }
     setupGame();
 </script>
 </body>
