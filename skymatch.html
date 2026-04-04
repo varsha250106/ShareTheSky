@@ -13,11 +13,12 @@
             --dark-text: #2d2d6a;
             --main-font: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             --accent-gold: #ffd700;
+            --deep-purple: #8e74c9;
         }
 
-        body { margin: 0; font-family: var(--main-font); background-color: var(--bg-light); text-align: center; color: var(--dark-text); }
+        body { margin: 0; font-family: var(--main-font); background-color: var(--bg-light); text-align: center; color: var(--dark-text); overflow-x: hidden; }
 
-        /* --- 1. UPDATED NAV BAR WITH 'ABOUT ME' --- */
+        /* --- 1. ANIMATED CLOUD LOGO --- */
         header {
             display: flex; justify-content: space-between; align-items: center; padding: 15px 5%;
             background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px);
@@ -26,6 +27,16 @@
         .logo a { text-decoration: none; display: flex; align-items: center; gap: 10px; }
         .logo span { font-weight: 800; color: var(--dark-text); font-size: 1.5rem; }
         
+        .floating-cloud { 
+            width: 35px; 
+            animation: cloudFloat 3s ease-in-out infinite; /* Added Float Animation */
+        }
+        
+        @keyframes cloudFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
         .nav-links { display: flex; align-items: center; gap: 25px; }
         .nav-links a { text-decoration: none; color: #555; font-weight: 600; font-size: 0.95rem; }
 
@@ -39,16 +50,15 @@
         .dropdown-content a:hover { background-color: #f1f1f1; color: var(--primary-purple); }
         .dropdown:hover .dropdown-content { display: block; }
 
-        /* --- 2. BIGGER TITLE --- */
-        .game-container { max-width: 950px; margin: 30px auto; padding: 20px; }
+        /* --- 2. BIG NEAT PURPLE TITLE --- */
+        .game-container { max-width: 1100px; margin: 30px auto; padding: 20px; }
         h1.game-title { 
-            font-size: 3.5rem; /* Increased size */
-            font-weight: 900; 
-            background: linear-gradient(to right, var(--primary-purple), var(--secondary-pink)); 
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent; 
-            margin-bottom: 25px;
-            letter-spacing: -1px;
+            font-size: 4rem; 
+            font-weight: 800; 
+            color: var(--deep-purple); /* Neat Purple Color */
+            margin-bottom: 30px;
+            letter-spacing: -1.5px;
+            text-transform: capitalize;
         }
 
         /* --- SELECTORS --- */
@@ -73,24 +83,24 @@
         .option:hover { background: var(--primary-purple); color: white; }
         .custom-select.active .options-menu { display: block; }
 
-        /* --- GRID --- */
-        .memory-grid { display: grid; gap: 15px; margin: 0 auto; perspective: 1000px; }
-        .card { aspect-ratio: 1/1; position: relative; transform-style: preserve-3d; transition: 0.6s; cursor: pointer; }
+        /* --- GRID SETUP --- */
+        .memory-grid { display: grid; gap: 12px; margin: 0 auto; perspective: 1000px; }
+        .card { aspect-ratio: 1/1; position: relative; transform-style: preserve-3d; transition: 0.6s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
         .card.flipped { transform: rotateY(180deg); }
-        .card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 18px; }
-        .card-front { background: linear-gradient(135deg, var(--primary-purple), var(--secondary-pink)); color: white; display: flex; align-items: center; justify-content: center; font-size: 2rem; }
-        .card-back { background: white; transform: rotateY(180deg); border: 3px solid white; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 15px; }
+        .card-front { background: linear-gradient(135deg, var(--primary-purple), var(--secondary-pink)); color: white; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+        .card-back { background: white; transform: rotateY(180deg); border: 2px solid white; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .card-back img { width: 100%; height: 100%; object-fit: cover; }
 
         .card.power-up .card-back { background: #fff9e6; border-color: var(--accent-gold); }
-        .power-icon { font-size: 2.5rem; color: var(--accent-gold); }
+        .power-icon { font-size: 2rem; color: var(--accent-gold); }
 
-        /* Vibe Filters */
+        /* Filters */
         .filter-retro img { filter: sepia(0.5) contrast(1.1); }
         .filter-golden img { filter: saturate(1.8) brightness(1.1) sepia(0.2); }
         .filter-moody img { filter: contrast(1.4) brightness(0.7) saturate(0.6); }
 
-        .stats { font-weight: 700; color: #777; margin: 20px 0; }
+        .stats { font-weight: 700; color: #777; margin: 20px 0; font-size: 1.1rem; }
     </style>
 </head>
 <body>
@@ -98,7 +108,7 @@
 <header>
     <div class="logo">
         <a href="index.html">
-            <img src="https://img.icons8.com/fluency/48/cloud.png" style="width:35px">
+            <img src="https://img.icons8.com/fluency/48/cloud.png" class="floating-cloud">
             <span>ShareTheSky</span>
         </a>
     </div>
@@ -110,7 +120,8 @@
                 <a href="gallery.html">Gallery</a>
                 <a href="upload.html">Upload</a>
                 <a href="skymatch.html">Sky Match</a>
-                <a href="about.html">About Me</a> </div>
+                <a href="about.html">About Me</a>
+            </div>
         </div>
     </nav>
 </header>
@@ -166,8 +177,9 @@
 
     async function initGame(size = 4) {
         const totalCards = size * size;
-        // 3. FIXED GRID LOGIC: Always ensures an even number of slots for pairs
-        // 4x4=16 (2 Power, 7 Pairs), 6x6=36 (2 Power, 17 Pairs), 8x8=64 (4 Power, 30 Pairs)
+        
+        // --- FIXED 8x8 & 6x6 FILL LOGIC ---
+        // Ensuring powerCount is always even if totalCards is even, so remaining slots are even for pairs
         const powerCount = (size === 8) ? 4 : 2; 
         requiredMatches = (totalCards - powerCount) / 2;
         
@@ -180,19 +192,24 @@
         let photos = [];
         snap.forEach(doc => photos.push(doc.data().url));
         
+        // Pick unique photos for the number of pairs needed
         photos = photos.sort(() => 0.5 - Math.random()).slice(0, requiredMatches);
         let deck = [...photos, ...photos].map(url => ({ type: 'photo', val: url }));
         
         const powerIcons = ['fa-bolt', 'fa-eye', 'fa-snowflake'];
         for(let i=0; i<powerCount; i++) deck.push({ type: 'power', val: powerIcons[i % 3] });
 
-        // Shuffle deck to randomize power-up positions
+        // Final shuffle
         deck = deck.sort(() => 0.5 - Math.random());
         
         const grid = document.getElementById('game-grid');
         grid.innerHTML = "";
         grid.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
-        grid.style.maxWidth = size === 4 ? "520px" : size === 6 ? "780px" : "900px";
+        
+        // Adjust grid width based on size
+        if(size === 4) grid.style.maxWidth = "520px";
+        else if(size === 6) grid.style.maxWidth = "750px";
+        else grid.style.maxWidth = "950px";
 
         deck.forEach(item => {
             const card = document.createElement('div');
@@ -234,7 +251,12 @@
                 matches++; document.getElementById('match-count').innerText = matches;
                 c1.dataset.matched = true; c2.dataset.matched = true;
                 flippedCards = [];
-                if(matches === requiredMatches) setTimeout(() => { alert(`✨ Sky Cleared! ✨\nYou finished in ${moves} moves.`); initGame(parseInt(document.querySelector('#gridSelect .selected-text').innerText[0])); }, 500);
+                if(matches === requiredMatches) {
+                    setTimeout(() => { 
+                        alert(`✨ Sky Cleared! ✨\nFound all ${requiredMatches} pairs in ${moves} moves.`); 
+                        initGame(parseInt(document.querySelector('#gridSelect .selected-text').innerText[0])); 
+                    }, 500);
+                }
             } else {
                 lockBoard = true;
                 setTimeout(() => { c1.classList.remove('flipped'); c2.classList.remove('flipped'); flippedCards = []; lockBoard = false; }, 1000);
