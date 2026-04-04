@@ -2192,6 +2192,161 @@ header {
         grid-template-columns: 1fr; /* Single column on phones */
         padding: 10px 20px;
     }
+   /* --- GLOBAL STYLES --- */
+body { 
+    font-family: 'Inter', sans-serif; 
+    margin: 0; 
+    background: #f5f7fa; /* The light grey-blue background from your original design */
+    color: #333;
+}
+
+/* --- HEADER & NAVIGATION (IMAGE 16 STYLE) --- */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 5%; /* Spacing from your first screenshot */
+    background: white;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+}
+
+.logo a {
+    text-decoration: none;
+    color: #2d2d6a; /* Dark navy blue from Image 16 */
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.nav-links { 
+    display: flex; 
+    align-items: center; 
+    gap: 25px; 
+}
+
+.nav-links a { 
+    text-decoration: none; 
+    color: #4a4a8a; 
+    font-weight: 600; 
+    transition: 0.3s; 
+}
+
+.nav-links a:hover { 
+    color: #a18cd1; 
+}
+
+/* --- DROPDOWN MENU STYLING --- */
+.dropdown { 
+    position: relative; 
+    display: inline-block; 
+}
+
+.dropbtn {
+    background: none; 
+    border: none; 
+    color: #4a4a8a;
+    font-size: 16px; 
+    font-weight: 600; 
+    cursor: pointer;
+    padding: 10px 15px; 
+    font-family: 'Inter', sans-serif;
+}
+
+.dropdown-content {
+    display: none; 
+    position: absolute; 
+    background-color: white;
+    min-width: 180px; 
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
+    border-radius: 12px; 
+    z-index: 100; 
+    top: 100%; 
+    right: 0;
+    overflow: hidden;
+}
+
+.dropdown-content a {
+    color: #333; 
+    padding: 12px 16px; 
+    text-decoration: none;
+    display: block; 
+    font-size: 14px; 
+    transition: background 0.2s;
+}
+
+.dropdown-content a:hover { 
+    background-color: #f8f6ff; 
+    color: #a18cd1; 
+}
+
+.dropdown:hover .dropdown-content { 
+    display: block; 
+}
+
+/* --- GRID & CARDS --- */
+.pinterest-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+    padding: 20px 5%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.pin-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease;
+}
+
+.pin-image-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 5; /* Pinterest vertical style */
+    overflow: hidden;
+}
+
+.pin-img {
+    width: 100%; 
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Like Button Style (Restored) */
+.pin-like-overlay {
+    position: absolute; 
+    bottom: 12px; 
+    right: 12px;
+    background: rgba(255,255,255,0.9);
+    border: none; 
+    padding: 8px 15px; 
+    border-radius: 25px;
+    font-weight: 700; 
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    display: flex; 
+    align-items: center; 
+    gap: 6px;
+}
+
+.pin-like-overlay.liked {
+    background: #ff4757 !important;
+    color: white !important;
+}
+
+/* Mobile Responsive */
+@media (max-width: 600px) {
+    .pinterest-grid { 
+        grid-template-columns: 1fr; 
+    }
+    .pin-image-wrapper { 
+        aspect-ratio: 1 / 1; 
+    }
+}
 
     .pin-image-wrapper {
         aspect-ratio: 1 / 1; /* Squares look better on mobile */
