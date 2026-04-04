@@ -16,7 +16,7 @@
         body { 
             margin: 0; font-family: 'Segoe UI', sans-serif; 
             background: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
-            color: var(--dark); display: flex; flex-direction: column; height: 100vh;
+            color: var(--dark); display: flex; flex-direction: column; min-height: 100vh;
         }
 
         /* --- NAVIGATION & FLOATING LOGO --- */
@@ -25,7 +25,7 @@
             padding: 12px 5%; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             position: sticky; top: 0; z-index: 1000;
         }
-        .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; cursor: pointer; }
+        .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
         .logo img { width: 35px; animation: float 3s ease-in-out infinite; }
         .logo span { font-weight: 800; font-size: 1.4rem; color: var(--dark); }
 
@@ -35,58 +35,65 @@
         }
 
         .nav-links { display: flex; align-items: center; gap: 25px; }
-        .nav-links a { text-decoration: none; color: #555; font-weight: 600; transition: 0.3s; }
-        .nav-links a:hover { color: var(--primary); }
+        .nav-links a, .dropbtn { 
+            text-decoration: none; color: #555; font-weight: 600; 
+            font-size: 0.95rem; transition: 0.3s; background: none; border: none; cursor: pointer;
+        }
+        .nav-links a:hover, .dropdown:hover .dropbtn { color: var(--primary); }
+
+        .dropdown { position: relative; display: inline-block; }
+        .dropdown-content {
+            display: none; position: absolute; right: 0; background-color: white; 
+            min-width: 180px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); 
+            border-radius: 12px; z-index: 1; padding: 10px 0; border: 1px solid #eee;
+        }
+        .dropdown-content a { color: #555; padding: 12px 20px; display: block; font-weight: 500; transition: 0.2s; }
+        .dropdown-content a:hover { background-color: #f8f9fa; color: var(--primary); padding-left: 25px; }
+        .dropdown:hover .dropdown-content { display: block; }
 
         /* --- MAIN WRAPPER --- */
         .main-wrapper { 
-            display: flex; flex: 1; padding: 25px; gap: 25px; max-width: 1400px; margin: 0 auto; width: 100%;
+            display: flex; flex: 1; padding: 30px; gap: 30px; max-width: 1500px; margin: 0 auto; width: 100%;
         }
 
-        /* SIDEBAR: STATS & HOVER RULES */
-        .sidebar { width: 300px; display: flex; flex-direction: column; gap: 20px; }
+        .sidebar { width: 320px; display: flex; flex-direction: column; gap: 20px; }
         .panel { 
             background: var(--glass); padding: 25px; border-radius: 20px; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid white;
         }
-        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
-        .stat-box { background: white; padding: 12px; border-radius: 15px; text-align: center; }
-        .stat-box span { display: block; font-size: 1.4rem; font-weight: 800; color: var(--primary); }
 
-        .rule-card { 
-            display: flex; align-items: flex-start; gap: 15px; padding: 15px; 
-            border-radius: 15px; transition: 0.4s ease; margin-bottom: 10px; cursor: default;
-        }
-        .rule-card:hover { 
-            background: white; transform: translateX(8px); 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05); 
-        }
-        .rule-card i { color: var(--primary); font-size: 1.2rem; margin-top: 3px; }
-        .rule-card h4 { margin: 0 0 5px 0; font-size: 0.95rem; }
-        .rule-card p { margin: 0; font-size: 0.8rem; color: #666; line-height: 1.4; }
-
-        /* --- GAME AREA --- */
+        /* --- GAME AREA & CONTROLS --- */
         .game-area { 
             flex: 1; display: flex; flex-direction: column; align-items: center;
-            background: white; border-radius: 30px; padding: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.03);
+            background: white; border-radius: 30px; padding: 40px; box-shadow: 0 10px 40px rgba(0,0,0,0.03);
         }
-        .game-header { text-align: center; margin-bottom: 30px; }
-        .game-header h1 { font-size: 2.5rem; color: var(--primary); margin: 0 0 20px 0; letter-spacing: -1px; }
+        .game-header h1 { font-size: 2.8rem; color: var(--primary); margin: 0 0 25px 0; letter-spacing: -1px; }
 
-        .controls { display: flex; gap: 12px; }
+        .controls { display: flex; gap: 15px; margin-bottom: 30px; }
         .btn { 
-            padding: 12px 24px; border-radius: 12px; border: 2px solid var(--primary);
-            background: white; cursor: pointer; font-weight: 700; transition: 0.3s;
+            padding: 12px 28px; border-radius: 15px; border: 2.5px solid var(--primary);
+            background: white; cursor: pointer; font-weight: 800; transition: 0.3s; color: var(--primary); font-size: 1rem;
         }
-        .btn:hover, .btn.active { background: var(--primary); color: white; transform: translateY(-2px); }
+        .btn.active { background: var(--primary); color: white; transform: scale(1.05); box-shadow: 0 5px 15px rgba(161, 140, 209, 0.3); }
 
-        /* --- GRID & CARDS --- */
-        .memory-grid { display: grid; gap: 10px; perspective: 1000px; margin: auto; }
-        .card { width: 75px; height: 75px; position: relative; transform-style: preserve-3d; transition: 0.6s; cursor: pointer; }
+        /* --- ENHANCED GRID & VISIBLE IMAGES --- */
+        .memory-grid { display: grid; gap: 15px; perspective: 1200px; margin: auto; }
+        
+        /* Base Card Styling */
+        .card { position: relative; transform-style: preserve-3d; transition: 0.6s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
         .card.flipped { transform: rotateY(180deg); }
-        .card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 12px; }
-        .card-front { background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.4rem; }
-        .card-back { background: #f8f9fa; transform: rotateY(180deg); display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid #eee; }
+        .card-front, .card-back { 
+            position: absolute; width: 100%; height: 100%; backface-visibility: hidden; 
+            border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
+        }
+        .card-front { 
+            background: linear-gradient(135deg, var(--primary), var(--secondary)); 
+            display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; 
+        }
+        .card-back { 
+            background: #fff; transform: rotateY(180deg); display: flex; 
+            align-items: center; justify-content: center; overflow: hidden; border: 2px solid #fff; 
+        }
         .card-back img { width: 100%; height: 100%; object-fit: cover; }
     </style>
 </head>
@@ -99,46 +106,40 @@
     </a>
     <nav class="nav-links">
         <a href="index.html">Home</a>
-        <a href="gallery.html">Gallery</a>
-        <a href="about.html">About Me</a>
+        <div class="dropdown">
+            <button class="dropbtn">Explore <i class="fa-solid fa-chevron-down" style="font-size: 0.8rem; margin-left: 5px;"></i></button>
+            <div class="dropdown-content">
+                <a href="gallery.html"><i class="fa-solid fa-image" style="width: 20px;"></i> Gallery</a>
+                <a href="upload.html"><i class="fa-solid fa-cloud-arrow-up" style="width: 20px;"></i> Uploads</a>
+                <a href="skymatch.html"><i class="fa-solid fa-gamepad" style="width: 20px;"></i> Sky Match</a>
+                <a href="about.html"><i class="fa-solid fa-user" style="width: 20px;"></i> About Me</a>
+            </div>
+        </div>
     </nav>
 </header>
 
 <div class="main-wrapper">
     <div class="sidebar">
         <div class="panel">
-            <h3 style="margin:0">Dashboard</h3>
-            <div class="stat-grid">
-                <div class="stat-box">Moves<span id="moves">0</span></div>
-                <div class="stat-box">Matches<span id="matches">0</span></div>
+            <h3 style="margin:0 0 15px 0">Dashboard</h3>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; text-align:center;">
+                <div style="background:white; padding:15px; border-radius:15px;">Moves<span id="moves" style="display:block; font-size:1.5rem; font-weight:800; color:var(--primary)">0</span></div>
+                <div style="background:white; padding:15px; border-radius:15px;">Matches<span id="matches" style="display:block; font-size:1.5rem; font-weight:800; color:var(--primary)">0</span></div>
             </div>
-            <p style="text-align:center; font-size:0.8rem; margin-top:15px; color:#888;">Target: Match <span id="target">0</span> pairs</p>
         </div>
-
         <div class="panel">
-            <h3 style="margin:0 0 15px 0">How to Play</h3>
-            <div class="rule-card">
-                <i class="fa-solid fa-clone"></i>
-                <div><h4>Find Pairs</h4><p>Match identical sky photos to clear them.</p></div>
-            </div>
-            <div class="rule-card">
-                <i class="fa-solid fa-bolt"></i>
-                <div><h4>Thunder</h4><p>Resets unmatched cards instantly.</p></div>
-            </div>
-            <div class="rule-card">
-                <i class="fa-solid fa-eye"></i>
-                <div><h4>Sky Vision</h4><p>Briefly reveals all card positions.</p></div>
-            </div>
+            <h3 style="margin:0 0 15px 0">Sky Rules</h3>
+            <p style="font-size:0.9rem; color:#666; line-height:1.6;">Match photos to clear the clouds. Look out for <b>Thunder</b> (resets flips) and <b>Vision</b> (reveals board)!</p>
         </div>
     </div>
 
     <div class="game-area">
-        <div class="game-header">
+        <div class="game-header" style="text-align: center;">
             <h1>Sky Match</h1>
             <div class="controls">
-                <button class="btn" onclick="initGame(4)">4 × 4</button>
-                <button class="btn" onclick="initGame(6)">6 × 6</button>
-                <button class="btn active" id="btn-8" onclick="initGame(8)">8 × 8</button>
+                <button class="btn" id="btn-4" onclick="initGame(4)">4 × 4</button>
+                <button class="btn" id="btn-6" onclick="initGame(6)">6 × 6</button>
+                <button class="btn" id="btn-8" onclick="initGame(8)">8 × 8</button>
             </div>
         </div>
         <div class="memory-grid" id="game-grid"></div>
@@ -161,43 +162,45 @@
     let flipped = [], moves = 0, matches = 0, isLock = false, totalPairs = 0;
 
     async function initGame(size = 8) {
+        // --- Button Active State Fix ---
+        document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(`btn-${size}`).classList.add('active');
+
         const grid = document.getElementById('game-grid');
-        grid.innerHTML = "Clearing clouds...";
+        grid.innerHTML = "<h3 style='color:var(--primary)'>Gathering the clouds...</h3>";
         
-        // Reset Stats
         moves = 0; matches = 0; flipped = []; isLock = false;
         document.getElementById('moves').innerText = "0";
         document.getElementById('matches').innerText = "0";
         
+        // Define Dynamic Card Sizes
+        let cardSize = 80; // Default for 8x8
+        if(size === 4) cardSize = 125;
+        if(size === 6) cardSize = 100;
+
         const totalCards = size * size;
         const powerCount = (size === 8) ? 4 : 2; 
         totalPairs = (totalCards - powerCount) / 2;
-        document.getElementById('target').innerText = totalPairs;
 
-        // Load Photos from Firebase
         const snap = await getDocs(query(collection(db, "photos"), limit(totalPairs)));
-        let photos = [];
-        snap.forEach(doc => photos.push(doc.data().url));
+        let photos = []; snap.forEach(doc => photos.push(doc.data().url));
 
-        // Create Deck
         let deck = [...photos, ...photos].map(url => ({ type: 'photo', val: url }));
         const powers = ['fa-bolt', 'fa-eye'];
         for(let i=0; i < powerCount; i++) deck.push({ type: 'power', val: powers[i % 2] });
 
         deck.sort(() => Math.random() - 0.5);
         grid.innerHTML = "";
-        grid.style.gridTemplateColumns = `repeat(${size}, ${size === 8 ? '75px' : '90px'})`;
+        grid.style.gridTemplateColumns = `repeat(${size}, ${cardSize}px)`;
 
         deck.forEach(item => {
             const card = document.createElement('div');
             card.className = 'card';
+            card.style.width = `${cardSize}px`;
+            card.style.height = `${cardSize}px`;
             card.dataset.type = item.type; card.dataset.val = item.val;
-            card.innerHTML = `
-                <div class="card-front"><i class="fa-solid fa-cloud"></i></div>
-                <div class="card-back">
-                    ${item.type === 'photo' ? `<img src="${item.val}">` : `<i class="fa-solid ${item.val}" style="color:gold; font-size:1.8rem;"></i>`}
-                </div>
-            `;
+            card.innerHTML = `<div class="card-front"><i class="fa-solid fa-cloud"></i></div>
+                              <div class="card-back">${item.type === 'photo' ? `<img src="${item.val}">` : `<i class="fa-solid ${item.val}" style="color:gold; font-size:${cardSize/3}px;"></i>`}</div>`;
             card.onclick = handleFlip;
             grid.appendChild(card);
         });
@@ -207,20 +210,17 @@
         if (isLock || this.classList.contains('flipped') || this.dataset.done) return;
         this.classList.add('flipped');
 
-        // --- POWER-UP LOGIC ---
         if (this.dataset.type === 'power') {
             isLock = true;
             setTimeout(() => {
                 if (this.dataset.val === 'fa-bolt') {
-                    // Thunder: Reset unmatched flipped cards
                     document.querySelectorAll('.card.flipped:not([data-done])').forEach(c => c.classList.remove('flipped'));
                 } else {
-                    // Vision: Show all briefly
                     const hidden = document.querySelectorAll('.card:not(.flipped)');
                     hidden.forEach(c => c.classList.add('flipped'));
                     setTimeout(() => hidden.forEach(c => { if(!c.dataset.done) c.classList.remove('flipped'); }), 1200);
                 }
-                this.style.opacity = "0.3"; isLock = false;
+                this.style.opacity = "0.3"; this.dataset.done = "true"; isLock = false;
             }, 600);
             return;
         }
@@ -234,7 +234,7 @@
                 matches++; document.getElementById('matches').innerText = matches;
                 c1.dataset.done = "true"; c2.dataset.done = "true";
                 flipped = []; isLock = false;
-                if (matches === totalPairs) alert("Success! You cleared the sky.");
+                if (matches === totalPairs) alert("Sky Cleared! You've matched them all.");
             } else {
                 setTimeout(() => { c1.classList.remove('flipped'); c2.classList.remove('flipped'); flipped = []; isLock = false; }, 800);
             }
