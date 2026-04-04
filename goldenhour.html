@@ -7,10 +7,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --sky-top: #4facfe;
-            --sky-bottom: #00f2fe;
-            --pink: #ff7eb3;
-            --cyan: #7afcff;
+            --sky-top: #4facfe; --sky-bottom: #00f2fe;
+            --pink: #ff7eb3; --cyan: #7afcff; --glass: rgba(255, 255, 255, 0.1);
         }
 
         body {
@@ -24,13 +22,13 @@
         .exit-btn {
             position: absolute; top: 20px; left: 20px;
             color: white; text-decoration: none; background: rgba(0,0,0,0.2);
-            padding: 10px 20px; border-radius: 25px; font-size: 14px; z-index: 10;
+            padding: 10px 20px; border-radius: 25px; font-size: 14px; z-index: 100;
         }
 
         #game-container { position: relative; width: 400px; height: 600px; max-width: 100vw; max-height: 85vh; }
 
         canvas {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
             border-radius: 20px; border: 4px solid rgba(255, 255, 255, 0.3);
             box-shadow: 0 20px 40px rgba(0,0,0,0.2);
             display: block; width: 100%; height: 100%;
@@ -44,7 +42,7 @@
         #score-board { position: absolute; top: 20px; font-size: 2.5rem; font-weight: bold; text-shadow: 0 4px 10px rgba(0,0,0,0.2); }
 
         .start-card {
-            background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(15px);
+            background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(20px);
             padding: 30px; border-radius: 25px; text-align: center; pointer-events: auto;
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
@@ -77,21 +75,58 @@
     const scoreBoard = document.getElementById('score-board');
     const startMenu = document.getElementById('start-menu');
 
-    canvas.width = 400;
-    canvas.height = 600;
+    // High DPI Retina display support
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = 400 * dpr;
+    canvas.height = 600 * dpr;
+    ctx.scale(dpr, dpr);
 
     // Game Variables
-    let cloud, rings, particles, gameActive, score, frame;
-    const gravity = 0.25;
-    const lift = -5.5;
+    let cloud, rings, sparkles, gameActive, score, frame;
+    const gravity = 0.23;
+    const lift = -5.3;
     const colors = ['#ff7eb3', '#7afcff']; // Pink and Cyan
+
+    // 1. Particle Class for Sparkles
+    class Sparkle {
+        constructor(x, y, color) {
+            this.x = x;
+            this.y = y;
+            this.size = Math.random() * 4 + 1; // Random size
+            this.speedX = Math.random() * -1.5 - 0.5; // Drift back
+            this.speedY = Math.random() * 0.8 - 0.4;
+            this.color = color;
+            this.opacity = 0.8;
+            this.fadeRate = 0.025; // How fast it fades
+        }
+
+        draw() {
+            ctx.save();
+            ctx.globalAlpha = this.opacity;
+            ctx.fillStyle = this.color;
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = this.color;
+            
+            // Draw a tiny star/sparkle shape
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+
+        update() {
+            this.x += this.speedX;
+            this.y += this.speedY;
+            this.opacity -= this.fadeRate;
+        }
+    }
 
     class Cloud {
         constructor() {
             this.x = 60;
             this.y = 300;
             this.velocity = 0;
-            this.size = 30;
+            this.size = 28;
             this.color = colors[0];
         }
 
@@ -101,11 +136,11 @@
             ctx.shadowColor = this.color;
             ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
             
-            // Draw main wispy cloud body
+            // Draw wispy cloud body
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.arc(this.x + 20, this.y - 10, this.size * 0.7, 0, Math.PI * 2);
-            ctx.arc(this.x + 20, this.y + 10, this.size * 0.7, 0, Math.PI * 2);
+            ctx.arc(this.x + 18, this.y - 10, this.size * 0.7, 0, Math.PI * 2);
+            ctx.arc(this.x + 18, this.y + 10, this.size * 0.7, 0, Math.PI * 2);
             ctx.fill();
 
             // Glow Ring
@@ -118,17 +153,20 @@
         update() {
             this.velocity += gravity;
             this.y += this.velocity;
-            if (this.y > canvas.height) endGame();
+            
+            // 2. Spawn 1-2 new sparkles behind the cloud on every frame
+            if (frame % 2 === 0) sparkles.push(new Sparkle(this.x, this.y, this.color));
+            
+            if (this.y > (canvas.height / dpr)) endGame();
             if (this.y < 0) { this.y = 0; this.velocity = 0; }
         }
     }
 
     class Ring {
         constructor() {
-            this.x = canvas.width + 50;
-            this.y = Math.random() * (canvas.height - 200) + 100;
-            this.width = 12;
-            this.height = 110;
+            this.x = (canvas.width / dpr) + 50;
+            this.y = Math.random() * ((canvas.height / dpr) - 200) + 100;
+            this.width = 10;
             this.color = colors[Math.floor(Math.random() * colors.length)];
             this.passed = false;
         }
@@ -140,23 +178,21 @@
             ctx.strokeStyle = this.color;
             ctx.lineWidth = 8;
             ctx.lineCap = "round";
+            ctx.setLineDash([10, 15]); // Aura effect
             
-            // Draw dashed aura ring
-            ctx.setLineDash([10, 15]);
             ctx.beginPath();
             ctx.ellipse(this.x, this.y, 25, 65, 0, 0, Math.PI * 2);
             ctx.stroke();
             ctx.restore();
         }
 
-        update() {
-            this.x -= 3.5;
-        }
+        update() { this.x -= 3.5; }
     }
 
     function startGame() {
         cloud = new Cloud();
         rings = [];
+        sparkles = []; // 3. Reset Particle Array
         score = 0;
         frame = 0;
         gameActive = true;
@@ -167,7 +203,14 @@
 
     function animate() {
         if (!gameActive) return;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
+
+        // Update & Draw Sparkles first (behind the cloud)
+        sparkles.forEach((s, index) => {
+            s.update();
+            s.draw();
+            if (s.opacity <= 0 || s.x < -10) sparkles.splice(index, 1);
+        });
 
         // Update Cloud
         cloud.update();
@@ -188,14 +231,10 @@
                         score++;
                         scoreBoard.innerText = score;
                         ring.passed = true;
-                        // Swap Color on Success
                         cloud.color = (cloud.color === colors[0]) ? colors[1] : colors[0];
-                    } else {
-                        endGame();
-                    }
+                    } else { endGame(); }
                 }
             }
-
             if (ring.x < -100) rings.splice(index, 1);
         });
 
