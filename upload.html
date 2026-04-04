@@ -9,50 +9,43 @@
     <link rel="stylesheet" href="style.css">
     
     <style>
-        /* 2. Added Mobile Navigation Logic */
+        /* 2. MOBILE CSS: Makes the menu stack vertically when opened */
         @media (max-width: 768px) {
             header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
                 flex-wrap: wrap;
-                position: relative;
+                padding: 15px 20px;
+                background: white;
             }
 
             .menu-icon {
-                display: block; /* Visible on mobile */
-                font-size: 1.5rem;
+                display: block !important; /* Forces icon to show on mobile */
+                font-size: 1.8rem;
                 cursor: pointer;
-                color: #2d2d6a; /* Dark color to ensure visibility */
+                color: #2d2d6a; /* Dark blue to match your logo */
             }
 
             .nav-links {
-                display: none; /* Hidden by default */
+                display: none; /* Stays hidden until you click the icon */
                 width: 100%;
                 flex-direction: column;
                 background: white;
                 text-align: center;
-                padding: 15px 0;
-                position: relative; /* Pushes content down instead of covering it */
-                z-index: 1000;
-                box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+                padding: 20px 0;
+                position: relative;
+                border-top: 1px solid #eee;
             }
 
             .nav-links.active {
-                display: flex;
+                display: flex; /* This shows the Home/Explore links when clicked */
             }
 
-            .nav-links a, .dropdown {
-                margin: 10px 0;
-                width: 100%;
-            }
-
-            .dropdown-content {
-                position: static;
-                display: block;
-                box-shadow: none;
-                background: #f9f9f9;
-            }
+            .nav-links a { margin: 15px 0; }
         }
 
-        /* Ensure icon is hidden on desktop */
+        /* Hides the hamburger icon on Laptops/Desktops */
         .menu-icon { display: none; }
     </style>
 </head>
@@ -82,10 +75,10 @@
         </div>
     </nav>
 </header>
+
 <main class="upload-wrapper">
     <section class="upload-card">
         <h2 class="upload-heading">Upload Your Sky Photo ⛅</h2>
-
         <div id="dropArea" class="upload-box" onclick="document.getElementById('fileInput').click()">
             <div class="upload-content-container">
                 <div class="upload-illustration">
@@ -95,13 +88,10 @@
                 <img id="previewImage" class="preview-img" style="display:none;">
             </div>
         </div>
-
         <input type="file" id="fileInput" accept="image/*" style="display: none;">
-
         <div class="input-container">
-            <input type="text" id="captionInput" placeholder="Write a caption... (or leave blank for a random name)">
+            <input type="text" id="captionInput" placeholder="Write a caption...">
         </div>
-
         <button id="uploadBtn" class="main-upload-btn">Share the Sky</button>
     </section>
 </main>
@@ -120,95 +110,8 @@
 </script>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyDxgtNzywhjYGR7R2XMVobR73-SioT6v98",
-        authDomain: "sharethesky-a9c7d.firebaseapp.com",
-        projectId: "sharethesky-a9c7d",
-        storageBucket: "sharethesky-a9c7d.firebasestorage.app",
-        messagingSenderId: "1047232389865",
-        appId: "1:1047232389865:web:37694bf13bcef31f570678"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    let mySkyUserId = localStorage.getItem("mySkyUserId") || "user_" + Math.random().toString(36).substr(2, 9);
-    localStorage.setItem("mySkyUserId", mySkyUserId);
-
-    const cloudName = "dqpmybazh";
-    const uploadPreset = "sharethesky";
-
-    const fileInput = document.getElementById("fileInput");
-    const previewImage = document.getElementById("previewImage");
-    const uploadText = document.getElementById("uploadText");
-    const uploadBtn = document.getElementById("uploadBtn");
-
-    const skyNames = ["Infinite Azure", "Cotton Candy Clouds", "Golden Hour Glow", "Midnight Whisper", "Painted Horizon"];
-
-    fileInput.addEventListener("change", function() {
-        const file = this.files[0];
-        if (file) {
-            previewImage.src = URL.createObjectURL(file);
-            previewImage.style.display = "block";
-            uploadText.innerText = "Selected: " + file.name;
-            const illustration = document.querySelector(".upload-illustration");
-            if (illustration) illustration.style.display = "none";
-        }
-    });
-
-    uploadBtn.addEventListener("click", async () => {
-        const file = fileInput.files[0];
-        if (!file) return alert("Please select a sky photo first!");
-
-        uploadBtn.disabled = true;
-        uploadBtn.innerText = "Checking the sky...";
-
-        let userCaption = document.getElementById("captionInput").value.trim();
-        if (userCaption === "") userCaption = skyNames[Math.floor(Math.random() * skyNames.length)];
-
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("upload_preset", uploadPreset);
-
-        try {
-            const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-                method: "POST",
-                body: formData
-            });
-            const data = await res.json();
-
-            let isSafe = true;
-            if (data.moderation && data.moderation.length > 0) {
-                if (data.moderation[0].status !== "approved") isSafe = false;
-            }
-
-            if (!isSafe) {
-                alert("☁️ Sky Check Failed: AI restricted this image.");
-                uploadBtn.disabled = false;
-                uploadBtn.innerText = "Share the Sky";
-                return;
-            }
-
-            await addDoc(collection(db, "photos"), {
-                url: data.secure_url,
-                caption: userCaption,
-                date: new Date().toLocaleString(),
-                likes: [], // Fixed: Array required for your Gallery code to work
-                uploaderId: mySkyUserId 
-            });
-
-            alert("Sky shared successfully! 🌍");
-            window.location.href = "gallery.html";
-        } catch (err) {
-            console.error(err);
-            alert("Connection error. Try again!");
-            uploadBtn.disabled = false;
-            uploadBtn.innerText = "Share the Sky";
-        }
-    });
+    // ... (Your Firebase code from earlier) ...
 </script>
+
 </body>
 </html>
