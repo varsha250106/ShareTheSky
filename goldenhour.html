@@ -29,7 +29,7 @@
             <div id="overdrive-ui">⚡ OVERDRIVE 2X ⚡</div>
             <div id="start-menu" class="card">
                 <h2>Cloud Chaser Ultra</h2>
-                <p>Match Rings | Avoid Storms<br>Hit 5 for Overdrive!</p>
+                <p>Spacebar or Tap to float<br>Match Rings | Avoid Storms</p>
                 <button class="btn" onclick="startGame()">Start Flight</button>
             </div>
         </div>
@@ -48,11 +48,15 @@
 
     let cloud, rings, sparkles, obstacles, gameActive, score, frame, combo, speedMult;
 
-    // 1. DAY-TO-NIGHT COLORS
+    // Balanced Physics Constants
+    const GRAVITY = 0.15;      
+    const JUMP_STRENGTH = -4.2; 
+    const MAX_FALL_SPEED = 7;  
+
     const skyThemes = [
-        { top: '#4facfe', bottom: '#00f2fe' }, // Day
-        { top: '#ff7e5f', bottom: '#feb47b' }, // Sunset
-        { top: '#2c3e50', bottom: '#000000' }  // Night
+        { top: '#4facfe', bottom: '#00f2fe' }, 
+        { top: '#ff7e5f', bottom: '#feb47b' }, 
+        { top: '#2c3e50', bottom: '#000000' }  
     ];
 
     class Sparkle {
@@ -71,10 +75,10 @@
         }
     }
 
-    class Obstacle { // 2. STORM HAZARDS
+    class Obstacle {
         constructor() {
             this.x = 450; this.y = Math.random() * 500 + 50;
-            this.size = 35;
+            this.size = 30;
         }
         draw() {
             ctx.fillStyle = '#333'; ctx.shadowBlur = 15; ctx.shadowColor = '#000';
@@ -82,7 +86,7 @@
             ctx.arc(this.x+15, this.y-10, this.size*0.8, 0, Math.PI*2); ctx.fill();
             ctx.shadowBlur = 0;
         }
-        update() { this.x -= (4 * speedMult); }
+        update() { this.x -= (3.8 * speedMult); }
     }
 
     class Ring {
@@ -93,9 +97,9 @@
         }
         draw() {
             ctx.strokeStyle = this.color; ctx.lineWidth = 6; ctx.setLineDash([5, 10]);
-            ctx.beginPath(); ctx.ellipse(this.x, this.y, 20, 55, 0, 0, Math.PI*2); ctx.stroke();
+            ctx.beginPath(); ctx.ellipse(this.x, this.y, 22, 65, 0, 0, Math.PI*2); ctx.stroke();
         }
-        update() { this.x -= (3.5 * speedMult); }
+        update() { this.x -= (3.2 * speedMult); }
     }
 
     class Cloud {
@@ -103,11 +107,13 @@
         draw() {
             ctx.shadowBlur = (combo >= 5) ? 40 : 20; ctx.shadowColor = this.color;
             ctx.fillStyle = "white";
-            ctx.beginPath(); ctx.arc(this.x, this.y, 25, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.arc(this.x, this.y, 22, 0, Math.PI*2); ctx.fill();
             ctx.strokeStyle = this.color; ctx.lineWidth = 4; ctx.stroke(); ctx.shadowBlur = 0;
         }
         update() {
-            this.v += 0.25; this.y += this.v;
+            this.v += GRAVITY; 
+            if (this.v > MAX_FALL_SPEED) this.v = MAX_FALL_SPEED; 
+            this.y += this.v;
             if (frame % 2 === 0) sparkles.push(new Sparkle(this.x, this.y, this.color));
             if (this.y > 600 || this.y < 0) endGame();
         }
@@ -121,55 +127,50 @@
 
     function animate() {
         if (!gameActive) return;
-        // 3. DYNAMIC BACKGROUND (Day-Night Transition)
         let themeIdx = Math.min(2, Math.floor(score / 10));
         let grad = ctx.createLinearGradient(0, 0, 0, 600);
         grad.addColorStop(0, skyThemes[themeIdx].top); grad.addColorStop(1, skyThemes[themeIdx].bottom);
         ctx.fillStyle = grad; ctx.fillRect(0,0,400,600);
 
         cloud.update(); cloud.draw();
-
-        // 4. OVERDRIVE LOGIC
-        speedMult = (combo >= 5) ? 1.8 : 1;
+        speedMult = (combo >= 5) ? 1.6 : 1;
         overdriveUI.style.opacity = (combo >= 5) ? 1 : 0;
 
-        if (frame % 100 === 0) rings.push(new Ring());
-        if (frame % 250 === 0) obstacles.push(new Obstacle());
+        if (frame % 110 === 0) rings.push(new Ring());
+        if (frame % 280 === 0) obstacles.push(new Obstacle());
 
         rings.forEach((r, i) => {
             r.update(); r.draw();
-            if (!r.passed && r.x < cloud.x + 20 && Math.abs(r.y - cloud.y) < 60) {
-                if (r.color === cloud.color) {
-                    score += (combo >= 5 ? 2 : 1); combo++; r.passed = true;
-                    cloud.color = (cloud.color === '#ff7eb3' ? '#7afcff' : '#ff7eb3');
-                    scoreBoard.innerText = score;
-                } else { endGame(); }
+            if (!r.passed && r.x < cloud.x + 25 && r.x > cloud.x - 25) {
+                if (Math.abs(r.y - cloud.y) < 70) {
+                    if (r.color === cloud.color) {
+                        score += (combo >= 5 ? 2 : 1); combo++; r.passed = true;
+                        cloud.color = (cloud.color === '#ff7eb3' ? '#7afcff' : '#ff7eb3');
+                        scoreBoard.innerText = score;
+                    } else { endGame(); }
+                }
             }
             if (r.x < -50) rings.splice(i, 1);
         });
 
         obstacles.forEach((o, i) => {
             o.update(); o.draw();
-            if (Math.hypot(o.x - cloud.x, o.y - cloud.y) < 50) endGame();
+            if (Math.hypot(o.x - cloud.x, o.y - cloud.y) < 45) endGame();
             if (o.x < -100) obstacles.splice(i, 1);
         });
 
         sparkles.forEach((s, i) => { s.update(); s.draw(); if (s.opacity <= 0) sparkles.splice(i, 1); });
-
         frame++; requestAnimationFrame(animate);
     }
 
     function endGame() {
         if (!gameActive) return;
         gameActive = false;
-        // 5. SOFT POOF ANIMATION
         for(let i=0; i<20; i++) sparkles.push(new Sparkle(cloud.x, cloud.y, cloud.color, true));
-        
         setTimeout(() => {
             startMenu.style.display = 'block';
             startMenu.innerHTML = `<h2>Skyward Bound</h2><p>Final Score: ${score}</p><button class="btn" onclick="startGame()">Fly Again</button>`;
         }, 1000);
-        
         function poofLoop() {
             ctx.clearRect(0,0,400,600);
             sparkles.forEach((s, i) => { s.update(); s.draw(); if (s.opacity <= 0) sparkles.splice(i,1); });
@@ -178,7 +179,29 @@
         poofLoop();
     }
 
-    window.onmousedown = window.ontouchstart = (e) => { if (gameActive) { e.preventDefault(); cloud.v = -5.5; } };
+    // --- REFINED INPUT HANDLING ---
+    const jump = () => { if (gameActive) cloud.v = JUMP_STRENGTH; };
+
+    // Keyboard (Spacebar)
+    window.addEventListener('keydown', (e) => {
+        if (e.code === 'Space') {
+            e.preventDefault(); // Prevents page from scrolling down
+            jump();
+        }
+    });
+
+    // Touch & Mouse
+    window.addEventListener('touchstart', (e) => {
+        if (gameActive) {
+            e.preventDefault();
+            jump();
+        }
+    }, { passive: false });
+
+    window.addEventListener('mousedown', (e) => {
+        if (gameActive) jump();
+    });
+
 </script>
 </body>
 </html>
