@@ -30,7 +30,6 @@
         .nav-links { display: flex; gap: 25px; }
         .nav-links a { text-decoration: none; color: #444; font-weight: 600; }
 
-        /* --- FIXED GRID LAYOUT --- */
         .main-container {
             display: grid;
             grid-template-columns: 300px 1fr;
@@ -40,7 +39,6 @@
             margin: 0 auto;
         }
 
-        /* Dashboard Items */
         .sidebar { display: flex; flex-direction: column; gap: 20px; }
         .dashboard-card {
             background: white; border-radius: 20px; padding: 25px;
@@ -50,7 +48,6 @@
         .stat-label { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; margin-bottom: 5px; opacity: 0.7; }
         .stat-value { font-size: 2rem; font-weight: 800; color: var(--primary); }
 
-        /* Game Container */
         .game-section { 
             background: white; border-radius: 30px; padding: 30px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.03);
@@ -132,37 +129,80 @@
 
     let player = { x: 155, y: 350, w: 40, h: 30, vx: 0, vy: 0, jump: -10, grav: 0.35 };
     let platforms = [];
+    let trail = []; // Stores previous positions for the trail effect
 
     function spawnPlatform(y, isFirst = false) {
         let type = 'normal';
         let r = Math.random();
+        // Difficulty scaling
         if (!isFirst) {
             if (score > 20 && r > 0.7) type = 'moving';
             if (score > 40 && r > 0.88) type = 'storm';
         }
         platforms.push({
-            x: Math.random() * (canvas.width - 70), y: y,
-            w: 70, h: 12, type: type,
+            x: Math.random() * (canvas.width - 70), 
+            y: y,
+            w: 70, 
+            h: 12, 
+            type: type,
             speed: (Math.random() > 0.5 ? 1 : -1) * (1.5 + Math.random())
         });
     }
 
     function init() {
         platforms = [];
+        trail = [];
         score = 0;
-        player.x = 155; player.y = 350; player.vy = 0;
-        // Initial solid platform
+        player.x = 155; 
+        player.y = 350; 
+        player.vy = 0;
+        document.getElementById('currentHeight').innerText = "0m";
+        
+        // Solid base to start
         platforms.push({ x: 140, y: 420, w: 70, h: 12, type: 'normal' });
-        for (let i = 0; i < 6; i++) spawnPlatform(i * 80);
+        
+        // Initial set of platforms
+        for (let i = 0; i < 7; i++) {
+            spawnPlatform(i * 70);
+        }
     }
 
     let keys = {};
     window.onkeydown = e => keys[e.code] = true;
     window.onkeyup = e => keys[e.code] = false;
 
+    function drawCloud(x, y, opacity = 1) {
+        ctx.save();
+        ctx.globalAlpha = opacity;
+        ctx.fillStyle = "white";
+        ctx.beginPath();
+        ctx.arc(x + 10, y + 15, 12, 0, Math.PI * 2);
+        ctx.arc(x + 20, y + 10, 15, 0, Math.PI * 2);
+        ctx.arc(x + 30, y + 15, 12, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Only draw eyes for the main player (full opacity)
+        if (opacity === 1) {
+            ctx.fillStyle = "#2d2d6a";
+            ctx.fillRect(x + 15, y + 12, 3, 3);
+            ctx.fillRect(x + 25, y + 12, 3, 3);
+        }
+        ctx.restore();
+    }
+
     function loop() {
         if (!gameRunning) return;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Update Trail
+        trail.push({ x: player.x, y: player.y });
+        if (trail.length > 8) trail.shift();
+
+        // Draw Trail
+        trail.forEach((pos, index) => {
+            let opacity = (index + 1) / (trail.length * 2);
+            drawCloud(pos.x, pos.y, opacity);
+        });
 
         // Player physics
         player.vy += player.grav;
@@ -172,47 +212,58 @@
         else player.vx *= 0.8;
         player.x += player.vx;
 
-        // Wrap around
         if (player.x < -player.w) player.x = canvas.width;
         if (player.x > canvas.width) player.x = -player.w;
 
-        platforms.forEach((p, i) => {
+        // Platform Loop (Reverse to handle splicing correctly)
+        for (let i = platforms.length - 1; i >= 0; i--) {
+            let p = platforms[i];
+
             if (p.type === 'moving') {
                 p.x += p.speed;
                 if (p.x < 0 || p.x + p.w > canvas.width) p.speed *= -1;
             }
 
-            // Draw Platforms - Using fillRect for better reliability
+            // Draw Platforms
             ctx.fillStyle = p.type === 'storm' ? '#4a4a8a' : (p.type === 'moving' ? '#fbc2eb' : 'white');
             ctx.fillRect(p.x, p.y, p.w, p.h);
 
             // Collision
-            if (player.vy > 0 && player.x < p.x + p.w && player.x + player.w > p.x && 
-                player.y + player.h > p.y && player.y + player.h < p.y + p.h + 10) {
-                if (p.type === 'storm') gameOver(); else player.vy = player.jump;
+            if (player.vy > 0 && 
+                player.x < p.x + p.w && 
+                player.x + player.w > p.x && 
+                player.y + player.h > p.y && 
+                player.y + player.h < p.y + p.h + 10) {
+                
+                if (p.type === 'storm') {
+                    gameOver();
+                } else {
+                    player.vy = player.jump;
+                }
             }
 
-            // Camera Scroll
+            // Camera Scroll & Recycling
             if (player.y < 250) {
                 let diff = 250 - player.y;
                 player.y += diff;
-                p.y += diff;
+                
+                // Shift all platforms and trail
+                platforms.forEach(plat => plat.y += diff);
+                trail.forEach(pos => pos.y += diff);
+
                 score += diff / 50;
                 document.getElementById('currentHeight').innerText = Math.floor(score) + "m";
-                if (p.y > canvas.height) { platforms.splice(i, 1); spawnPlatform(0); }
             }
-        });
 
-        // Draw Cloud
-        ctx.fillStyle = "white";
-        ctx.beginPath();
-        ctx.arc(player.x+10, player.y+15, 12, 0, Math.PI*2);
-        ctx.arc(player.x+20, player.y+10, 15, 0, Math.PI*2);
-        ctx.arc(player.x+30, player.y+15, 12, 0, Math.PI*2);
-        ctx.fill();
-        ctx.fillStyle = "#2d2d6a";
-        ctx.fillRect(player.x+15, player.y+12, 3, 3);
-        ctx.fillRect(player.x+25, player.y+12, 3, 3);
+            // Remove and Replace
+            if (p.y > canvas.height) {
+                platforms.splice(i, 1);
+                spawnPlatform(0);
+            }
+        }
+
+        // Main Player
+        drawCloud(player.x, player.y);
 
         if (player.y > canvas.height) gameOver();
         requestAnimationFrame(loop);
@@ -220,9 +271,10 @@
 
     function gameOver() {
         gameRunning = false;
-        if (Math.floor(score) > bestClimb) localStorage.setItem('cloudHopperBest', Math.floor(score));
+        let finalScore = Math.floor(score);
+        if (finalScore > bestClimb) localStorage.setItem('cloudHopperBest', finalScore);
         overlay.style.display = 'flex';
-        overlay.innerHTML = `<h2>Game Over</h2><p>${Math.floor(score)}m</p><button class="btn-action" onclick="location.reload()">RETRY</button>`;
+        overlay.innerHTML = `<h2>Game Over</h2><p>${finalScore}m</p><button class="btn-action" onclick="location.reload()">RETRY</button>`;
     }
 
     document.getElementById('startBtn').onclick = () => {
