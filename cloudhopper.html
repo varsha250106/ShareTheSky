@@ -18,78 +18,60 @@
             margin: 0; font-family: 'Segoe UI', sans-serif; 
             background-color: var(--bg); color: var(--dark);
             display: flex; flex-direction: column; min-height: 100vh;
-            overflow-x: hidden;
         }
 
+        /* --- NAVIGATION --- */
         header {
             display: flex; justify-content: space-between; align-items: center; 
             padding: 12px 5%; background: white; box-shadow: 0 2px 15px rgba(0,0,0,0.05);
             position: sticky; top: 0; z-index: 1000;
         }
         .logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
-        .logo img { width: 30px; animation: float 3s ease-in-out infinite; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+        .logo img { width: 30px; }
         .logo span { font-weight: 800; font-size: 1.2rem; color: var(--dark); }
-
-        .nav-links { display: flex; align-items: center; gap: 25px; }
+        .nav-links { display: flex; gap: 25px; }
         .nav-links a { text-decoration: none; color: #444; font-weight: 600; font-size: 0.95rem; }
-        
-        .dropdown { position: relative; display: inline-block; }
-        .drop-btn { cursor: pointer; color: #444; font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 5px; }
-        .dropdown-content {
-            display: none; position: absolute; right: 0; background-color: white;
-            min-width: 150px; box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            border-radius: 12px; overflow: hidden; z-index: 1001; margin-top: 10px;
-        }
-        .dropdown-content a { color: #444; padding: 12px 16px; text-decoration: none; display: flex; align-items: center; justify-content: space-between; font-size: 0.9rem; }
-        .dropdown-content a:hover { background: #f8f9fc; color: var(--primary); }
-        .dropdown:hover .dropdown-content { display: block; }
 
+        /* --- LAYOUT MATCHING SKY MATCH --- */
         .main-container {
-            display: flex; padding: 20px 5%; gap: 30px; flex: 1; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box;
+            display: flex; padding: 40px 5%; gap: 30px; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box;
         }
 
-        .sidebar { width: 300px; display: flex; flex-direction: column; gap: 20px; flex-shrink: 0; }
-        .card-panel { background: white; padding: 22px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
-        .stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-        .stat-pill { background: #fcfaff; padding: 12px; border-radius: 15px; text-align: center; border: 1px solid #f0edff; }
-        .stat-pill span { display: block; font-size: 1.3rem; font-weight: 800; color: var(--primary); }
-
-        .game-section { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-        .game-card { 
-            background: white; width: 100%; border-radius: 28px; padding: 20px; 
-            box-shadow: 0 15px 50px rgba(0,0,0,0.02); display: flex; flex-direction: column; align-items: center; 
-            position: relative; overflow: hidden;
+        .sidebar { width: 300px; display: flex; flex-direction: column; gap: 25px; }
+        
+        /* Dashboard Styling from Sky Match */
+        .dashboard-card {
+            background: white; border-radius: 20px; padding: 20px;
+            text-align: center; box-shadow: 0 8px 30px rgba(0,0,0,0.02);
+            border: 1px solid #f0edff;
         }
+        .stat-label { font-size: 0.8rem; font-weight: 700; color: var(--dark); margin-bottom: 10px; text-transform: uppercase; }
+        .stat-value { font-size: 1.8rem; font-weight: 800; color: var(--primary); }
 
-        #gameContainer { position: relative; width: 350px; height: 500px; }
+        /* --- GAME AREA --- */
+        .game-section { flex: 1; position: relative; }
+        .game-wrapper {
+            background: white; border-radius: 30px; padding: 25px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.03); display: flex; flex-direction: column; align-items: center;
+        }
         #gameCanvas {
             background: linear-gradient(to bottom, #e0c3fc 0%, #8ec5fc 100%);
-            border-radius: 20px; width: 100%; height: 100%;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
+            border-radius: 20px; cursor: pointer; width: 350px; height: 500px;
         }
 
-        /* --- GAME OVERLAY --- */
         #overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(45, 45, 106, 0.8); border-radius: 20px;
+            position: absolute; top: 25px; width: 350px; height: 500px;
+            background: rgba(45, 45, 106, 0.85); border-radius: 20px;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            color: white; z-index: 10; text-align: center; padding: 20px; box-sizing: border-box;
+            color: white; z-index: 10;
         }
-        #startBtn {
-            background: white; color: var(--primary); border: none; padding: 12px 30px;
-            border-radius: 50px; font-weight: 800; cursor: pointer; margin-top: 15px;
-            transition: transform 0.2s;
+        .btn-start {
+            background: white; color: var(--primary); border: none; padding: 14px 40px;
+            border-radius: 50px; font-weight: 800; cursor: pointer; transition: 0.3s;
         }
-        #startBtn:hover { transform: scale(1.05); }
+        .btn-start:hover { transform: scale(1.05); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
 
-        .controls-hint { margin-top: 15px; color: #888; font-size: 0.85rem; text-align: center; }
-
-        @media (max-width: 900px) {
-            .main-container { flex-direction: column; padding: 15px; }
-            .sidebar { width: 100%; order: 2; }
-            .game-section { order: 1; }
-        }
+        @media (max-width: 900px) { .main-container { flex-direction: column; } }
     </style>
 </head>
 <body>
@@ -99,60 +81,34 @@
         <img src="https://img.icons8.com/fluency/48/cloud.png" alt="Cloud">
         <span>ShareTheSky</span>
     </a>
-    <nav class="nav-links">
-        <a href="index.html">Home</a>
-        <div class="dropdown">
-            <div class="drop-btn">Explore <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem;"></i></div>
-            <div class="dropdown-content">
-                <a href="gallery.html">Gallery</a>
-                <a href="upload.html">Upload</a>
-                <a href="skymatch.html">Sky Match</a>
-                <a href="cloudhopper.html">Cloud Hopper <i class="fa-solid fa-cloud-bolt" style="font-size: 0.8rem;"></i></a>
-                <a href="about.html">About Me</a>
-            </div>
-        </div>
-    </nav>
+    <nav class="nav-links"><a href="index.html">Home</a><a href="about.html">About</a></nav>
 </header>
 
 <div class="main-container">
     <div class="sidebar">
-        <div class="card-panel">
-            <h3 style="margin:0">Altimeter</h3>
-            <div class="stat-row">
-                <div class="stat-pill">Height<span id="currentHeight">0m</span></div>
-                <div class="stat-pill">Best<span id="bestClimb">0m</span></div>
-            </div>
+        <div class="dashboard-card">
+            <div class="stat-label">Current Height</div>
+            <div class="stat-value" id="currentHeight">0m</div>
         </div>
-
-        <div class="card-panel">
-            <h3 style="margin:0 0 12px 0">How to Play</h3>
-            <div class="rule-item" style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
-                <i class="fa-solid fa-arrow-pointer" style="color: var(--primary);"></i>
-                <p style="margin:0; font-size: 0.85rem;"><b>Move:</b> Left/Right Arrows</p>
-            </div>
-            <div class="rule-item" style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
-                <i class="fa-solid fa-arrows-left-right" style="color: var(--secondary);"></i>
-                <p style="margin:0; font-size: 0.85rem;"><b>Pink:</b> Moving Platforms</p>
-            </div>
-            <div class="rule-item" style="display: flex; gap: 10px; align-items: center;">
-                <i class="fa-solid fa-cloud-showers-heavy" style="color: var(--storm);"></i>
-                <p style="margin:0; font-size: 0.85rem;"><b>Avoid:</b> Dark Storm Clouds!</p>
-            </div>
+        <div class="dashboard-card">
+            <div class="stat-label">Best Climb</div>
+            <div class="stat-value" id="bestClimb">0m</div>
+        </div>
+        <div class="dashboard-card" style="text-align: left;">
+            <p style="font-size: 0.9rem; margin: 0;"><b>Arrows:</b> Move Cloud</p>
+            <p style="font-size: 0.9rem; margin: 8px 0;"><b>Pink:</b> Moves</p>
+            <p style="font-size: 0.9rem; margin: 0; color: #ff6b6b;"><b>Dark:</b> Avoid!</p>
         </div>
     </div>
 
     <div class="game-section">
-        <div class="game-card">
-            <h2 style="margin:0 0 15px 0; font-size: 1.5rem;">Cloud Hopper</h2>
-            <div id="gameContainer">
-                <div id="overlay">
-                    <h2 style="margin:0">Ready to Climb?</h2>
-                    <p style="font-size: 0.9rem; opacity: 0.9;">Don't touch the dark storm clouds!</p>
-                    <button id="startBtn">START GAME</button>
-                </div>
-                <canvas id="gameCanvas" width="350" height="500"></canvas>
+        <div class="game-wrapper">
+            <h2 style="margin: 0 0 20px 0; color: var(--dark);">Cloud Hopper</h2>
+            <div id="overlay">
+                <h2 style="margin-bottom: 20px;">Ready to Hop?</h2>
+                <button class="btn-start" id="startBtn">START GAME</button>
             </div>
-            <p class="controls-hint">Use Left/Right Arrows to move!</p>
+            <canvas id="gameCanvas" width="350" height="500"></canvas>
         </div>
     </div>
 </div>
@@ -164,152 +120,100 @@
     const startBtn = document.getElementById('startBtn');
 
     let gameRunning = false;
-    let player = {
-        x: canvas.width / 2 - 20,
-        y: canvas.height - 150,
-        width: 40, height: 30,
-        vx: 0, vy: 0,
-        jumpForce: -9, gravity: 0.3
-    };
-
+    let player = { x: 155, y: 350, width: 40, height: 30, vx: 0, vy: 0, jumpForce: -10, gravity: 0.35 };
     let platforms = [];
     let score = 0;
     let bestClimb = localStorage.getItem('cloudHopperBest') || 0;
     document.getElementById('bestClimb').innerText = bestClimb + "m";
 
-    function createPlatforms() {
-        platforms = [];
-        // Stable starting platform
-        platforms.push({ x: player.x - 15, y: player.y + 50, width: 70, height: 12, type: 'normal' });
-        
-        for (let i = 0; i < 7; i++) {
-            addPlatform(i * 70);
-        }
-    }
-
-    function addPlatform(yPos) {
+    function addPlatform(y) {
         let type = 'normal';
-        let rand = Math.random();
-        
-        // Difficulty scaling based on score
-        if (score > 30 && rand > 0.7) type = 'moving';
-        if (score > 60 && rand > 0.85) type = 'storm';
+        let r = Math.random();
+        if (score > 15 && r > 0.7) type = 'moving';
+        if (score > 30 && r > 0.85) type = 'storm';
 
         platforms.push({
-            x: Math.random() * (canvas.width - 70),
-            y: yPos,
-            width: 70, height: 12,
-            type: type,
-            speed: (Math.random() > 0.5 ? 1 : -1) * (1 + Math.random() * 2)
+            x: Math.random() * (canvas.width - 70), y: y,
+            width: 70, height: 12, type: type,
+            speed: (Math.random() > 0.5 ? 1 : -1) * (1.5 + Math.random())
         });
+    }
+
+    function init() {
+        platforms = [];
+        score = 0;
+        player.y = 350; player.vy = 0;
+        platforms.push({ x: 140, y: 410, width: 70, height: 12, type: 'normal' });
+        for (let i = 0; i < 6; i++) addPlatform(i * 80);
     }
 
     let keys = {};
     window.addEventListener('keydown', e => keys[e.code] = true);
     window.addEventListener('keyup', e => keys[e.code] = false);
 
-    function update() {
+    function loop() {
         if (!gameRunning) return;
-
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Player Physics
         player.vy += player.gravity;
         player.y += player.vy;
-
         if (keys['ArrowLeft']) player.vx = -5;
         else if (keys['ArrowRight']) player.vx = 5;
-        else player.vx *= 0.85;
+        else player.vx *= 0.8;
         player.x += player.vx;
 
-        if (player.x + player.width < 0) player.x = canvas.width;
-        if (player.x > canvas.width) player.x = -player.width;
+        if (player.x < -20) player.x = canvas.width;
+        if (player.x > canvas.width) player.x = -20;
 
-        // Platform Logic
-        platforms.forEach((plat, index) => {
-            // Move special platforms
-            if (plat.type === 'moving') {
-                plat.x += plat.speed;
-                if (plat.x < 0 || plat.x + plat.width > canvas.width) plat.speed *= -1;
+        platforms.forEach((p, i) => {
+            if (p.type === 'moving') {
+                p.x += p.speed;
+                if (p.x < 0 || p.x + p.width > canvas.width) p.speed *= -1;
             }
 
-            // Draw Platform
-            if (plat.type === 'storm') ctx.fillStyle = "#4a4a8a"; 
-            else if (plat.type === 'moving') ctx.fillStyle = "#fbc2eb";
-            else ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
-            
-            ctx.beginPath();
-            ctx.roundRect(plat.x, plat.y, plat.width, plat.height, 8);
-            ctx.fill();
+            // Draw
+            ctx.fillStyle = p.type === 'storm' ? '#4a4a8a' : (p.type === 'moving' ? '#fbc2eb' : 'white');
+            ctx.beginPath(); ctx.roundRect(p.x, p.y, p.width, p.height, 8); ctx.fill();
 
             // Collision
-            if (player.vy > 0 && 
-                player.x < plat.x + plat.width &&
-                player.x + player.width > plat.x &&
-                player.y + player.height > plat.y &&
-                player.y + player.height < plat.y + plat.height + 10) {
-                
-                if (plat.type === 'storm') {
-                    gameOver();
-                } else {
-                    player.vy = player.jumpForce;
-                }
+            if (player.vy > 0 && player.x < p.x + p.width && player.x + player.width > p.x && 
+                player.y + player.height > p.y && player.y + player.height < p.y + p.height + 10) {
+                if (p.type === 'storm') endGame(); else player.vy = player.jumpForce;
             }
 
-            // Camera & Scrolling
-            if (player.y < canvas.height / 2) {
-                let diff = canvas.height / 2 - player.y;
-                player.y += diff;
-                plat.y += diff;
-                score += 0.1; // Smooth height gain
+            // Scroll
+            if (player.y < 250) {
+                let d = 250 - player.y;
+                player.y += d; p.y += d;
+                score += d/100;
                 document.getElementById('currentHeight').innerText = Math.floor(score) + "m";
-
-                if (plat.y > canvas.height) {
-                    platforms.splice(index, 1);
-                    addPlatform(0);
-                }
+                if (p.y > canvas.height) { platforms.splice(i, 1); addPlatform(0); }
             }
         });
 
-        // Draw Player
+        // Cloud Player
         ctx.fillStyle = "white";
         ctx.beginPath();
-        ctx.arc(player.x + 10, player.y + 15, 12, 0, Math.PI * 2);
-        ctx.arc(player.x + 20, player.y + 10, 15, 0, Math.PI * 2);
-        ctx.arc(player.x + 30, player.y + 15, 12, 0, Math.PI * 2);
+        ctx.arc(player.x+10, player.y+15, 12, 0, 7);
+        ctx.arc(player.x+20, player.y+10, 15, 0, 7);
+        ctx.arc(player.x+30, player.y+15, 12, 0, 7);
         ctx.fill();
         ctx.fillStyle = "#2d2d6a";
-        ctx.fillRect(player.x + 15, player.y + 12, 3, 3);
-        ctx.fillRect(player.x + 25, player.y + 12, 3, 3);
+        ctx.fillRect(player.x+15, player.y+12, 3, 3);
+        ctx.fillRect(player.x+25, player.y+12, 3, 3);
 
-        if (player.y > canvas.height) gameOver();
-
-        requestAnimationFrame(update);
+        if (player.y > canvas.height) endGame();
+        requestAnimationFrame(loop);
     }
 
-    function gameOver() {
+    function endGame() {
         gameRunning = false;
-        let finalScore = Math.floor(score);
-        if (finalScore > bestClimb) {
-            localStorage.setItem('cloudHopperBest', finalScore);
-            bestClimb = finalScore;
-            document.getElementById('bestClimb').innerText = bestClimb + "m";
-        }
+        if (Math.floor(score) > bestClimb) localStorage.setItem('cloudHopperBest', Math.floor(score));
         overlay.style.display = 'flex';
-        overlay.innerHTML = `
-            <h2 style="margin:0">Game Over!</h2>
-            <p style="font-size: 1.2rem; margin: 10px 0;">Height: ${finalScore}m</p>
-            <button id="startBtn" onclick="location.reload()">TRY AGAIN</button>
-        `;
+        overlay.innerHTML = `<h2>Game Over!</h2><p>${Math.floor(score)}m</p><button class="btn-start" onclick="location.reload()">RETRY</button>`;
     }
 
-    startBtn.addEventListener('click', () => {
-        overlay.style.display = 'none';
-        gameRunning = true;
-        createPlatforms();
-        update();
-    });
+    startBtn.onclick = () => { overlay.style.display = 'none'; gameRunning = true; init(); loop(); };
 </script>
-
 </body>
 </html>
