@@ -3,184 +3,172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sky Stills - ShareTheSky</title>
+    <title>Aesthetic Matchmaker - ShareTheSky</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
+            --bg: #121212;
             --accent: #ff7e5f;
-            --bg: #0f0f1a;
-            --glass: rgba(255, 255, 255, 0.1);
         }
 
-        body { 
-            margin: 0; background: var(--bg); color: white; 
-            font-family: 'Segoe UI', sans-serif; display: flex; 
-            flex-direction: column; align-items: center; justify-content: center;
-            height: 100vh; overflow: hidden;
+        body {
+            margin: 0; font-family: 'Segoe UI', sans-serif;
+            background: var(--bg); color: white;
+            display: flex; flex-direction: column; align-items: center;
+            min-height: 100vh; overflow-x: hidden;
         }
 
-        /* Navigation */
         .exit-btn {
-            position: absolute; top: 20px; left: 20px; 
-            color: white; z-index: 1000; text-decoration: none; 
-            background: rgba(0,0,0,0.5); padding: 10px 18px; 
-            border-radius: 25px; font-size: 14px; backdrop-filter: blur(10px);
+            position: absolute; top: 20px; left: 20px;
+            color: white; text-decoration: none;
+            background: rgba(255,255,255,0.1); padding: 10px 18px;
+            border-radius: 25px; font-size: 14px; backdrop-filter: blur(5px);
         }
 
-        /* Game Phases */
-        .phase { display: none; flex-direction: column; align-items: center; text-align: center; }
-        .active { display: flex; animation: fadeIn 0.5s ease; }
+        header { margin-top: 60px; text-align: center; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        #sky-preview {
-            width: 280px; height: 380px; border-radius: 20px;
-            object-fit: cover; border: 8px solid var(--glass);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        /* The Sky Photo */
+        #target-sky {
+            width: 320px; height: 180px;
+            border-radius: 15px; object-fit: cover;
+            border: 4px solid #333; margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        /* Color Grid */
-        #color-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr);
-            gap: 20px; margin-top: 30px;
+        /* Choice Grid */
+        .choices-container {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px; width: 90%; max-width: 600px; padding-bottom: 40px;
         }
 
-        .color-circle {
-            width: 70px; height: 70px; border-radius: 50%;
-            cursor: pointer; border: 4px solid transparent;
-            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-        .color-circle:hover { transform: scale(1.1); }
-        .color-circle.selected { border-color: white; transform: scale(0.9); }
-
-        /* Result Card */
-        .palette-card {
-            background: white; padding: 20px; border-radius: 15px;
-            color: #333; width: 260px; box-shadow: 0 15px 30px rgba(0,0,0,0.5);
-        }
-        .swatch-row { display: flex; height: 60px; border-radius: 8px; overflow: hidden; margin: 15px 0; }
-        .swatch { flex: 1; height: 100%; }
-
-        .btn {
-            background: var(--accent); border: none; padding: 12px 30px;
-            border-radius: 25px; color: white; cursor: pointer; 
-            margin-top: 30px; font-weight: bold; font-size: 1rem;
+        .room-choice {
+            background: #1e1e1e; border-radius: 15px;
+            padding: 15px; cursor: pointer;
+            transition: 0.3s; border: 2px solid transparent;
+            text-align: center;
         }
 
-        #timer-bar {
-            width: 280px; height: 6px; background: #333;
-            border-radius: 3px; margin-top: 15px; overflow: hidden;
+        .room-choice:hover { transform: translateY(-5px); background: #252525; }
+        .room-choice.correct { border-color: #27ae60; background: #1a2e20; }
+        .room-choice.wrong { border-color: #e74c3c; opacity: 0.6; }
+
+        /* SVG Styling */
+        .room-svg { width: 100%; height: auto; margin-bottom: 10px; }
+        .room-svg path { transition: fill 0.5s ease; }
+
+        #message { font-weight: bold; margin: 15px 0; height: 24px; }
+        
+        .next-btn {
+            background: var(--accent); color: white; border: none;
+            padding: 12px 30px; border-radius: 25px; cursor: pointer;
+            font-weight: bold; display: none; margin-bottom: 30px;
         }
-        #timer-progress { width: 100%; height: 100%; background: var(--accent); transition: width 1s linear; }
     </style>
 </head>
 <body>
 
-    <a href="index.html" class="exit-btn"><i class="fas fa-arrow-left"></i> Exit Game</a>
+    <a href="index.html" class="exit-btn"><i class="fas fa-arrow-left"></i> Exit</a>
 
-    <div id="memorize-phase" class="phase active">
-        <h2 style="margin-bottom: 10px;">Memorize the Vibe</h2>
-        <img id="sky-preview" src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80">
-        <div id="timer-bar"><div id="timer-progress"></div></div>
-    </div>
+    <header>
+        <h1>Aesthetic Matchmaker</h1>
+        <p style="opacity: 0.7;">Which room was inspired by this sky?</p>
+    </header>
 
-    <div id="select-phase" class="phase">
-        <h2>Identify the Palette</h2>
-        <p style="opacity: 0.7;">Select the 3 colors that were in the sky.</p>
-        <div id="color-grid"></div>
-        <button class="btn" onclick="evaluateSelection()">Confirm Selection</button>
-    </div>
+    <img id="target-sky" src="" alt="Target Sky">
 
-    <div id="result-phase" class="phase">
-        <div class="palette-card">
-            <h3 style="margin: 0;">Sky Stills</h3>
-            <p style="font-size: 0.8rem; opacity: 0.6; margin: 5px 0;">Aura Captured</p>
-            <div id="result-swatches" class="swatch-row"></div>
-            <div id="score-text" style="font-weight: bold;">3/3 Matched!</div>
+    <div id="message"></div>
+
+    <div class="choices-container" id="choices">
         </div>
-        <button class="btn" onclick="location.reload()">New Challenge</button>
-    </div>
+
+    <button class="next-btn" id="next-btn" onclick="setupGame()">Next Challenge</button>
 
 <script>
     const levels = [
-        { 
-            img: "https://images.unsplash.com/photo-1470252649358-96940c9353d9?auto=format&fit=crop&w=400&q=80", 
-            correct: ["#ff7e5f", "#feb47b", "#2c3e50"],
-            wrong: ["#87CEEB", "#ffffff", "#4facfe", "#2ecc71", "#9b59b6", "#34495e"]
+        {
+            sky: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=500",
+            palette: { wall: "#4facfe", sofa: "#ffffff", rug: "#00f2fe" },
+            name: "Ocean Breeze"
         },
-        { 
-            img: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80", 
-            correct: ["#4facfe", "#00f2fe", "#ffffff"],
-            wrong: ["#e74c3c", "#f1c40f", "#8e44ad", "#16a085", "#2c3e50", "#d35400"]
+        {
+            sky: "https://images.unsplash.com/photo-1470252649358-96940c9353d9?w=500",
+            palette: { wall: "#ff7e5f", sofa: "#2c3e50", rug: "#feb47b" },
+            name: "Desert Dusk"
+        },
+        {
+            sky: "https://images.unsplash.com/photo-1532978341072-c96b0015a396?w=500",
+            palette: { wall: "#0f0c29", sofa: "#302b63", rug: "#ffffff" },
+            name: "Midnight Minimal"
         }
     ];
 
-    let currentLevel = levels[Math.floor(Math.random() * levels.length)];
-    let selectedColors = [];
+    const wrongPalettes = [
+        { wall: "#2ecc71", sofa: "#27ae60", rug: "#f1c40f" },
+        { wall: "#e74c3c", sofa: "#c0392b", rug: "#34495e" },
+        { wall: "#8e44ad", sofa: "#2c3e50", rug: "#ecf0f1" }
+    ];
 
-    // Set Image
-    document.getElementById('sky-preview').src = currentLevel.img;
+    let canClick = true;
 
-    // Timer Logic
-    let timeLeft = 5;
-    const timerInterval = setInterval(() => {
-        timeLeft--;
-        document.getElementById('timer-progress').style.width = (timeLeft / 5 * 100) + "%";
+    // The SVG Blueprint for the room
+    function getRoomSVG(colors, id) {
+        return `
+        <svg class="room-svg" viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10 10 H190 V110 H10 Z" fill="${colors.wall}" />
+            <path d="M10 110 H190 V140 H10 Z" fill="#333" />
+            <path d="M40 120 H160 V135 H40 Z" fill="${colors.rug}" />
+            <path d="M50 80 H150 V115 H50 Z" fill="${colors.sofa}" />
+            <path d="M50 65 H150 V80 H50 Z" fill="${colors.sofa}" opacity="0.8" />
+            <rect x="140" y="30" width="30" height="40" fill="white" opacity="0.2" />
+        </svg>`;
+    }
+
+    function setupGame() {
+        canClick = true;
+        document.getElementById('next-btn').style.display = 'none';
+        document.getElementById('message').innerText = "";
+        document.getElementById('message').style.color = "white";
         
-        if (timeLeft <= 0) {
-            clearInterval(timerInterval);
-            startSelectionPhase();
-        }
-    }, 1000);
+        const level = levels[Math.floor(Math.random() * levels.length)];
+        document.getElementById('target-sky').src = level.sky;
 
-    function startSelectionPhase() {
-        document.getElementById('memorize-phase').classList.remove('active');
-        document.getElementById('select-phase').classList.add('active');
-        
-        const grid = document.getElementById('color-grid');
-        const allColors = [...currentLevel.correct, ...currentLevel.wrong].sort(() => Math.random() - 0.5);
+        const choicesDiv = document.getElementById('choices');
+        choicesDiv.innerHTML = "";
 
-        allColors.forEach(color => {
-            const div = document.createElement('div');
-            div.className = 'color-circle';
-            div.style.background = color;
-            div.onclick = () => {
-                if (div.classList.contains('selected')) {
-                    div.classList.remove('selected');
-                    selectedColors = selectedColors.filter(c => c !== color);
-                } else if (selectedColors.length < 3) {
-                    div.classList.add('selected');
-                    selectedColors.push(color);
-                }
-            };
-            grid.appendChild(div);
+        // Combine correct palette with 2 random wrong ones
+        let options = [
+            { palette: level.palette, isCorrect: true },
+            { palette: wrongPalettes[0], isCorrect: false },
+            { palette: wrongPalettes[1], isCorrect: false }
+        ].sort(() => Math.random() - 0.5);
+
+        options.forEach(opt => {
+            const card = document.createElement('div');
+            card.className = 'room-choice';
+            card.innerHTML = getRoomSVG(opt.palette);
+            card.onclick = () => handleChoice(card, opt.isCorrect);
+            choicesDiv.appendChild(card);
         });
     }
 
-    function evaluateSelection() {
-        if (selectedColors.length < 3) {
-            alert("Pick at least 3 colors!");
-            return;
+    function handleChoice(element, isCorrect) {
+        if (!canClick) return;
+        canClick = false;
+
+        if (isCorrect) {
+            element.classList.add('correct');
+            document.getElementById('message').innerText = "Perfect Match! ✨";
+            document.getElementById('message').style.color = "#27ae60";
+        } else {
+            element.classList.add('wrong');
+            document.getElementById('message').innerText = "Not quite the right vibe...";
+            document.getElementById('message').style.color = "#e74c3c";
         }
-
-        document.getElementById('select-phase').classList.remove('active');
-        document.getElementById('result-phase').classList.add('active');
-
-        const resultRow = document.getElementById('result-swatches');
-        let matches = 0;
-
-        selectedColors.forEach(color => {
-            const swatch = document.createElement('div');
-            swatch.className = 'swatch';
-            swatch.style.background = color;
-            resultRow.appendChild(swatch);
-            if (currentLevel.correct.includes(color)) matches++;
-        });
-
-        document.getElementById('score-text').innerText = `${matches}/3 Colors Matched!`;
-        if (matches === 3) document.getElementById('score-text').style.color = "#27ae60";
+        
+        document.getElementById('next-btn').style.display = 'block';
     }
+
+    setupGame();
 </script>
 </body>
 </html>
