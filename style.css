@@ -2030,3 +2030,170 @@ footer {
     background: #ff6b81;
     transform: scale(1.05);
 }
+/* --- Global Reset & Variables --- */
+:root {
+    --primary-purple: #a18cd1;
+    --dark-text: #2d2d6a;
+    --light-bg: #f8f9fc;
+    --white: #ffffff;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--light-bg);
+    color: #333;
+    line-height: 1.6;
+}
+
+/* --- Navigation Bar --- */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 5%;
+    background: var(--white);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.logo a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+}
+
+.header-logo {
+    width: 35px;
+    height: auto;
+}
+
+.logo span {
+    color: var(--dark-text);
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+/* Navigation Links */
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--dark-text);
+    font-weight: 600;
+    font-size: 1rem;
+    transition: 0.3s;
+    padding: 5px 0;
+}
+
+.nav-links a:hover {
+    color: var(--primary-purple);
+}
+
+/* Active Page Style (The purple underline) */
+.nav-links a.active-page {
+    color: var(--primary-purple);
+    border-bottom: 2px solid var(--primary-purple);
+}
+
+/* Mobile Menu Toggle (Hamburger) */
+.menu-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.menu-toggle span {
+    width: 25px;
+    height: 3px;
+    background-color: var(--primary-purple);
+    border-radius: 3px;
+    transition: 0.3s;
+}
+
+/* --- Pinterest-style Grid --- */
+.pinterest-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+    padding: 20px 5%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.pin-card {
+    background: var(--white);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.pin-card:hover {
+    transform: translateY(-8px);
+}
+
+.pin-image-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 5; /* Vertical look */
+    overflow: hidden;
+    background: #eee;
+}
+
+.pin-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: zoom-in;
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: flex; /* Show hamburger on mobile */
+    }
+
+    .nav-links {
+        display: none; /* Hide links by default on mobile */
+        flex-direction: column;
+        position: absolute;
+        top: 75px;
+        right: 5%;
+        background: var(--white);
+        width: 200px;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    /* This class is toggled by JavaScript */
+    .nav-links.active {
+        display: flex;
+    }
+
+    .pinterest-grid {
+        grid-template-columns: 1fr; /* Single column on phones */
+        padding: 10px 20px;
+    }
+
+    .pin-image-wrapper {
+        aspect-ratio: 1 / 1; /* Squares look better on mobile */
+    }
+}
