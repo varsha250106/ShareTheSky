@@ -37,12 +37,16 @@
 
 <main class="upload-wrapper">
     <section class="upload-card">
+        <h2 class="upload-heading">Upload Your Sky Photo ⛅</h2>
+
         <div id="dropArea" class="upload-box" onclick="document.getElementById('fileInput').click()">
-            <div class="upload-illustration">
-                <img src="https://cdn-icons-png.flaticon.com/512/1163/1163661.png" alt="Sky Icon" class="main-sky-icon">
+            <div class="upload-content-container">
+                <div class="upload-illustration">
+                    <img src="https://img.icons8.com/fluency/96/cloud.png" alt="Sky Icon" class="upload-icon-small">
+                </div>
+                <p id="uploadText" class="upload-instruction">Click to select or drag your sky here</p>
+                <img id="previewImage" class="preview-img" style="display:none;">
             </div>
-            <p id="uploadText">Click to select or drag your sky here</p>
-            <img id="previewImage" class="preview-img" style="display:none;">
         </div>
 
         <input type="file" id="fileInput" accept="image/*" style="display: none;">
@@ -119,14 +123,13 @@
             });
             const data = await res.json();
 
-            // Moderation check requires Cloudinary AI add-on to be active on your preset
             let isSafe = true;
             if (data.moderation && data.moderation.length > 0) {
                 if (data.moderation[0].status !== "approved") isSafe = false;
             }
 
             if (!isSafe) {
-                alert("☁️ Sky Check Failed: AI flagged this image.");
+                alert("☁️ Sky Check Failed: AI restricted this image.");
                 uploadBtn.disabled = false;
                 uploadBtn.innerText = "Share the Sky";
                 return;
