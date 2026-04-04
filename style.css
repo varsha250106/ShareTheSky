@@ -3716,3 +3716,35 @@ footer p {
     background-color: #f8f9ff;
     color: var(--primary-purple);
 }
+/* --- Matching the Home Page Logo & Font --- */
+.logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Your Home Page Font */
+    transition: transform 0.3s ease;
+}
+
+.logo:hover {
+    transform: scale(1.05); /* Matching Home Page Animation */
+}
+
+.logo span {
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: #2d2d6a;
+    letter-spacing: -1px;
+}
+
+/* --- Syncing Nav Link Styles --- */
+.nav-links a {
+    font-weight: 600;
+    color: #555;
+    transition: color 0.3s ease, border-bottom 0.3s ease;
+    border-bottom: 2px solid transparent;
+}
+
+.nav-links a:hover {
+    color: #a18cd1;
+    border-bottom: 2px solid #a18cd1;
+}
