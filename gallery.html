@@ -18,7 +18,7 @@
             background-color: var(--bg-light);
         }
 
-        /* Header Styles */
+        /* --- Header & Navigation (Synced with Home) --- */
         header {
             display: flex;
             justify-content: space-between;
@@ -33,10 +33,71 @@
 
         .logo a { text-decoration: none; display: flex; align-items: center; gap: 10px; }
         .logo span { font-weight: bold; color: var(--dark-text); font-size: 1.2rem; }
+        
+        .floating-cloud {
+            width: 30px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .nav-links { display: flex; align-items: center; }
         .nav-links a { text-decoration: none; color: #666; margin-left: 20px; transition: 0.3s; }
         .nav-links a:hover { color: var(--primary-purple); }
 
-        /* Pinterest Grid Layout */
+        /* Dropdown Logic */
+        .dropdown { position: relative; display: inline-block; }
+        
+        /* The "Bridge" fix for disappearing menus */
+        .dropdown::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            display: block;
+        }
+
+        .dropbtn {
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-left: 20px;
+            font-family: inherit;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            min-width: 150px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            z-index: 1100;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .dropdown-content a {
+            color: #444;
+            padding: 12px 16px;
+            margin: 0;
+            display: block;
+            font-size: 0.9rem;
+        }
+
+        .dropdown-content a:hover { background-color: #f8f9ff; color: var(--primary-purple); }
+        .dropdown:hover .dropdown-content { display: block; }
+
+        /* --- Pinterest Grid Layout --- */
         .pinterest-grid {
             column-count: 4;
             column-gap: 16px;
@@ -62,17 +123,13 @@
         .pin-card:hover { transform: translateY(-5px); }
 
         .img-container { position: relative; cursor: zoom-in; }
-        
         .pin-img { width: 100%; display: block; border-radius: 16px 16px 0 0; }
 
-        /* Action Buttons on Hover */
+        /* Action Buttons */
         .overlay-tools {
             position: absolute;
             top: 12px;
             right: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
             opacity: 0;
             transition: opacity 0.3s;
         }
@@ -93,13 +150,11 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
-        .action-btn.delete-btn:hover { background: #ff4d4d; color: white; }
-
-        /* Caption & Likes */
+        /* Footer & Likes */
         .pin-footer { padding: 12px; display: flex; justify-content: space-between; align-items: center; }
         .pin-caption { font-size: 0.9rem; color: #444; font-weight: 500; margin: 0; }
         
-        .like-container { display: flex; align-items: center; gap: 5px; cursor: pointer; color: #777; }
+        .like-container { display: flex; align-items: center; gap: 5px; cursor: pointer; color: #777; transition: 0.2s; }
         .like-container.liked { color: #e91e63; }
 
         /* Zoom Overlay */
@@ -112,14 +167,7 @@
             flex-direction: column;
         }
 
-        .zoom-stage {
-            flex-grow: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
+        .zoom-stage { flex-grow: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         #zImg { max-width: 90%; max-height: 80vh; transition: transform 0.2s ease-out; }
 
         .zoom-pill {
@@ -127,7 +175,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 20px;
             background: linear-gradient(transparent, rgba(0,0,0,0.5));
         }
 
@@ -141,8 +188,8 @@
             box-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
 
-        .pill-body button { border: none; background: none; font-size: 1.2rem; cursor: pointer; padding: 5px; }
-        .close-x { color: red; margin-left: 10px; font-weight: bold; }
+        .pill-body button { border: none; background: none; font-size: 1.2rem; cursor: pointer; }
+        .close-x { color: #ff4d4d; margin-left: 10px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -154,18 +201,12 @@
             <span>ShareTheSky</span>
         </a>
     </div>
-
-    <div class="menu-toggle" onclick="document.getElementById('nav-menu').classList.toggle('active')">
-        <span></span><span></span><span></span>
-    </div>
-
-    <nav class="nav-links" id="nav-menu">
+    <nav class="nav-links">
         <a href="index.html">Home</a>
-        
         <div class="dropdown">
             <button class="dropbtn">Explore ▾</button>
             <div class="dropdown-content">
-                <a href="gallery.html" class="active">Gallery</a>
+                <a href="gallery.html" style="font-weight:bold; color:var(--primary-purple)">Gallery</a>
                 <a href="upload.html">Upload</a>
                 <a href="about.html">About Me</a>
             </div>
@@ -178,8 +219,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, onSnapshot, query, orderBy, doc, deleteDoc, updateDoc, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, collection, onSnapshot, query, orderBy, doc, updateDoc, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = { 
         apiKey: "AIzaSyDxgtNzywhjYGR7R2XMVobR73-SioT6v98", 
@@ -190,14 +230,13 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const auth = getAuth(app);
 
-    let userId = null;
-
-    onAuthStateChanged(auth, (user) => {
-        userId = user ? user.uid : null;
-        loadGallery(); // Reload gallery to check permissions
-    });
+    // --- Anonymous Visitor System ---
+    let visitorId = localStorage.getItem('visitorId');
+    if (!visitorId) {
+        visitorId = 'visitor_' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('visitorId', visitorId);
+    }
 
     function loadGallery() {
         const q = query(collection(db, "photos"), orderBy("date", "desc"));
@@ -208,17 +247,15 @@
                 const data = docSnap.data();
                 const id = docSnap.id;
                 const likes = data.likes || [];
-                const isLiked = userId && likes.includes(userId);
-                const canDelete = userId === data.userId;
+                const isLiked = likes.includes(visitorId);
 
                 container.innerHTML += `
                     <div class="pin-card">
-                        <div class="img-container" onclick="openZoom('${data.url}', '${data.caption || 'Sky View'}')">
+                        <div class="img-container" onclick="openZoom('${data.url}')">
                             <img src="${data.url}" class="pin-img" loading="lazy">
                         </div>
                         <div class="overlay-tools">
                             <button onclick="downloadImage('${data.url}')" class="action-btn" title="Download"><i class="fa-solid fa-download"></i></button>
-                            ${canDelete ? `<button onclick="deletePost('${id}')" class="action-btn delete-btn" title="Delete"><i class="fa-solid fa-trash"></i></button>` : ''}
                         </div>
                         <div class="pin-footer">
                             <p class="pin-caption">${data.caption || 'Beautiful Sky'}</p>
@@ -232,20 +269,11 @@
         });
     }
 
-    // --- Actions ---
-
     window.handleLike = async (postId, isLiked) => {
-        if (!userId) return alert("Please log in to like photos!");
         const docRef = doc(db, "photos", postId);
         await updateDoc(docRef, {
-            likes: isLiked ? arrayRemove(userId) : arrayUnion(userId)
+            likes: isLiked ? arrayRemove(visitorId) : arrayUnion(visitorId)
         });
-    };
-
-    window.deletePost = async (postId) => {
-        if (confirm("Are you sure you want to delete this photo?")) {
-            await deleteDoc(doc(db, "photos", postId));
-        }
     };
 
     window.downloadImage = async (url) => {
@@ -262,8 +290,7 @@
         } catch (e) { alert("Download failed. Direct link: " + url); }
     };
 
-    // --- Zoom Logic ---
-    window.openZoom = (url, cap) => {
+    window.openZoom = (url) => {
         let scale = 1;
         const overlay = document.createElement('div');
         overlay.className = "zoom-overlay";
@@ -273,20 +300,26 @@
             </div>
             <div class="zoom-pill">
                 <div class="pill-body">
-                    <button onclick="doZoom(-0.2)">➖</button>
+                    <button id="zoomOut">➖</button>
                     <span id="zPerc" style="min-width:50px; text-align:center">100%</span>
-                    <button onclick="doZoom(0.2)">➕</button>
-                    <button class="close-x" onclick="this.closest('.zoom-overlay').remove()">✕ Close</button>
+                    <button id="zoomIn">➕</button>
+                    <button class="close-x" id="closeZoom">✕ Close</button>
                 </div>
             </div>`;
         document.body.appendChild(overlay);
 
-        window.doZoom = (amt) => {
+        const updateZoom = (amt) => {
             scale = Math.max(0.5, Math.min(3, scale + amt));
             document.getElementById('zImg').style.transform = `scale(${scale})`;
             document.getElementById('zPerc').innerText = Math.round(scale * 100) + '%';
         };
+
+        document.getElementById('zoomIn').onclick = () => updateZoom(0.2);
+        document.getElementById('zoomOut').onclick = () => updateZoom(-0.2);
+        document.getElementById('closeZoom').onclick = () => overlay.remove();
     };
+
+    loadGallery();
 </script>
 
 </body>
