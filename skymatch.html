@@ -25,8 +25,17 @@
             padding: 12px 5%; background: white; box-shadow: 0 2px 15px rgba(0,0,0,0.05);
             position: sticky; top: 0; z-index: 1000;
         }
+        
+        /* LOGO ANIMATION */
         .logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
-        .logo img { width: 30px; }
+        .logo img { 
+            width: 30px; 
+            animation: float 3s ease-in-out infinite; 
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
         .logo span { font-weight: 800; font-size: 1.2rem; color: var(--dark); }
 
         .nav-links { display: flex; align-items: center; gap: 25px; }
@@ -47,7 +56,7 @@
         .dropdown-content a:hover { background-color: #f8f9fc; color: var(--primary); }
         .dropdown:hover .dropdown-content { display: block; }
 
-        /* --- LAYOUT: UNCHANGED --- */
+        /* --- LAYOUT --- */
         .main-container {
             display: flex; padding: 20px 5%; gap: 30px; flex: 1; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box;
         }
@@ -59,8 +68,23 @@
         .stat-pill { background: #fcfaff; padding: 12px; border-radius: 15px; text-align: center; border: 1px solid #f0edff; }
         .stat-pill span { display: block; font-size: 1.3rem; font-weight: 800; color: var(--primary); }
 
-        .rule-item { display: flex; align-items: flex-start; gap: 12px; padding: 10px; border-radius: 12px; margin-bottom: 8px; }
-        .rule-icon { width: 32px; height: 32px; background: #f4f0ff; color: var(--primary); display: flex; align-items: center; justify-content: center; border-radius: 10px; font-size: 0.9rem; flex-shrink: 0; }
+        /* RULE HOVER EFFECT */
+        .rule-item { 
+            display: flex; align-items: flex-start; gap: 12px; padding: 10px; 
+            border-radius: 12px; margin-bottom: 8px; transition: all 0.3s ease;
+            cursor: default;
+        }
+        .rule-item:hover {
+            background-color: #f4f0ff;
+            transform: translateX(5px);
+        }
+        .rule-icon { 
+            width: 32px; height: 32px; background: #f4f0ff; color: var(--primary); 
+            display: flex; align-items: center; justify-content: center; 
+            border-radius: 10px; font-size: 0.9rem; flex-shrink: 0; 
+            transition: transform 0.3s ease;
+        }
+        .rule-item:hover .rule-icon { transform: scale(1.1); }
         .rule-text h4 { margin: 0; font-size: 0.9rem; color: var(--dark); }
         .rule-text p { margin: 0; font-size: 0.75rem; color: #777; line-height: 1.4; }
 
@@ -152,6 +176,7 @@
 </div>
 
 <script type="module">
+    // Firebase Integration
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, collection, getDocs, limit, query } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
@@ -167,16 +192,20 @@
 
     let flipped = [], moves = 0, matches = 0, isLock = false, totalPairs = 0, currentCols = 4, currentRows = 4;
 
+    // --- Initialize Game Grid ---
     async function initGame(cols = 4, rows = 4) {
         currentCols = cols; currentRows = rows;
+        
+        // UI Updates for Buttons
         document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
         const btnId = `btn-${cols}`;
         if(document.getElementById(btnId)) document.getElementById(btnId).classList.add('active');
 
         const grid = document.getElementById('game-grid');
         grid.className = `memory-grid ${cols === 4 ? 'grid-small' : ''}`;
-        grid.innerHTML = "<p>Loading Sky...</p>";
+        grid.innerHTML = "<p style='grid-column: 1/-1; text-align:center;'>Fetching the sky...</p>";
         
+        // Reset Dashboard
         moves = 0; matches = 0; flipped = []; isLock = false;
         document.getElementById('moves').innerText = "0";
         document.getElementById('matches').innerText = "0";
@@ -186,14 +215,20 @@
         totalPairs = Math.floor((totalCards - powerCount) / 2);
 
         try {
+            // Load images from Firebase
             const snap = await getDocs(query(collection(db, "photos"), limit(totalPairs)));
             let photos = []; 
             snap.forEach(doc => photos.push(doc.data().url));
 
+            // Create Deck with Pairs and Power-ups
             let deck = [...photos, ...photos].map(url => ({ type: 'photo', val: url }));
             const powers = ['fa-bolt', 'fa-eye'];
-            while(deck.length < totalCards) deck.push({ type: 'power', val: powers[deck.length % 2] });
+            
+            while(deck.length < totalCards) {
+                deck.push({ type: 'power', val: powers[deck.length % 2] });
+            }
 
+            // Shuffle and Render Grid
             deck.sort(() => Math.random() - 0.5);
             grid.innerHTML = "";
             grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
@@ -211,44 +246,73 @@
                 card.onclick = handleFlip;
                 grid.appendChild(card);
             });
-        } catch (e) { grid.innerHTML = "<p>Error loading photos.</p>"; }
+        } catch (error) {
+            grid.innerHTML = "<p>Failed to load photos. Please try again.</p>";
+        }
     }
 
+    // --- Card Interaction Logic ---
     function handleFlip() {
         if (isLock || this.classList.contains('flipped') || this.dataset.done) return;
         this.classList.add('flipped');
 
+        // Logic for Thunder and Vision Powers
         if (this.dataset.type === 'power') {
             isLock = true;
             setTimeout(() => {
                 if (this.dataset.val === 'fa-bolt') {
+                    // Thunder Reset
                     document.querySelectorAll('.card.flipped:not([data-done])').forEach(c => c.classList.remove('flipped'));
                 } else {
+                    // Vision Reveal
                     const hidden = document.querySelectorAll('.card:not(.flipped)');
                     hidden.forEach(c => c.classList.add('flipped'));
-                    setTimeout(() => hidden.forEach(c => { if(!c.dataset.done) c.classList.remove('flipped'); }), 1200);
+                    setTimeout(() => {
+                        hidden.forEach(c => { if(!c.dataset.done) c.classList.remove('flipped'); });
+                    }, 1200);
                 }
-                this.style.opacity = "0.4"; this.dataset.done = "true"; isLock = false;
+                this.style.opacity = "0.4"; 
+                this.dataset.done = "true"; 
+                isLock = false;
             }, 600);
             return;
         }
 
         flipped.push(this);
         if (flipped.length === 2) {
-            moves++; document.getElementById('moves').innerText = moves;
+            moves++; 
+            document.getElementById('moves').innerText = moves;
             isLock = true;
+            
             const [c1, c2] = flipped;
             if (c1.dataset.val === c2.dataset.val) {
-                matches++; document.getElementById('matches').innerText = matches;
-                c1.dataset.done = "true"; c2.dataset.done = "true";
-                flipped = []; isLock = false;
-                if (matches === totalPairs) setTimeout(() => alert("Sky Clear!"), 500);
+                // Match Found
+                matches++; 
+                document.getElementById('matches').innerText = matches;
+                c1.dataset.done = "true"; 
+                c2.dataset.done = "true";
+                flipped = []; 
+                isLock = false;
+
+                // Updated Win Message
+                if (matches === totalPairs) {
+                    setTimeout(() => {
+                        alert(`✨ Sky Clear! ✨\n\nAmazing job! You matched all the clouds in ${moves} moves.`);
+                    }, 500);
+                }
             } else {
-                setTimeout(() => { c1.classList.remove('flipped'); c2.classList.remove('flipped'); flipped = []; isLock = false; }, 800);
+                // No Match Found
+                setTimeout(() => { 
+                    c1.classList.remove('flipped'); 
+                    c2.classList.remove('flipped'); 
+                    flipped = []; 
+                    isLock = false; 
+                }, 800);
             }
         }
     }
 
+    // --- Global Controls ---
     window.restartGame = () => initGame(currentCols, currentRows);
     window.initGame = initGame;
     window.onload = () => initGame(4, 4);
