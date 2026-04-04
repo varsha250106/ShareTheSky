@@ -4,7 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ShareTheSky - Home</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    
+    <style>
+        /* 2. Added Mobile-Specific CSS to prevent overlapping */
+        @media (max-width: 768px) {
+            header {
+                flex-wrap: wrap;
+                position: relative;
+            }
+
+            .menu-icon {
+                display: block;
+                font-size: 1.5rem;
+                cursor: pointer;
+            }
+
+            .nav-links {
+                display: none; 
+                width: 100%;
+                flex-direction: column;
+                background: white;
+                text-align: center;
+                padding: 10px 0;
+                /* Using relative so it pushes the Hero section down */
+                position: relative; 
+                top: 0;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links a, .dropdown {
+                margin: 10px 0;
+                width: 100%;
+            }
+
+            .dropdown-content {
+                position: static;
+                display: block;
+                box-shadow: none;
+                background: #f9f9f9;
+            }
+        }
+    </style>
 </head>
 <body>
    <header>
@@ -56,5 +102,15 @@
 <footer>
     <p>&copy; 2026 ShareTheSky &mdash; Created with love ♥</p>
 </footer>
+
+<script>
+    function toggleMobileMenu() {
+        const nav = document.getElementById("navLinks");
+        if (nav) {
+            nav.classList.toggle("active");
+        }
+    }
+</script>
+
 </body>
 </html>
