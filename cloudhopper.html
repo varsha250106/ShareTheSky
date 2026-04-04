@@ -136,6 +136,79 @@
         </div>
     </div>
 </div>
+    <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // 1. The "Cute Cloud" Character
+    let player = {
+        x: canvas.width / 2 - 20,
+        y: canvas.height - 100,
+        width: 40,
+        height: 30,
+        vx: 0,          // Velocity X (Left/Right)
+        vy: 0,          // Velocity Y (Up/Down)
+        jumpForce: -8,  // How high we bounce
+        gravity: 0.3    // How fast we fall
+    };
+
+    // 2. Input Handling (Laptop & Mobile)
+    let keys = {};
+    window.addEventListener('keydown', e => keys[e.code] = true);
+    window.addEventListener('keyup', e => keys[e.code] = false);
+
+    // Simple Mobile Touch (Tap left/right side of canvas)
+    canvas.addEventListener('touchstart', e => {
+        const touchX = e.touches[0].clientX - canvas.getBoundingClientRect().left;
+        if (touchX < canvas.width / 2) player.vx = -5;
+        else player.vx = 5;
+    });
+
+    function drawPlayer() {
+        ctx.fillStyle = "white";
+        // Drawing a fluffy cloud shape using 3 circles
+        ctx.beginPath();
+        ctx.arc(player.x + 10, player.y + 15, 12, 0, Math.PI * 2);
+        ctx.arc(player.x + 20, player.y + 10, 15, 0, Math.PI * 2);
+        ctx.arc(player.x + 30, player.y + 15, 12, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Tiny cute eyes
+        ctx.fillStyle = "#2d2d6a";
+        ctx.fillRect(player.x + 15, player.y + 12, 3, 3);
+        ctx.fillRect(player.x + 25, player.y + 12, 3, 3);
+    }
+
+    function update() {
+        // Clear Canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Apply Gravity
+        player.vy += player.gravity;
+        player.y += player.vy;
+
+        // Handle Left/Right Movement (Laptop)
+        if (keys['ArrowLeft']) player.vx = -5;
+        else if (keys['ArrowRight']) player.vx = 5;
+        else player.vx *= 0.9; // Friction (slows down when you let go)
+
+        player.x += player.vx;
+
+        // Wrap around screen (Go off left, come out right)
+        if (player.x + player.width < 0) player.x = canvas.width;
+        if (player.x > canvas.width) player.x = -player.width;
+
+        // Ground Bounce (Temporary for testing)
+        if (player.y + player.height > canvas.height) {
+            player.vy = player.jumpForce;
+        }
+
+        drawPlayer();
+        requestAnimationFrame(update); // Constant Loop
+    }
+
+    update();
+</script>
 
 </body>
 </html>
