@@ -51,12 +51,11 @@
         .dropdown-content a:hover { background-color: #fcfaff; color: var(--primary); }
         .dropdown:hover .dropdown-content { display: block; }
 
-        /* --- LAYOUT WRAPPER --- */
+        /* --- LAYOUT --- */
         .main-container {
             display: flex; padding: 40px 8%; gap: 40px; flex: 1; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box;
         }
 
-        /* --- SIDEBAR: DASHBOARD & RULES --- */
         .sidebar { width: 320px; display: flex; flex-direction: column; gap: 20px; flex-shrink: 0; }
         .card-panel { background: white; padding: 25px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
         
@@ -64,14 +63,12 @@
         .stat-pill { background: #fcfaff; padding: 12px; border-radius: 15px; text-align: center; border: 1px solid #f0edff; }
         .stat-pill span { display: block; font-size: 1.4rem; font-weight: 800; color: var(--primary); }
 
+        /* --- RULES SECTION --- */
         .rule-item {
             display: flex; align-items: flex-start; gap: 12px; padding: 12px;
             border-radius: 16px; transition: 0.3s; margin-bottom: 8px; border: 1px solid transparent;
         }
-        .rule-item:hover { 
-            background: #fcfaff; transform: translateY(-3px); 
-            border-color: var(--primary); box-shadow: 0 5px 15px rgba(161, 140, 209, 0.1);
-        }
+        .rule-item:hover { background: #fcfaff; transform: translateY(-3px); border-color: var(--primary); }
         .rule-icon {
             width: 35px; height: 35px; background: #f4f0ff; color: var(--primary);
             display: flex; align-items: center; justify-content: center;
@@ -96,16 +93,9 @@
         .mode-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
         .restart-btn { border-color: #ff9a9e; color: #ff9a9e; }
 
-        /* --- NEAT GRID LOGIC --- */
-        .memory-grid { 
-            display: grid; 
-            gap: 10px; 
-            perspective: 1000px; 
-            width: 100%; 
-            margin: 0 auto;
-        }
-        /* Fixes 4x4 scale */
-        .grid-small { max-width: 500px; } 
+        /* --- GRID SIZING --- */
+        .memory-grid { display: grid; gap: 10px; perspective: 1000px; width: 100%; margin: 0 auto; }
+        .grid-small { max-width: 500px; } /* Neater 4x4 */
         .grid-large { max-width: 850px; }
 
         .card { position: relative; transform-style: preserve-3d; transition: 0.6s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; aspect-ratio: 1/1; }
@@ -200,7 +190,7 @@
 
         const grid = document.getElementById('game-grid');
         grid.className = `memory-grid ${cols === 4 ? 'grid-small' : 'grid-large'}`;
-        grid.innerHTML = "<p style='color:var(--primary); font-weight:600;'>Clearing the sky...</p>";
+        grid.innerHTML = "<p>Clearing the sky...</p>";
         
         moves = 0; matches = 0; flipped = []; isLock = false;
         document.getElementById('moves').innerText = "0";
@@ -215,9 +205,7 @@
 
         let deck = [...photos, ...photos].map(url => ({ type: 'photo', val: url }));
         const powers = ['fa-bolt', 'fa-eye'];
-        while(deck.length < totalCards) {
-            deck.push({ type: 'power', val: powers[deck.length % 2] });
-        }
+        while(deck.length < totalCards) deck.push({ type: 'power', val: powers[deck.length % 2] });
 
         deck.sort(() => Math.random() - 0.5);
         grid.innerHTML = "";
@@ -262,7 +250,10 @@
                 matches++; document.getElementById('matches').innerText = matches;
                 c1.dataset.done = "true"; c2.dataset.done = "true";
                 flipped = []; isLock = false;
-                if (matches === totalPairs) setTimeout(() => alert(Great job! You cleared the sky in ${moves} moves.), 500);
+                /* MODIFIED WIN MESSAGE */
+                if (matches === totalPairs) {
+                    setTimeout(() => alert(`Great job! You cleared the sky in ${moves} moves.`), 500);
+                }
             } else {
                 setTimeout(() => { c1.classList.remove('flipped'); c2.classList.remove('flipped'); flipped = []; isLock = false; }, 800);
             }
