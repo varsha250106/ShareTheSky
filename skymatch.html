@@ -22,7 +22,7 @@
         /* --- LOGO ANIMATION --- */
         @keyframes float {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+            50% { transform: translateY(-8px); }
         }
 
         header {
@@ -31,7 +31,7 @@
             position: sticky; top: 0; z-index: 1000;
         }
         .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-        .logo img { width: 35px; animation: float 3s ease-in-out infinite; } /* Added floating effect */
+        .logo img { width: 35px; animation: float 3s ease-in-out infinite; }
         .logo span { font-weight: 800; font-size: 1.5rem; color: var(--dark); }
 
         .nav-links { display: flex; align-items: center; gap: 30px; }
@@ -51,17 +51,34 @@
         .dropdown-content a:hover { background-color: #fcfaff; color: var(--primary); }
         .dropdown:hover .dropdown-content { display: block; }
 
-        /* --- LAYOUT --- */
+        /* --- LAYOUT WRAPPER --- */
         .main-container {
             display: flex; padding: 40px 8%; gap: 40px; flex: 1; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box;
         }
 
-        .sidebar { width: 300px; display: flex; flex-direction: column; gap: 20px; flex-shrink: 0; }
+        /* --- SIDEBAR: DASHBOARD & RULES --- */
+        .sidebar { width: 320px; display: flex; flex-direction: column; gap: 20px; flex-shrink: 0; }
         .card-panel { background: white; padding: 25px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
         
         .stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
         .stat-pill { background: #fcfaff; padding: 12px; border-radius: 15px; text-align: center; border: 1px solid #f0edff; }
         .stat-pill span { display: block; font-size: 1.4rem; font-weight: 800; color: var(--primary); }
+
+        .rule-item {
+            display: flex; align-items: flex-start; gap: 12px; padding: 12px;
+            border-radius: 16px; transition: 0.3s; margin-bottom: 8px; border: 1px solid transparent;
+        }
+        .rule-item:hover { 
+            background: #fcfaff; transform: translateY(-3px); 
+            border-color: var(--primary); box-shadow: 0 5px 15px rgba(161, 140, 209, 0.1);
+        }
+        .rule-icon {
+            width: 35px; height: 35px; background: #f4f0ff; color: var(--primary);
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 10px; font-size: 1rem; flex-shrink: 0;
+        }
+        .rule-text h4 { margin: 0 0 2px 0; font-size: 0.95rem; color: var(--dark); }
+        .rule-text p { margin: 0; font-size: 0.8rem; color: #777; line-height: 1.3; }
 
         /* --- GAME SECTION --- */
         .game-section { flex: 1; display: flex; flex-direction: column; }
@@ -73,29 +90,28 @@
 
         .btn-group { display: flex; gap: 10px; margin-bottom: 30px; }
         .mode-btn {
-            padding: 10px 20px; border-radius: 12px; border: 2px solid #f0f0f0;
-            background: white; cursor: pointer; font-weight: 700; transition: 0.3s; color: #666; font-size: 0.9rem;
+            padding: 10px 18px; border-radius: 12px; border: 2.5px solid #f0f0f0;
+            background: white; cursor: pointer; font-weight: 700; transition: 0.3s; color: #666; font-size: 0.85rem;
         }
         .mode-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
         .restart-btn { border-color: #ff9a9e; color: #ff9a9e; }
 
-        /* --- NEAT ALIGNED GRID --- */
+        /* --- NEAT GRID LOGIC --- */
         .memory-grid { 
             display: grid; 
             gap: 10px; 
             perspective: 1000px; 
             width: 100%; 
-            max-width: 650px; /* Prevents 4x4 from becoming too big */
             margin: 0 auto;
         }
-        
+        /* Fixes 4x4 scale */
+        .grid-small { max-width: 500px; } 
+        .grid-large { max-width: 850px; }
+
         .card { position: relative; transform-style: preserve-3d; transition: 0.6s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; aspect-ratio: 1/1; }
         .card.flipped { transform: rotateY(180deg); }
-        .card-front, .card-back { 
-            position: absolute; width: 100%; height: 100%; backface-visibility: hidden; 
-            border-radius: 12px; 
-        }
-        .card-front { background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.4rem; }
+        .card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 10px; }
+        .card-front { background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem; }
         .card-back { background: #fff; transform: rotateY(180deg); display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1.5px solid #eee; }
         .card-back img { width: 100%; height: 100%; object-fit: cover; }
     </style>
@@ -130,15 +146,32 @@
                 <div class="stat-pill">Matches<span id="matches">0</span></div>
             </div>
         </div>
+
+        <div class="card-panel">
+            <h3 style="margin:0 0 15px 0">How to Play</h3>
+            <div class="rule-item">
+                <div class="rule-icon"><i class="fa-solid fa-clone"></i></div>
+                <div class="rule-text"><h4>Find Pairs</h4><p>Match identical sky photos.</p></div>
+            </div>
+            <div class="rule-item">
+                <div class="rule-icon"><i class="fa-solid fa-bolt"></i></div>
+                <div class="rule-text"><h4>Thunder</h4><p>Resets unmatched flips.</p></div>
+            </div>
+            <div class="rule-item">
+                <div class="rule-icon"><i class="fa-solid fa-eye"></i></div>
+                <div class="rule-text"><h4>Vision</h4><p>Briefly shows all cards.</p></div>
+            </div>
+        </div>
     </div>
 
     <div class="game-section">
         <div class="game-card">
-            <h1 style="margin:0 0 20px 0; font-size: 2rem;">Sky Match</h1>
+            <h1 style="margin:0 0 20px 0; font-size: 1.8rem; color: var(--dark);">Sky Match</h1>
             <div class="btn-group">
                 <button class="mode-btn" id="btn-4" onclick="initGame(4, 4)">4 × 4</button>
                 <button class="mode-btn" id="btn-6" onclick="initGame(6, 6)">6 × 6</button>
-                <button class="mode-btn" id="btn-8" onclick="initGame(8, 7)">8 × 7</button> <button class="mode-btn restart-btn" onclick="restartGame()"><i class="fa-solid fa-rotate-right"></i> Restart</button>
+                <button class="mode-btn" id="btn-8" onclick="initGame(8, 7)">8 × 7</button>
+                <button class="mode-btn restart-btn" onclick="restartGame()"><i class="fa-solid fa-rotate-right"></i> Restart</button>
             </div>
             <div class="memory-grid" id="game-grid"></div>
         </div>
@@ -157,16 +190,17 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    let flipped = [], moves = 0, matches = 0, isLock = false, totalPairs = 0, currentCols = 8, currentRows = 7;
+    let flipped = [], moves = 0, matches = 0, isLock = false, totalPairs = 0, currentCols = 4, currentRows = 4;
 
-    async function initGame(cols = 8, rows = 7) {
+    async function initGame(cols = 4, rows = 4) {
         currentCols = cols; currentRows = rows;
         document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-        const btnId = cols === 8 ? 'btn-8' : `btn-${cols}`;
+        const btnId = (cols === 8) ? 'btn-8' : `btn-${cols}`;
         document.getElementById(btnId).classList.add('active');
 
         const grid = document.getElementById('game-grid');
-        grid.innerHTML = "<p>Loading...</p>";
+        grid.className = `memory-grid ${cols === 4 ? 'grid-small' : 'grid-large'}`;
+        grid.innerHTML = "<p style='color:var(--primary); font-weight:600;'>Clearing the sky...</p>";
         
         moves = 0; matches = 0; flipped = []; isLock = false;
         document.getElementById('moves').innerText = "0";
@@ -181,7 +215,9 @@
 
         let deck = [...photos, ...photos].map(url => ({ type: 'photo', val: url }));
         const powers = ['fa-bolt', 'fa-eye'];
-        for(let i=0; i < (totalCards - deck.length); i++) deck.push({ type: 'power', val: powers[i % 2] });
+        while(deck.length < totalCards) {
+            deck.push({ type: 'power', val: powers[deck.length % 2] });
+        }
 
         deck.sort(() => Math.random() - 0.5);
         grid.innerHTML = "";
@@ -192,7 +228,7 @@
             card.className = 'card';
             card.dataset.type = item.type; card.dataset.val = item.val;
             card.innerHTML = `<div class="card-front"><i class="fa-solid fa-cloud"></i></div>
-                              <div class="card-back">${item.type === 'photo' ? `<img src="${item.val}">` : `<i class="fa-solid ${item.val}" style="color:gold; font-size:1.2rem;"></i>`}</div>`;
+                              <div class="card-back">${item.type === 'photo' ? `<img src="${item.val}">` : `<i class="fa-solid ${item.val}" style="color:gold; font-size:1.1rem;"></i>`}</div>`;
             card.onclick = handleFlip;
             grid.appendChild(card);
         });
@@ -210,7 +246,7 @@
                 } else {
                     const hidden = document.querySelectorAll('.card:not(.flipped)');
                     hidden.forEach(c => c.classList.add('flipped'));
-                    setTimeout(() => hidden.forEach(c => { if(!c.dataset.done) c.classList.remove('flipped'); }), 1200);
+                    setTimeout(() => hidden.forEach(c => { if(!c.dataset.done) c.classList.remove('flipped'); }), 1000);
                 }
                 this.style.opacity = "0.4"; this.dataset.done = "true"; isLock = false;
             }, 600);
@@ -226,7 +262,7 @@
                 matches++; document.getElementById('matches').innerText = matches;
                 c1.dataset.done = "true"; c2.dataset.done = "true";
                 flipped = []; isLock = false;
-                if (matches === totalPairs) alert("Sky Cleared!");
+                if (matches === totalPairs) setTimeout(() => alert("Sky Clear!"), 500);
             } else {
                 setTimeout(() => { c1.classList.remove('flipped'); c2.classList.remove('flipped'); flipped = []; isLock = false; }, 800);
             }
@@ -235,7 +271,7 @@
 
     window.restartGame = () => initGame(currentCols, currentRows);
     window.initGame = initGame;
-    window.onload = () => initGame(7, 4); // Default to a smaller, neat starting grid
+    window.onload = () => initGame(4, 4);
 </script>
 </body>
 </html>
