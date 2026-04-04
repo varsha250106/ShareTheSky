@@ -15,6 +15,7 @@
             color: #333;
         }
 
+        /* --- RESTORED NAVIGATION BAR --- */
         header {
             display: flex;
             justify-content: space-between;
@@ -38,8 +39,34 @@
         .logo span { color: #4a4a8a; font-size: 1.5rem; font-weight: 700; }
 
         .nav-links { display: flex; align-items: center; gap: 20px; }
-        .nav-links a { text-decoration: none; color: #4a4a8a; font-weight: 600; transition: 0.3s; }
+        .nav-links a { 
+            text-decoration: none; 
+            color: #4a4a8a; 
+            font-weight: 600; 
+            transition: 0.3s; 
+            padding: 5px 10px;
+        }
         .nav-links a:hover { color: #a18cd1; }
+        
+        /* Active Link Highlight */
+        .nav-links a.active-page {
+            color: #a18cd1;
+            border-bottom: 2px solid #a18cd1;
+        }
+
+        /* Mobile Menu Button */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+        }
+        .menu-toggle span {
+            width: 25px;
+            height: 3px;
+            background-color: #a18cd1;
+            border-radius: 3px;
+        }
 
         /* --- RESPONSIVE GRID --- */
         .pinterest-grid {
@@ -78,7 +105,6 @@
             cursor: zoom-in;
         }
 
-        /* Top Action Buttons */
         .pin-top-actions {
             position: absolute;
             top: 12px;
@@ -96,14 +122,10 @@
             border-radius: 50%;
             cursor: pointer;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            font-size: 16px;
+            display: flex; align-items: center; justify-content: center;
+            text-decoration: none; font-size: 16px;
         }
 
-        /* Bottom Like Button */
         .pin-like-overlay {
             position: absolute;
             bottom: 12px;
@@ -115,11 +137,8 @@
             font-weight: 700;
             cursor: pointer;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: 0.3s;
-            z-index: 10;
+            display: flex; align-items: center; gap: 6px;
+            transition: 0.3s; z-index: 10;
         }
 
         .pin-like-overlay.liked {
@@ -140,19 +159,22 @@
             cursor: pointer;
         }
 
-        /* Zoom Pill UI */
-        .zoom-controls {
-            background: white;
-            padding: 10px 25px;
-            border-radius: 40px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        /* Mobile Adjustments */
-        @media (max-width: 600px) {
+        /* --- MOBILE ADJUSTMENTS --- */
+        @media (max-width: 768px) {
+            .menu-toggle { display: flex; }
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 70px;
+                right: 5%;
+                background: white;
+                width: 200px;
+                padding: 20px;
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            }
+            .nav-links.active { display: flex; }
             .pinterest-grid { grid-template-columns: 1fr; padding: 10px 20px; }
             .pin-image-wrapper { aspect-ratio: 1 / 1; }
         }
@@ -167,9 +189,16 @@
             <span>ShareTheSky</span>
         </a>
     </h1>
-    <nav class="nav-links">
+    
+    <div class="menu-toggle" id="mobile-menu">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
+    <nav class="nav-links" id="nav-list">
         <a href="index.html">Home</a>
-        <a href="gallery.html" style="color: #a18cd1; border-bottom: 2px solid #a18cd1;">Gallery</a>
+        <a href="gallery.html" class="active-page">Gallery</a>
         <a href="upload.html">Upload</a>
         <a href="about.html">About Me</a>
     </nav>
@@ -187,6 +216,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
+    // --- FIREBASE CONFIG ---
     const firebaseConfig = {
         apiKey: "AIzaSyDxgtNzywhjYGR7R2XMVobR73-SioT6v98",
         authDomain: "sharethesky-a9c7d.firebaseapp.com",
@@ -200,6 +230,11 @@
     const db = getFirestore(app);
     const galleryContainer = document.getElementById("photoGallery");
     const mySkyUserId = localStorage.getItem("mySkyUserId");
+
+    // --- MOBILE MENU ---
+    document.getElementById('mobile-menu').onclick = () => {
+        document.getElementById('nav-list').classList.toggle('active');
+    };
 
     const q = query(collection(db, "photos"), orderBy("date", "desc"));
 
@@ -235,7 +270,6 @@
             `;
             galleryContainer.appendChild(card);
 
-            // FIXED LIKE LOGIC
             card.querySelector(`#like-${id}`).onclick = async (e) => {
                 e.stopPropagation();
                 const btn = e.currentTarget;
@@ -263,7 +297,7 @@
         });
     });
 
-    // RESTORED ZOOM PILL LOGIC
+    // --- ZOOM PILL LOGIC ---
     window.openZoom = (url) => {
         let currentScale = 1;
         const overlay = document.createElement('div');
@@ -273,7 +307,7 @@
             <div style="flex-grow:1; display:flex; align-items:center; justify-content:center; width:100%; overflow:hidden;">
                 <img src="${url}" id="zImg" style="max-width:90%; max-height:80%; border-radius:10px; transition:0.2s;">
             </div>
-            <div class="zoom-controls" style="margin-bottom:30px; background:white; padding:10px 25px; border-radius:40px; display:flex; gap:15px; align-items:center;">
+            <div style="margin-bottom:30px; background:white; padding:10px 25px; border-radius:40px; display:flex; gap:15px; align-items:center; box-shadow:0 10px 30px rgba(0,0,0,0.3);">
                 <button id="zOut" style="background:none; border:none; cursor:pointer; font-size:20px;">➖</button>
                 <span id="zPerc" style="font-weight:700; color:#2d2d6a;">100%</span>
                 <button id="zIn" style="background:none; border:none; cursor:pointer; font-size:20px;">➕</button>
