@@ -2352,3 +2352,138 @@ header {
         aspect-ratio: 1 / 1; /* Squares look better on mobile */
     }
 }
+/* --- GLOBAL & FONTS --- */
+body { 
+    font-family: 'Inter', sans-serif; 
+    margin: 0; 
+    background: #f5f7fa; 
+    color: #333;
+}
+
+/* --- LOGO & HEADER (MATCHING IMAGE 9) --- */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 5%;
+    background: white;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+}
+
+.logo a {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Restores spacing between cloud and text */
+    text-decoration: none;
+    color: #2d2d6a; /* Original branding color */
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.header-logo-img {
+    width: 35px; /* Size for the cloud icon seen in Image 16 */
+    height: auto;
+}
+
+/* --- NAVIGATION & DROPDOWN --- */
+.nav-links { display: flex; align-items: center; gap: 25px; }
+.nav-links a { text-decoration: none; color: #4a4a8a; font-weight: 600; transition: 0.3s; }
+
+.dropdown { position: relative; display: inline-block; }
+.dropbtn {
+    background: none; border: none; color: #4a4a8a;
+    font-size: 16px; font-weight: 600; cursor: pointer;
+    padding: 10px; font-family: inherit;
+}
+
+.dropdown-content {
+    display: none; position: absolute; background-color: white;
+    min-width: 170px; box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
+    border-radius: 12px; z-index: 100; right: 0; overflow: hidden;
+}
+
+.dropdown-content a {
+    color: #333; padding: 12px 16px; text-decoration: none;
+    display: block; font-size: 14px;
+}
+
+.dropdown-content a:hover { background: #f8f6ff; color: #a18cd1; }
+.dropdown:hover .dropdown-content { display: block; }
+
+/* --- THE ZOOM PILL (IMAGE 10/16 STYLE) --- */
+.zoom-pill-container {
+    background: white; 
+    padding: 12px 25px; 
+    border-radius: 40px; 
+    display: flex; 
+    gap: 20px; 
+    align-items: center; 
+    margin-bottom: 40px; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.zoom-btn {
+    background: none; 
+    border: none; 
+    cursor: pointer; 
+    font-size: 20px;
+    transition: transform 0.1s;
+}
+
+.zoom-btn:active { transform: scale(0.9); }
+
+#zClose {
+    background: #ff4757; 
+    color: white; 
+    border: none; 
+    padding: 8px 18px; 
+    border-radius: 20px; 
+    cursor: pointer; 
+    font-weight: 600;
+}
+
+/* --- GRID & CARDS --- */
+.pinterest-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+    padding: 20px 5%;
+}
+
+.pin-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+}
+
+.pin-image-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    background: #eee;
+}
+
+.pin-img {
+    width: 100%; height: 100%;
+    object-fit: cover; cursor: zoom-in;
+}
+
+/* Overlay Buttons */
+.action-btn {
+    background: white; border: none; width: 38px; height: 38px;
+    border-radius: 50%; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    display: flex; align-items: center; justify-content: center;
+}
+
+.pin-like-overlay {
+    position: absolute; bottom: 12px; right: 12px;
+    background: rgba(255,255,255,0.95);
+    border: none; padding: 8px 15px; border-radius: 25px;
+    font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px;
+}
+
+.pin-like-overlay.liked { background: #ff4757; color: white; }
