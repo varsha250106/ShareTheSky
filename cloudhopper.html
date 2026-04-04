@@ -11,6 +11,7 @@
             --secondary: #fbc2eb;
             --dark: #2d2d6a;
             --bg: #f8f9fc;
+            --storm: #4a4a8a;
         }
 
         body { 
@@ -20,7 +21,6 @@
             overflow-x: hidden;
         }
 
-        /* --- NAV BAR: MATCHES YOUR HOME PAGE --- */
         header {
             display: flex; justify-content: space-between; align-items: center; 
             padding: 12px 5%; background: white; box-shadow: 0 2px 15px rgba(0,0,0,0.05);
@@ -45,19 +45,16 @@
         .dropdown-content a:hover { background: #f8f9fc; color: var(--primary); }
         .dropdown:hover .dropdown-content { display: block; }
 
-        /* --- LAYOUT --- */
         .main-container {
             display: flex; padding: 20px 5%; gap: 30px; flex: 1; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box;
         }
 
-        /* --- SIDEBAR: UPDATED FOR CLOUD HOPPER --- */
         .sidebar { width: 300px; display: flex; flex-direction: column; gap: 20px; flex-shrink: 0; }
         .card-panel { background: white; padding: 22px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
         .stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
         .stat-pill { background: #fcfaff; padding: 12px; border-radius: 15px; text-align: center; border: 1px solid #f0edff; }
         .stat-pill span { display: block; font-size: 1.3rem; font-weight: 800; color: var(--primary); }
 
-        /* --- GAME SECTION --- */
         .game-section { flex: 1; display: flex; flex-direction: column; min-width: 0; }
         .game-card { 
             background: white; width: 100%; border-radius: 28px; padding: 20px; 
@@ -65,14 +62,26 @@
             position: relative; overflow: hidden;
         }
 
-        /* The Game Canvas */
+        #gameContainer { position: relative; width: 350px; height: 500px; }
         #gameCanvas {
             background: linear-gradient(to bottom, #e0c3fc 0%, #8ec5fc 100%);
-            border-radius: 20px;
-            max-width: 100%;
-            cursor: pointer;
+            border-radius: 20px; width: 100%; height: 100%;
             box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
         }
+
+        /* --- GAME OVERLAY --- */
+        #overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(45, 45, 106, 0.8); border-radius: 20px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            color: white; z-index: 10; text-align: center; padding: 20px; box-sizing: border-box;
+        }
+        #startBtn {
+            background: white; color: var(--primary); border: none; padding: 12px 30px;
+            border-radius: 50px; font-weight: 800; cursor: pointer; margin-top: 15px;
+            transition: transform 0.2s;
+        }
+        #startBtn:hover { transform: scale(1.05); }
 
         .controls-hint { margin-top: 15px; color: #888; font-size: 0.85rem; text-align: center; }
 
@@ -119,10 +128,14 @@
             <h3 style="margin:0 0 12px 0">How to Play</h3>
             <div class="rule-item" style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
                 <i class="fa-solid fa-arrow-pointer" style="color: var(--primary);"></i>
-                <p style="margin:0; font-size: 0.85rem;"><b>Move:</b> Use Arrows or Tilt Mobile</p>
+                <p style="margin:0; font-size: 0.85rem;"><b>Move:</b> Left/Right Arrows</p>
+            </div>
+            <div class="rule-item" style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+                <i class="fa-solid fa-arrows-left-right" style="color: var(--secondary);"></i>
+                <p style="margin:0; font-size: 0.85rem;"><b>Pink:</b> Moving Platforms</p>
             </div>
             <div class="rule-item" style="display: flex; gap: 10px; align-items: center;">
-                <i class="fa-solid fa-cloud-showers-heavy" style="color: #ff9a9e;"></i>
+                <i class="fa-solid fa-cloud-showers-heavy" style="color: var(--storm);"></i>
                 <p style="margin:0; font-size: 0.85rem;"><b>Avoid:</b> Dark Storm Clouds!</p>
             </div>
         </div>
@@ -131,16 +144,26 @@
     <div class="game-section">
         <div class="game-card">
             <h2 style="margin:0 0 15px 0; font-size: 1.5rem;">Cloud Hopper</h2>
-            <canvas id="gameCanvas" width="350" height="500"></canvas>
-            <p class="controls-hint">Tap or use Left/Right Arrows to move!</p>
+            <div id="gameContainer">
+                <div id="overlay">
+                    <h2 style="margin:0">Ready to Climb?</h2>
+                    <p style="font-size: 0.9rem; opacity: 0.9;">Don't touch the dark storm clouds!</p>
+                    <button id="startBtn">START GAME</button>
+                </div>
+                <canvas id="gameCanvas" width="350" height="500"></canvas>
+            </div>
+            <p class="controls-hint">Use Left/Right Arrows to move!</p>
         </div>
     </div>
 </div>
-   <script>
+
+<script>
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
+    const overlay = document.getElementById('overlay');
+    const startBtn = document.getElementById('startBtn');
 
-    // 1. Game State
+    let gameRunning = false;
     let player = {
         x: canvas.width / 2 - 20,
         y: canvas.height - 150,
@@ -154,31 +177,43 @@
     let bestClimb = localStorage.getItem('cloudHopperBest') || 0;
     document.getElementById('bestClimb').innerText = bestClimb + "m";
 
-    // 2. Create Initial Platforms
     function createPlatforms() {
         platforms = [];
-        // Starter platform directly under the player
-        platforms.push({ x: player.x - 10, y: player.y + 50, width: 70, height: 12 });
+        // Stable starting platform
+        platforms.push({ x: player.x - 15, y: player.y + 50, width: 70, height: 12, type: 'normal' });
         
-        // Random platforms above
-        for (let i = 0; i < 6; i++) {
-            platforms.push({
-                x: Math.random() * (canvas.width - 70),
-                y: i * 80,
-                width: 70, height: 12
-            });
+        for (let i = 0; i < 7; i++) {
+            addPlatform(i * 70);
         }
     }
 
-    // 3. Movement Handling
+    function addPlatform(yPos) {
+        let type = 'normal';
+        let rand = Math.random();
+        
+        // Difficulty scaling based on score
+        if (score > 30 && rand > 0.7) type = 'moving';
+        if (score > 60 && rand > 0.85) type = 'storm';
+
+        platforms.push({
+            x: Math.random() * (canvas.width - 70),
+            y: yPos,
+            width: 70, height: 12,
+            type: type,
+            speed: (Math.random() > 0.5 ? 1 : -1) * (1 + Math.random() * 2)
+        });
+    }
+
     let keys = {};
     window.addEventListener('keydown', e => keys[e.code] = true);
     window.addEventListener('keyup', e => keys[e.code] = false);
 
     function update() {
+        if (!gameRunning) return;
+
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Physics
+        // Player Physics
         player.vy += player.gravity;
         player.y += player.vy;
 
@@ -187,44 +222,56 @@
         else player.vx *= 0.85;
         player.x += player.vx;
 
-        // Screen Wrap
         if (player.x + player.width < 0) player.x = canvas.width;
         if (player.x > canvas.width) player.x = -player.width;
 
-        // 4. Collision & Camera Logic
-        platforms.forEach(plat => {
-            // Collision Detection
+        // Platform Logic
+        platforms.forEach((plat, index) => {
+            // Move special platforms
+            if (plat.type === 'moving') {
+                plat.x += plat.speed;
+                if (plat.x < 0 || plat.x + plat.width > canvas.width) plat.speed *= -1;
+            }
+
+            // Draw Platform
+            if (plat.type === 'storm') ctx.fillStyle = "#4a4a8a"; 
+            else if (plat.type === 'moving') ctx.fillStyle = "#fbc2eb";
+            else ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+            
+            ctx.beginPath();
+            ctx.roundRect(plat.x, plat.y, plat.width, plat.height, 8);
+            ctx.fill();
+
+            // Collision
             if (player.vy > 0 && 
                 player.x < plat.x + plat.width &&
                 player.x + player.width > plat.x &&
                 player.y + player.height > plat.y &&
                 player.y + player.height < plat.y + plat.height + 10) {
-                player.vy = player.jumpForce;
+                
+                if (plat.type === 'storm') {
+                    gameOver();
+                } else {
+                    player.vy = player.jumpForce;
+                }
             }
 
-            // Draw Platforms
-            ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
-            ctx.beginPath();
-            ctx.roundRect(plat.x, plat.y, plat.width, plat.height, 8);
-            ctx.fill();
-
-            // Move Camera Down
+            // Camera & Scrolling
             if (player.y < canvas.height / 2) {
                 let diff = canvas.height / 2 - player.y;
                 player.y += diff;
                 plat.y += diff;
-                score += 1;
-                document.getElementById('currentHeight').innerText = Math.floor(score/10) + "m";
+                score += 0.1; // Smooth height gain
+                document.getElementById('currentHeight').innerText = Math.floor(score) + "m";
 
-                // Recycle platforms
                 if (plat.y > canvas.height) {
-                    plat.y = 0;
-                    plat.x = Math.random() * (canvas.width - plat.width);
+                    platforms.splice(index, 1);
+                    addPlatform(0);
                 }
             }
         });
 
-        // Draw Player (The Cute Cloud)
+        // Draw Player
         ctx.fillStyle = "white";
         ctx.beginPath();
         ctx.arc(player.x + 10, player.y + 15, 12, 0, Math.PI * 2);
@@ -235,20 +282,33 @@
         ctx.fillRect(player.x + 15, player.y + 12, 3, 3);
         ctx.fillRect(player.x + 25, player.y + 12, 3, 3);
 
-        // Game Over Logic
-        if (player.y > canvas.height) {
-            if (Math.floor(score/10) > bestClimb) {
-                localStorage.setItem('cloudHopperBest', Math.floor(score/10));
-            }
-            alert("Game Over! Score: " + Math.floor(score/10) + "m");
-            location.reload(); 
-        }
+        if (player.y > canvas.height) gameOver();
 
         requestAnimationFrame(update);
     }
 
-    createPlatforms();
-    update();
+    function gameOver() {
+        gameRunning = false;
+        let finalScore = Math.floor(score);
+        if (finalScore > bestClimb) {
+            localStorage.setItem('cloudHopperBest', finalScore);
+            bestClimb = finalScore;
+            document.getElementById('bestClimb').innerText = bestClimb + "m";
+        }
+        overlay.style.display = 'flex';
+        overlay.innerHTML = `
+            <h2 style="margin:0">Game Over!</h2>
+            <p style="font-size: 1.2rem; margin: 10px 0;">Height: ${finalScore}m</p>
+            <button id="startBtn" onclick="location.reload()">TRY AGAIN</button>
+        `;
+    }
+
+    startBtn.addEventListener('click', () => {
+        overlay.style.display = 'none';
+        gameRunning = true;
+        createPlatforms();
+        update();
+    });
 </script>
 
 </body>
