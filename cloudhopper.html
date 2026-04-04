@@ -17,68 +17,75 @@
         body { 
             margin: 0; font-family: 'Segoe UI', sans-serif; 
             background-color: var(--bg); color: var(--dark);
-            display: flex; flex-direction: column; min-height: 100vh;
+            min-height: 100vh;
         }
 
-        /* --- NAVIGATION --- */
         header {
             display: flex; justify-content: space-between; align-items: center; 
             padding: 12px 5%; background: white; box-shadow: 0 2px 15px rgba(0,0,0,0.05);
             position: sticky; top: 0; z-index: 1000;
         }
         .logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
-        .logo img { width: 30px; }
         .logo span { font-weight: 800; font-size: 1.2rem; color: var(--dark); }
         .nav-links { display: flex; gap: 25px; }
-        .nav-links a { text-decoration: none; color: #444; font-weight: 600; font-size: 0.95rem; }
+        .nav-links a { text-decoration: none; color: #444; font-weight: 600; }
 
-        /* --- LAYOUT MATCHING SKY MATCH --- */
+        /* --- FIXED GRID LAYOUT --- */
         .main-container {
-            display: flex; padding: 40px 5%; gap: 30px; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 40px;
+            padding: 40px 5%;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        .sidebar { width: 300px; display: flex; flex-direction: column; gap: 25px; }
-        
-        /* Dashboard Styling from Sky Match */
+        /* Dashboard Items */
+        .sidebar { display: flex; flex-direction: column; gap: 20px; }
         .dashboard-card {
-            background: white; border-radius: 20px; padding: 20px;
+            background: white; border-radius: 20px; padding: 25px;
             text-align: center; box-shadow: 0 8px 30px rgba(0,0,0,0.02);
-            border: 1px solid #f0edff;
+            border: 1.5px solid #f0edff;
         }
-        .stat-label { font-size: 0.8rem; font-weight: 700; color: var(--dark); margin-bottom: 10px; text-transform: uppercase; }
-        .stat-value { font-size: 1.8rem; font-weight: 800; color: var(--primary); }
+        .stat-label { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; margin-bottom: 5px; opacity: 0.7; }
+        .stat-value { font-size: 2rem; font-weight: 800; color: var(--primary); }
 
-        /* --- GAME AREA --- */
-        .game-section { flex: 1; position: relative; }
-        .game-wrapper {
-            background: white; border-radius: 30px; padding: 25px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.03); display: flex; flex-direction: column; align-items: center;
+        /* Game Container */
+        .game-section { 
+            background: white; border-radius: 30px; padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.03);
+            display: flex; flex-direction: column; align-items: center;
+            position: relative;
         }
+
+        .canvas-area { position: relative; width: 350px; height: 500px; }
         #gameCanvas {
             background: linear-gradient(to bottom, #e0c3fc 0%, #8ec5fc 100%);
-            border-radius: 20px; cursor: pointer; width: 350px; height: 500px;
+            border-radius: 20px; display: block;
         }
 
         #overlay {
-            position: absolute; top: 25px; width: 350px; height: 500px;
-            background: rgba(45, 45, 106, 0.85); border-radius: 20px;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(45, 45, 106, 0.9); border-radius: 20px;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             color: white; z-index: 10;
         }
-        .btn-start {
-            background: white; color: var(--primary); border: none; padding: 14px 40px;
-            border-radius: 50px; font-weight: 800; cursor: pointer; transition: 0.3s;
-        }
-        .btn-start:hover { transform: scale(1.05); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
 
-        @media (max-width: 900px) { .main-container { flex-direction: column; } }
+        .btn-action {
+            background: white; color: var(--primary); border: none; padding: 15px 45px;
+            border-radius: 50px; font-weight: 800; cursor: pointer; margin-top: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .main-container { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
 
 <header>
     <a href="index.html" class="logo">
-        <img src="https://img.icons8.com/fluency/48/cloud.png" alt="Cloud">
+        <img src="https://img.icons8.com/fluency/48/cloud.png" width="30">
         <span>ShareTheSky</span>
     </a>
     <nav class="nav-links"><a href="index.html">Home</a><a href="about.html">About</a></nav>
@@ -87,26 +94,26 @@
 <div class="main-container">
     <div class="sidebar">
         <div class="dashboard-card">
-            <div class="stat-label">Current Height</div>
+            <div class="stat-label">Height</div>
             <div class="stat-value" id="currentHeight">0m</div>
         </div>
         <div class="dashboard-card">
-            <div class="stat-label">Best Climb</div>
+            <div class="stat-label">Best</div>
             <div class="stat-value" id="bestClimb">0m</div>
         </div>
-        <div class="dashboard-card" style="text-align: left;">
-            <p style="font-size: 0.9rem; margin: 0;"><b>Arrows:</b> Move Cloud</p>
-            <p style="font-size: 0.9rem; margin: 8px 0;"><b>Pink:</b> Moves</p>
-            <p style="font-size: 0.9rem; margin: 0; color: #ff6b6b;"><b>Dark:</b> Avoid!</p>
+        <div class="dashboard-card" style="text-align: left; font-size: 0.85rem;">
+            <p><b>Arrows:</b> Move</p>
+            <p><b>Pink:</b> Moving Cloud</p>
+            <p style="color: #ff6b6b;"><b>Dark:</b> Avoid Storms!</p>
         </div>
     </div>
 
     <div class="game-section">
-        <div class="game-wrapper">
-            <h2 style="margin: 0 0 20px 0; color: var(--dark);">Cloud Hopper</h2>
+        <h2 style="margin-top: 0;">Cloud Hopper</h2>
+        <div class="canvas-area">
             <div id="overlay">
-                <h2 style="margin-bottom: 20px;">Ready to Hop?</h2>
-                <button class="btn-start" id="startBtn">START GAME</button>
+                <h2>Cloud Hopper</h2>
+                <button class="btn-action" id="startBtn">START GAME</button>
             </div>
             <canvas id="gameCanvas" width="350" height="500"></canvas>
         </div>
@@ -117,24 +124,25 @@
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     const overlay = document.getElementById('overlay');
-    const startBtn = document.getElementById('startBtn');
 
     let gameRunning = false;
-    let player = { x: 155, y: 350, width: 40, height: 30, vx: 0, vy: 0, jumpForce: -10, gravity: 0.35 };
-    let platforms = [];
     let score = 0;
     let bestClimb = localStorage.getItem('cloudHopperBest') || 0;
     document.getElementById('bestClimb').innerText = bestClimb + "m";
 
-    function addPlatform(y) {
+    let player = { x: 155, y: 350, w: 40, h: 30, vx: 0, vy: 0, jump: -10, grav: 0.35 };
+    let platforms = [];
+
+    function spawnPlatform(y, isFirst = false) {
         let type = 'normal';
         let r = Math.random();
-        if (score > 15 && r > 0.7) type = 'moving';
-        if (score > 30 && r > 0.85) type = 'storm';
-
+        if (!isFirst) {
+            if (score > 20 && r > 0.7) type = 'moving';
+            if (score > 40 && r > 0.88) type = 'storm';
+        }
         platforms.push({
             x: Math.random() * (canvas.width - 70), y: y,
-            width: 70, height: 12, type: type,
+            w: 70, h: 12, type: type,
             speed: (Math.random() > 0.5 ? 1 : -1) * (1.5 + Math.random())
         });
     }
@@ -142,78 +150,87 @@
     function init() {
         platforms = [];
         score = 0;
-        player.y = 350; player.vy = 0;
-        platforms.push({ x: 140, y: 410, width: 70, height: 12, type: 'normal' });
-        for (let i = 0; i < 6; i++) addPlatform(i * 80);
+        player.x = 155; player.y = 350; player.vy = 0;
+        // Initial solid platform
+        platforms.push({ x: 140, y: 420, w: 70, h: 12, type: 'normal' });
+        for (let i = 0; i < 6; i++) spawnPlatform(i * 80);
     }
 
     let keys = {};
-    window.addEventListener('keydown', e => keys[e.code] = true);
-    window.addEventListener('keyup', e => keys[e.code] = false);
+    window.onkeydown = e => keys[e.code] = true;
+    window.onkeyup = e => keys[e.code] = false;
 
     function loop() {
         if (!gameRunning) return;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        player.vy += player.gravity;
+        // Player physics
+        player.vy += player.grav;
         player.y += player.vy;
         if (keys['ArrowLeft']) player.vx = -5;
         else if (keys['ArrowRight']) player.vx = 5;
         else player.vx *= 0.8;
         player.x += player.vx;
 
-        if (player.x < -20) player.x = canvas.width;
-        if (player.x > canvas.width) player.x = -20;
+        // Wrap around
+        if (player.x < -player.w) player.x = canvas.width;
+        if (player.x > canvas.width) player.x = -player.w;
 
         platforms.forEach((p, i) => {
             if (p.type === 'moving') {
                 p.x += p.speed;
-                if (p.x < 0 || p.x + p.width > canvas.width) p.speed *= -1;
+                if (p.x < 0 || p.x + p.w > canvas.width) p.speed *= -1;
             }
 
-            // Draw
+            // Draw Platforms - Using fillRect for better reliability
             ctx.fillStyle = p.type === 'storm' ? '#4a4a8a' : (p.type === 'moving' ? '#fbc2eb' : 'white');
-            ctx.beginPath(); ctx.roundRect(p.x, p.y, p.width, p.height, 8); ctx.fill();
+            ctx.fillRect(p.x, p.y, p.w, p.h);
 
             // Collision
-            if (player.vy > 0 && player.x < p.x + p.width && player.x + player.width > p.x && 
-                player.y + player.height > p.y && player.y + player.height < p.y + p.height + 10) {
-                if (p.type === 'storm') endGame(); else player.vy = player.jumpForce;
+            if (player.vy > 0 && player.x < p.x + p.w && player.x + player.w > p.x && 
+                player.y + player.h > p.y && player.y + player.h < p.y + p.h + 10) {
+                if (p.type === 'storm') gameOver(); else player.vy = player.jump;
             }
 
-            // Scroll
+            // Camera Scroll
             if (player.y < 250) {
-                let d = 250 - player.y;
-                player.y += d; p.y += d;
-                score += d/100;
+                let diff = 250 - player.y;
+                player.y += diff;
+                p.y += diff;
+                score += diff / 50;
                 document.getElementById('currentHeight').innerText = Math.floor(score) + "m";
-                if (p.y > canvas.height) { platforms.splice(i, 1); addPlatform(0); }
+                if (p.y > canvas.height) { platforms.splice(i, 1); spawnPlatform(0); }
             }
         });
 
-        // Cloud Player
+        // Draw Cloud
         ctx.fillStyle = "white";
         ctx.beginPath();
-        ctx.arc(player.x+10, player.y+15, 12, 0, 7);
-        ctx.arc(player.x+20, player.y+10, 15, 0, 7);
-        ctx.arc(player.x+30, player.y+15, 12, 0, 7);
+        ctx.arc(player.x+10, player.y+15, 12, 0, Math.PI*2);
+        ctx.arc(player.x+20, player.y+10, 15, 0, Math.PI*2);
+        ctx.arc(player.x+30, player.y+15, 12, 0, Math.PI*2);
         ctx.fill();
         ctx.fillStyle = "#2d2d6a";
         ctx.fillRect(player.x+15, player.y+12, 3, 3);
         ctx.fillRect(player.x+25, player.y+12, 3, 3);
 
-        if (player.y > canvas.height) endGame();
+        if (player.y > canvas.height) gameOver();
         requestAnimationFrame(loop);
     }
 
-    function endGame() {
+    function gameOver() {
         gameRunning = false;
         if (Math.floor(score) > bestClimb) localStorage.setItem('cloudHopperBest', Math.floor(score));
         overlay.style.display = 'flex';
-        overlay.innerHTML = `<h2>Game Over!</h2><p>${Math.floor(score)}m</p><button class="btn-start" onclick="location.reload()">RETRY</button>`;
+        overlay.innerHTML = `<h2>Game Over</h2><p>${Math.floor(score)}m</p><button class="btn-action" onclick="location.reload()">RETRY</button>`;
     }
 
-    startBtn.onclick = () => { overlay.style.display = 'none'; gameRunning = true; init(); loop(); };
+    document.getElementById('startBtn').onclick = () => {
+        overlay.style.display = 'none';
+        gameRunning = true;
+        init();
+        loop();
+    };
 </script>
 </body>
 </html>
