@@ -3748,3 +3748,88 @@ footer p {
     color: #a18cd1;
     border-bottom: 2px solid #a18cd1;
 }
+/* --- Synced Header & Navigation --- */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 8%; /* Matched padding */
+    background: white;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo a { 
+    text-decoration: none; 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    transition: transform 0.3s ease; /* Smooth hover for logo */
+}
+
+.logo a:hover {
+    transform: scale(1.02);
+}
+
+.logo img {
+    width: 35px; /* Size sync */
+    height: auto;
+}
+
+.logo span { 
+    font-weight: 800; 
+    color: #2d2d6a; 
+    font-size: 1.5rem; /* Larger font to match homepage */
+    letter-spacing: -1px;
+}
+
+.nav-links { 
+    display: flex; 
+    align-items: center; 
+    gap: 10px;
+}
+
+.nav-links a, .dropbtn {
+    text-decoration: none;
+    color: #555;
+    padding: 8px 15px;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: 0.3s;
+    font-family: var(--main-font);
+    cursor: pointer;
+    background: none;
+    border: none;
+}
+
+/* Dropdown styling to match the clean homepage look */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: white;
+    min-width: 180px;
+    box-shadow: 0px 15px 35px rgba(0,0,0,0.1);
+    border-radius: 15px;
+    padding: 10px 0;
+    border: 1px solid rgba(0,0,0,0.05);
+    overflow: hidden;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.dropdown-content a {
+    display: block;
+    color: #444;
+    padding: 12px 20px;
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.dropdown:hover .dropdown-content { display: block; }
