@@ -4,78 +4,67 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gallery - ShareTheSky</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- RESTORED GLOBAL & HEADER STYLES (MATCHING IMAGE 16) --- */
         body { 
             font-family: 'Inter', sans-serif; 
             margin: 0; 
-            background: #f5f7fa; /* Original background color */
+            background: #f5f7fa; 
+            color: #333;
         }
 
+        /* --- RESTORED LOGO & HEADER STYLING (IMAGE 9) --- */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 5%; /* Restored original padding */
+            padding: 15px 5%;
             background: white;
             position: sticky;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03); /* Lighter shadow */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
         }
 
         .logo a {
             display: flex;
             align-items: center;
+            gap: 10px; /* Space between cloud and text */
             text-decoration: none;
-            color: #2d2d6a; /* Original logo color */
+            color: #2d2d6a; /* Original navy blue */
             font-size: 1.5rem;
             font-weight: 700;
         }
 
-        /* Nav Links - Synced with Image 16 (no underline) */
+        .header-logo-img {
+            width: 32px;
+            height: auto;
+        }
+
         .nav-links { display: flex; align-items: center; gap: 25px; }
         .nav-links a { text-decoration: none; color: #4a4a8a; font-weight: 600; transition: 0.3s; }
-        .nav-links a:hover { color: #a18cd1; }
 
-        /* --- RESTORED DROPDOWN MENU --- */
+        /* Dropdown Menu Styling */
         .dropdown { position: relative; display: inline-block; }
         .dropbtn {
             background: none; border: none; color: #4a4a8a;
             font-size: 16px; font-weight: 600; cursor: pointer;
-            padding: 10px 15px; font-family: inherit;
+            padding: 10px; font-family: inherit;
         }
         .dropdown-content {
             display: none; position: absolute; background-color: white;
-            min-width: 180px; box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
-            border-radius: 12px; z-index: 100; top: 100%; overflow: hidden;
-            right: 0;
+            min-width: 160px; box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
+            border-radius: 12px; z-index: 100; right: 0; overflow: hidden;
         }
         .dropdown-content a {
             color: #333; padding: 12px 16px; text-decoration: none;
-            display: block; font-size: 14px; transition: background 0.2s;
+            display: block; font-size: 14px;
         }
-        .dropdown-content a:hover { background-color: #f8f6ff; color: #a18cd1; }
+        .dropdown-content a:hover { background: #f8f6ff; color: #a18cd1; }
         .dropdown:hover .dropdown-content { display: block; }
 
-        /* Mobile Menu Button - Original */
-        .menu-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
-        .menu-toggle span { width: 25px; height: 3px; background-color: #a18cd1; border-radius: 3px; }
-
-        @media (max-width: 768px) {
-            .menu-toggle { display: flex; }
-            .nav-links {
-                display: none; flex-direction: column; position: absolute;
-                top: 70px; right: 20px; background: white; width: 200px;
-                padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            }
-            .nav-links.active { display: flex; }
-        }
-
-        /* --- RESTORED PINTEREST GRID STYLES --- */
+        /* --- GRID & CARDS --- */
         .pinterest-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -91,8 +80,6 @@
             overflow: hidden;
             box-shadow: 0 10px 20px rgba(0,0,0,0.05);
             transition: transform 0.3s ease;
-            display: flex;
-            flex-direction: column;
         }
         .pin-card:hover { transform: translateY(-5px); }
 
@@ -100,7 +87,6 @@
             position: relative;
             width: 100%;
             aspect-ratio: 4 / 5;
-            overflow: hidden;
             background: #eee;
         }
         .pin-img {
@@ -108,7 +94,7 @@
             object-fit: cover; cursor: zoom-in;
         }
 
-        /* Original Action Buttons Placement */
+        /* Top Action Buttons */
         .pin-top-actions {
             position: absolute; top: 12px; right: 12px;
             display: flex; gap: 8px; z-index: 10;
@@ -117,10 +103,10 @@
             background: white; border: none; width: 36px; height: 36px;
             border-radius: 50%; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             display: flex; align-items: center; justify-content: center;
-            text-decoration: none; font-size: 16px;
+            font-size: 16px; text-decoration: none;
         }
 
-        /* Fixed Like Button with strict check */
+        /* Like Button */
         .pin-like-overlay {
             position: absolute; bottom: 12px; right: 12px;
             background: rgba(255,255,255,0.9);
@@ -128,24 +114,13 @@
             font-weight: 700; cursor: pointer;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             display: flex; align-items: center; gap: 6px;
-            transition: 0.3s; z-index: 10;
         }
-        .pin-like-overlay.liked {
-            background: #ff4757 !important;
-            color: white !important;
-        }
+        .pin-like-overlay.liked { background: #ff4757 !important; color: white !important; }
 
-        /* Restored Content area below image */
-        .pin-content { padding: 15px 20px 20px; }
-        .pin-content h3 { margin: 0 0 10px 0; font-size: 1.2rem; color: #2d2d6a; font-weight: 600; }
-        .pin-footer { display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; color: #888; }
-        .pin-delete { background: #fff0f0; color: #ff4757; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; }
-
-        /* Mobile adjustments for the grid */
-        @media (max-width: 600px) {
-            .pinterest-grid { grid-template-columns: 1fr; padding: 10px 20px; }
-            .pin-image-wrapper { aspect-ratio: 1 / 1; }
-        }
+        .pin-content { padding: 15px 20px; }
+        .pin-content h3 { margin: 0 0 8px 0; color: #2d2d6a; font-size: 1.15rem; }
+        .pin-footer { display: flex; justify-content: space-between; align-items: center; color: #888; font-size: 0.9rem; }
+        .pin-delete { background: #fff0f0; color: #ff4757; border: none; padding: 5px 10px; border-radius: 8px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -153,18 +128,17 @@
 <header>
     <h1 class="logo">
         <a href="index.html">
-            ShareTheSky
+            <img src="https://img.icons8.com/fluency/48/cloud.png" class="header-logo-img" alt="Cloud Logo">
+            <span>ShareTheSky</span>
         </a>
     </h1>
     
-    <div class="menu-toggle" id="mobile-menu"><span></span><span></span><span></span></div>
-
-    <nav class="nav-links" id="nav-list">
+    <nav class="nav-links">
         <a href="index.html">Home</a>
         <div class="dropdown">
             <button class="dropbtn">Explore ▾</button>
             <div class="dropdown-content">
-                <a href="gallery.html" style="color: #a18cd1; font-weight: bold;">Gallery</a>
+                <a href="gallery.html" style="font-weight: bold; color: #a18cd1;">Gallery</a>
                 <a href="upload.html">Upload</a>
                 <a href="about.html">About Me</a>
             </div>
@@ -173,20 +147,17 @@
 </header>
 
 <main>
-    <section style="text-align: center; padding: 60px 20px; background: #fff; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.02);">
-        <h2 style="font-size: 2.8rem; color: #2d2d6a; font-weight: 700; margin-bottom: 10px;">Community Sky Gallery ☁️</h2>
-        <p style="color: #666; font-size: 1.1rem; max-width: 600px; margin: 0 auto;">Explore the beauty of the world, one sky at a time.</p>
+    <section style="text-align: center; padding: 50px 20px;">
+        <h2 style="font-size: 2.5rem; color: #2d2d6a; font-weight: 700;">Community Sky Gallery ☁️</h2>
+        <p style="color: #666; margin-top: 10px;">Explore the beauty of the world, one sky at a time.</p>
     </section>
     <div id="photoGallery" class="pinterest-grid"></div>
 </main>
-
-<footer><p style="text-align:center; padding: 40px 0; color:#aaa; font-size:0.9rem;">&copy; 2026 ShareTheSky — Created with love ♥</p></footer>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    // --- FIREBASE CONFIG ---
     const firebaseConfig = {
         apiKey: "AIzaSyDxgtNzywhjYGR7R2XMVobR73-SioT6v98",
         authDomain: "sharethesky-a9c7d.firebaseapp.com",
@@ -201,19 +172,11 @@
     const galleryContainer = document.getElementById("photoGallery");
     const mySkyUserId = localStorage.getItem("mySkyUserId");
 
-    // --- MOBILE MENU LOGIC ---
-    document.getElementById('mobile-menu').onclick = () => {
-        document.getElementById('nav-list').classList.toggle('active');
-    };
-
-    const q = query(collection(db, "photos"), orderBy("date", "desc"));
-
-    onSnapshot(q, (snapshot) => {
+    onSnapshot(query(collection(db, "photos"), orderBy("date", "desc")), (snapshot) => {
         galleryContainer.innerHTML = ""; 
         snapshot.forEach((docSnap) => {
             const data = docSnap.data();
             const id = docSnap.id;
-            const isOwner = data.uploaderId === mySkyUserId;
             const likedKey = 'liked_' + id;
             const isCurrentlyLiked = localStorage.getItem(likedKey) === "true";
 
@@ -221,9 +184,9 @@
             card.className = "pin-card";
             card.innerHTML = `
                 <div class="pin-image-wrapper">
-                    <img src="${data.url}" class="pin-img" alt="Sky" onclick="openZoom('${data.url}')">
+                    <img src="${data.url}" class="pin-img" onclick="openZoom('${data.url}')">
                     <div class="pin-top-actions">
-                        <a href="${data.url}" download="SkyPhoto.jpg" target="_blank" class="action-btn">📥</a>
+                        <a href="${data.url}" download class="action-btn">📥</a>
                         <button class="action-btn" onclick="openZoom('${data.url}')">🔍</button>
                     </div>
                     <button class="pin-like-overlay ${isCurrentlyLiked ? 'liked' : ''}" id="like-${id}">
@@ -234,47 +197,65 @@
                     <h3>${data.caption}</h3>
                     <div class="pin-footer">
                         <span>${data.date ? data.date.split(',')[0] : 'Today'}</span>
-                        ${isOwner ? `<button class="pin-delete" id="del-${id}">🗑️ Remove</button>` : ''}
+                        ${data.uploaderId === mySkyUserId ? `<button class="pin-delete" id="del-${id}">🗑️</button>` : ''}
                     </div>
                 </div>
             `;
             galleryContainer.appendChild(card);
 
-            // FIXED LIKE LOGIC WITH EXPLICIT TOGGLE
+            // LIKE LOGIC
             card.querySelector(`#like-${id}`).onclick = async (e) => {
                 e.stopPropagation();
-                const btn = e.currentTarget;
-                const hasAlreadyLiked = localStorage.getItem(likedKey) === "true";
-                let currentLikes = data.likes || 0;
-                let newCount;
-
-                if (hasAlreadyLiked) {
-                    newCount = Math.max(0, currentLikes - 1);
+                let likes = data.likes || 0;
+                if (localStorage.getItem(likedKey)) {
+                    likes = Math.max(0, likes - 1);
                     localStorage.removeItem(likedKey);
-                    btn.classList.remove("liked");
                 } else {
-                    newCount = currentLikes + 1;
+                    likes += 1;
                     localStorage.setItem(likedKey, "true");
-                    btn.classList.add("liked");
                 }
-                await updateDoc(doc(db, "photos", id), { likes: newCount });
+                await updateDoc(doc(db, "photos", id), { likes });
             };
 
-            if (isOwner) {
+            if (data.uploaderId === mySkyUserId) {
                 card.querySelector(`#del-${id}`).onclick = async () => {
-                    if (confirm("Delete this photo?")) await deleteDoc(doc(db, "photos", id));
+                    if (confirm("Delete photo?")) await deleteDoc(doc(db, "photos", id));
                 };
             }
         });
     });
 
-    // --- SIMPLE ZOOM FUNCTION ---
+    // --- RESTORED ZOOM PILL LOGIC ---
     window.openZoom = (url) => {
+        let scale = 1;
         const overlay = document.createElement('div');
-        overlay.style = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:2000;display:flex;justify-content:center;align-items:center;cursor:zoom-out;";
-        overlay.innerHTML = `<img src="${url}" style="max-width:90%; max-height:90%; border-radius:10px;">`;
-        overlay.onclick = () => overlay.remove();
+        overlay.style = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:2000;display:flex;flex-direction:column;justify-content:center;align-items:center;";
+        
+        overlay.innerHTML = `
+            <div style="flex-grow:1; display:flex; align-items:center; justify-content:center; width:100%; overflow:hidden;">
+                <img src="${url}" id="zoomImg" style="max-width:90%; max-height:80%; transition:0.2s; border-radius:8px;">
+            </div>
+            <div style="background:white; padding:12px 25px; border-radius:40px; display:flex; gap:20px; align-items:center; margin-bottom:40px; box-shadow:0 10px 30px rgba(0,0,0,0.5);">
+                <button id="zOut" style="background:none; border:none; cursor:pointer; font-size:20px;">➖</button>
+                <span id="zPerc" style="font-weight:700; color:#2d2d6a; min-width:50px; text-align:center;">100%</span>
+                <button id="zIn" style="background:none; border:none; cursor:pointer; font-size:20px;">➕</button>
+                <button id="zClose" style="background:#ff4757; color:white; border:none; padding:8px 18px; border-radius:20px; cursor:pointer; font-weight:600;">Close</button>
+            </div>
+        `;
         document.body.appendChild(overlay);
+
+        const img = overlay.querySelector('#zoomImg');
+        const txt = overlay.querySelector('#zPerc');
+
+        const update = () => {
+            img.style.transform = `scale(${scale})`;
+            txt.innerText = `${Math.round(scale * 100)}%`;
+        };
+
+        overlay.querySelector('#zIn').onclick = () => { if(scale < 3) scale += 0.25; update(); };
+        overlay.querySelector('#zOut').onclick = () => { if(scale > 0.5) scale -= 0.25; update(); };
+        overlay.querySelector('#zClose').onclick = () => overlay.remove();
+        overlay.onclick = (e) => { if(e.target === overlay) overlay.remove(); };
     };
 </script>
 </body>
