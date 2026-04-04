@@ -4,8 +4,57 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload - ShareTheSky</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    
+    <style>
+        /* 2. Added Mobile Navigation Logic */
+        @media (max-width: 768px) {
+            header {
+                flex-wrap: wrap;
+                position: relative;
+            }
+
+            .menu-icon {
+                display: block; /* Visible on mobile */
+                font-size: 1.5rem;
+                cursor: pointer;
+                color: #2d2d6a; /* Dark color to ensure visibility */
+            }
+
+            .nav-links {
+                display: none; /* Hidden by default */
+                width: 100%;
+                flex-direction: column;
+                background: white;
+                text-align: center;
+                padding: 15px 0;
+                position: relative; /* Pushes content down instead of covering it */
+                z-index: 1000;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links a, .dropdown {
+                margin: 10px 0;
+                width: 100%;
+            }
+
+            .dropdown-content {
+                position: static;
+                display: block;
+                box-shadow: none;
+                background: #f9f9f9;
+            }
+        }
+
+        /* Ensure icon is hidden on desktop */
+        .menu-icon { display: none; }
+    </style>
 </head>
 <body>
 
@@ -16,7 +65,12 @@
             <span>ShareTheSky</span>
         </a>
     </div>
-    <nav class="nav-links">
+
+    <div class="menu-icon" onclick="toggleMobileMenu()">
+        <i class="fa-solid fa-bars"></i>
+    </div>
+
+    <nav class="nav-links" id="navLinks">
         <a href="index.html">Home</a>
         <div class="dropdown">
             <button class="dropbtn">Explore ▾</button>
@@ -57,6 +111,15 @@
     <p>© 2026 ShareTheSky — Created with love ♥</p>
 </footer>
 
+<script>
+    function toggleMobileMenu() {
+        const nav = document.getElementById("navLinks");
+        if (nav) {
+            nav.classList.toggle("active");
+        }
+    }
+</script>
+
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -92,7 +155,8 @@
             previewImage.src = URL.createObjectURL(file);
             previewImage.style.display = "block";
             uploadText.innerText = "Selected: " + file.name;
-            document.querySelector(".upload-illustration").style.display = "none";
+            const illustration = document.querySelector(".upload-illustration");
+            if (illustration) illustration.style.display = "none";
         }
     });
 
@@ -133,7 +197,7 @@
                 url: data.secure_url,
                 caption: userCaption,
                 date: new Date().toLocaleString(),
-                likes: 0,
+                likes: [], // Fixed: Array required for your Gallery code to work
                 uploaderId: mySkyUserId 
             });
 
