@@ -49,7 +49,40 @@
             font-weight: 600;
             cursor: pointer;
             background: none; border: none;
+            font-family: var(--main-font);
         }
+
+        /* --- Vertical Dropdown Fix --- */
+        .dropdown { position: relative; }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%; right: 0;
+            background-color: white;
+            min-width: 160px;
+            box-shadow: 0px 10px 25px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            padding: 10px 0;
+            z-index: 2000;
+            text-align: center; /* Matches your Upload page centering */
+        }
+
+        .dropdown-content a {
+            display: block !important; /* FORCES VERTICAL STACK */
+            margin: 0 !important;       /* REMOVES HORIZONTAL GAP */
+            padding: 12px 20px;
+            color: #444;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f8f9ff;
+            color: var(--primary-purple);
+        }
+
+        .dropdown:hover .dropdown-content { display: block; }
 
         /* 2. THE JUMP BAR STYLING */
         .jump-bar {
@@ -59,7 +92,7 @@
             padding: 15px;
             background: white;
             position: sticky;
-            top: 70px; /* Right below header */
+            top: 70px;
             z-index: 999;
             box-shadow: 0 4px 10px rgba(0,0,0,0.03);
             overflow-x: auto;
@@ -79,28 +112,13 @@
 
         .jump-bar a:hover { background: var(--primary-purple); color: white; }
 
-        /* --- Dropdown --- */
-        .dropdown { position: relative; }
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            top: 100%; right: 0;
-            background-color: white;
-            min-width: 160px;
-            box-shadow: 0px 10px 25px rgba(0,0,0,0.1);
-            border-radius: 12px;
-            padding: 10px 0;
-            z-index: 2000;
-        }
-        .dropdown:hover .dropdown-content { display: block; }
-
         /* 3. SECTION HEADINGS */
         .category-section { padding-top: 40px; }
         .category-title {
             text-align: center;
             font-weight: 800;
             color: var(--dark-text);
-            scroll-margin-top: 140px; /* Prevents header from covering title after jump */
+            scroll-margin-top: 140px;
             margin-bottom: 10px;
         }
 
@@ -229,15 +247,12 @@
     function loadCategorizedPhotos() {
         const q = query(collection(db, "photos"), orderBy("date", "desc"));
         onSnapshot(q, (snap) => {
-            // Clear all grids first
             const grids = ["Sunrise", "Sunset", "Cloudy", "Moody", "Night", "Azure"];
             grids.forEach(g => document.getElementById(`grid-${g}`).innerHTML = "");
 
             snap.forEach(docSnap => {
                 const data = docSnap.data();
                 const id = docSnap.id;
-                
-                // FALLBACK LOGIC: If existing photo has no category, put it in 'Cloudy'
                 const category = data.category || "Cloudy"; 
                 
                 const likes = Array.isArray(data.likes) ? data.likes : [];
@@ -257,7 +272,6 @@
                         </div>
                     </div>`;
                 
-                // Append to the correct grid
                 const targetGrid = document.getElementById(`grid-${category}`);
                 if (targetGrid) targetGrid.innerHTML += cardHTML;
             });
