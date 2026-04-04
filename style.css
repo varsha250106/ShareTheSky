@@ -4299,3 +4299,14 @@ header {
     background-color: #f8f9ff;
     color: var(--primary-purple);
 }
+@keyframes shake {
+  0% { transform: translateX(0) rotateY(180deg); }
+  25% { transform: translateX(-5px) rotateY(180deg); }
+  75% { transform: translateX(5px) rotateY(180deg); }
+  100% { transform: translateX(0) rotateY(180deg); }
+}
+
+.card.mismatch {
+  animation: shake 0.3s linear;
+  border: 2px solid #ff4757; /* Red flash for error */
+}
