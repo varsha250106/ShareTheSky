@@ -4,79 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload - ShareTheSky</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
     <style>
-        body { font-family: 'Inter', sans-serif; margin: 0; background: #f0f2f5; display: flex; flex-direction: column; min-height: 100vh; }
-        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
-        .logo a { display: flex; align-items: center; gap: 12px; text-decoration: none; color: #2d2d6a; font-size: 1.5rem; font-weight: 700; }
-        .nav-links { display: flex; align-items: center; gap: 25px; }
-        .nav-links a { text-decoration: none; color: #4a4a8a; font-weight: 600; }
-        .upload-card { background: white; padding: 40px; border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.05); width: 100%; max-width: 450px; margin: 50px auto; text-align: center; }
-        .drop-zone { border: 2px dashed #d1d8e0; padding: 40px; border-radius: 20px; cursor: pointer; margin-bottom: 20px; }
-        .drop-zone:hover { border-color: #a18cd1; background: #f8f6ff; }
-        .btn-share { width: 100%; padding: 15px; border-radius: 50px; border: none; background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%); color: white; font-weight: 700; cursor: pointer; }
+        .upload-card {
+            max-width: 500px; margin: 50px auto; background: white;
+            padding: 30px; border-radius: 20px; text-align: center;
+        }
+        .drop-zone {
+            border: 2px dashed #ccc; padding: 40px; border-radius: 15px;
+            margin-bottom: 20px; cursor: pointer;
+        }
+        input[type="text"] {
+            width: 100%; padding: 12px; margin-bottom: 20px;
+            border: 1px solid #ddd; border-radius: 8px;
+        }
     </style>
 </head>
 <body>
-<header>
-    <h1 class="logo"><a href="index.html"><img src="https://img.icons8.com/fluency/48/cloud.png" style="width:35px;"> <span>ShareTheSky</span></a></h1>
-    <nav class="nav-links">
-        <a href="index.html">Home</a>
-        <a href="gallery.html">Gallery</a>
-        <a href="upload.html" style="color:#a18cd1; font-weight:700;">Upload</a>
-    </nav>
-</header>
-<main>
+    <header>
+        <div class="logo"><a href="index.html"><img src="https://img.icons8.com/fluency/48/cloud.png" class="floating-cloud"><span>ShareTheSky</span></a></div>
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <div class="dropdown">
+                <button class="dropbtn">Explore ▾</button>
+                <div class="dropdown-content">
+                    <a href="gallery.html">Gallery</a>
+                    <a href="upload.html">Upload</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
     <div class="upload-card">
-        <h2>Post Your Sky 🌤️</h2>
-        <div class="drop-zone" id="dropZone">Click or Drag Sky Image Here</div>
-        <input type="file" id="fileInput" hidden accept="image/*">
-        <input type="text" id="captionInput" placeholder="Add a caption..." style="width:90%; padding:12px; border-radius:10px; border:1px solid #ddd; margin-bottom:20px;">
-        <button class="btn-share" id="uploadBtn">Share Now</button>
-        <p id="status" style="margin-top:15px; font-size:14px;"></p>
+        <h2>Upload Your Sky Photo 🌟</h2>
+        <div class="drop-zone" id="dropZone">
+            <img src="https://img.icons8.com/fluency/48/cloud.png" style="width:50px"><br>
+            Click or Drag photo here
+        </div>
+        <input type="text" id="caption" placeholder="Write a caption...">
+        <button class="main-btn" style="width:100%; border:none; cursor:pointer">Share the Sky</button>
     </div>
-</main>
-
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-    const firebaseConfig = { apiKey: "AIzaSyDxgtNzywhjYGR7R2XMVobR73-SioT6v98", authDomain: "sharethesky-a9c7d.firebaseapp.com", projectId: "sharethesky-a9c7d", storageBucket: "sharethesky-a9c7d.firebasestorage.app", messagingSenderId: "1047232389865", appId: "1:1047232389865:web:37694bf13bcef31f570678" };
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    const dropZone = document.getElementById('dropZone');
-    const fileInput = document.getElementById('fileInput');
-    const uploadBtn = document.getElementById('uploadBtn');
-    const status = document.getElementById('status');
-
-    dropZone.onclick = () => fileInput.click();
-    fileInput.onchange = () => dropZone.innerText = fileInput.files[0].name;
-
-    uploadBtn.onclick = async () => {
-        const file = fileInput.files[0];
-        if(!file) return alert("Select a photo!");
-        
-        status.innerText = "Uploading to Cloud...";
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('upload_preset', 'ml_default'); 
-
-        try {
-            const res = await fetch('https://api.cloudinary.com/v1_1/dwuz6pxt6/image/upload', { method: 'POST', body: formData });
-            const data = await res.json();
-            
-            await addDoc(collection(db, "photos"), {
-                url: data.secure_url,
-                caption: document.getElementById('captionInput').value,
-                date: Date.now()
-            });
-            
-            status.innerText = "Success! Redirecting...";
-            setTimeout(() => window.location.href = "gallery.html", 1500);
-        } catch (e) {
-            status.innerText = "Upload failed. Try again.";
-        }
-    };
-</script>
 </body>
 </html>
