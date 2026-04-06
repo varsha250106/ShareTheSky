@@ -56,12 +56,15 @@
 <button id="modToggle" onclick="toggleModMode()">Admin View</button>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
+    // Remove type="module" from the tag above to fix the global variable error
     const SUPABASE_URL = 'https://quunbblagrcwayyeiahv.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF1dW5iYmxhZ3Jjd2F5eWVpYWh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzNjQ4MjcsImV4cCI6MjA5MDk0MDgyN30.ylX47zmQXI_kAkY3wQUyJz0BqZ7xZ3hZARonm80Id3M';
+    
+    // Initialize the client
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     
-    // Ensure user ID exists for likes
     const myId = localStorage.getItem("mySkyUserId") || "user_" + Math.random().toString(36).substr(2, 9);
     localStorage.setItem("mySkyUserId", myId);
     
@@ -70,21 +73,20 @@
     async function loadGallery() {
         const grid = document.getElementById('grid');
         
-        // FIX: Handles both FALSE and NULL values so older images show up
+        // This query handles the FALSE and NULL columns correctly
         let query = supabaseClient.from('photos').select('*, likes(count)');
         
         if (isModMode) {
             query = query.eq('is_reported', true);
         } else {
-            // This 'or' allows images where is_reported is false OR is empty (null)
             query = query.or('is_reported.eq.false,is_reported.is.null');
         }
         
         const { data: photos, error } = await query.order('id', { ascending: false });
 
         if (error) {
-            console.error("Gallery Error:", error.message);
-            grid.innerHTML = `<p style="text-align:center; grid-column: 1/-1;">Error loading skies. Check console.</p>`;
+            console.error("Detailed Supabase Error:", error);
+            grid.innerHTML = `<p style="text-align:center; width:100%;">Connection Error: ${error.message}</p>`;
             return;
         }
 
@@ -94,7 +96,7 @@
         grid.innerHTML = '';
         
         if (!photos || photos.length === 0) {
-            grid.innerHTML = `<p style="text-align:center; grid-column: 1/-1;">No skies found here yet! ☁️</p>`;
+            grid.innerHTML = `<p style="text-align:center; width:100%;">No skies found! ☁️</p>`;
             return;
         }
 
@@ -107,11 +109,10 @@
                 <div class="card-actions">
                     ${!isModMode ? `<button class="action-btn" onclick="reportSky(${photo.id})" title="Report"><i class="fa-solid fa-flag"></i></button>` : ''}
                     ${isOwner || isModMode ? `<button class="action-btn" onclick="deleteSky(${photo.id})" style="color:var(--danger);"><i class="fa-solid fa-trash"></i></button>` : ''}
-                    ${isModMode ? `<button class="action-btn" onclick="clearReport(${photo.id})" style="color:green;"><i class="fa-solid fa-check"></i></button>` : ''}
                 </div>
                 <img src="${photo.url}" loading="lazy">
                 <div class="sky-info">
-                    <h3 style="margin:0; font-size:0.9rem;">${photo.caption || 'A beautiful sky'}</h3>
+                    <h3 style="margin:0; font-size:0.9rem;">${photo.caption || 'Beautiful View'}</h3>
                     <div class="like-container">
                         <i class="fa-heart ${isLiked ? 'fa-solid liked' : 'fa-regular'} like-btn" onclick="toggleLike(this, ${photo.id})"></i>
                         <span class="sky-tag">${photo.category}</span>
@@ -121,6 +122,7 @@
         });
     }
 
+    // Attach functions to window so they work with onclick attributes
     window.toggleLike = async (el, photoId) => {
         if (el.classList.contains('liked')) {
             await supabaseClient.from('likes').delete().eq('photo_id', photoId).eq('user_id', myId);
@@ -131,11 +133,22 @@
         }
     };
 
-    window.reportSky = async (id) => { if(confirm("Report this photo for review?")) { await supabaseClient.from('photos').update({ is_reported: true }).eq('id', id); loadGallery(); } };
-    window.clearReport = async (id) => { await supabaseClient.from('photos').update({ is_reported: false }).eq('id', id); loadGallery(); };
-    window.deleteSky = async (id) => { if(confirm("Delete this sky permanently?")) { await supabaseClient.from('photos').delete().eq('id', id); loadGallery(); } };
+    window.reportSky = async (id) => { 
+        if(confirm("Report this photo?")) { 
+            await supabaseClient.from('photos').update({ is_reported: true }).eq('id', id); 
+            loadGallery(); 
+        } 
+    };
+    
+    window.deleteSky = async (id) => { 
+        if(confirm("Delete permanently?")) { 
+            await supabaseClient.from('photos').delete().eq('id', id); 
+            loadGallery(); 
+        } 
+    };
+
     window.toggleModMode = () => { 
-        const pass = prompt("Enter Admin Password:");
+        const pass = prompt("Admin Pass:");
         if (pass === "skyadmin123") { 
             isModMode = !isModMode; 
             document.getElementById('modToggle').innerText = isModMode ? "Public View" : "Admin View";
@@ -143,6 +156,7 @@
         } 
     };
 
+    // Start the loading process
     loadGallery();
 </script>
 </body>
