@@ -2,217 +2,161 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cotton Loop - ShareTheSky</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery - ShareTheSky</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
     <style>
-        body { 
-            margin: 0; padding: 0; overflow: hidden; 
-            background: #f0f4f8; font-family: 'Segoe UI', sans-serif; 
-            touch-action: none; height: 100vh;
-            display: flex; align-items: center; justify-content: center;
+        .gallery-grid { columns: 3 250px; column-gap: 20px; width: 92%; max-width: 1200px; margin: 40px auto; }
+        
+        .sky-card { 
+            break-inside: avoid; margin-bottom: 20px; background: white; 
+            border-radius: 20px; overflow: hidden; position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: 0.3s;
         }
         
-        #game-container { 
-            position: relative; width: 450px; height: 85vh;
-            max-width: 95vw; 
-            background: linear-gradient(180deg, #ffffff 0%, #d4e3ff 100%); 
-            border-radius: 40px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.05); overflow: hidden;
-            border: 6px solid white;
-        }
+        .sky-card:hover { transform: translateY(-5px); }
+        .sky-card img { width: 100%; display: block; cursor: zoom-in; }
 
-        canvas { display: block; width: 100%; height: 100%; }
-
-        .ui { 
-            position: absolute; inset: 0; display: flex; flex-direction: column; 
-            align-items: center; justify-content: center; pointer-events: none; 
-            color: #5a7fa3; z-index: 10;
+        .card-actions {
+            position: absolute; top: 12px; right: 12px;
+            display: flex; gap: 8px; opacity: 0; transition: 0.3s;
         }
+        .sky-card:hover .card-actions { opacity: 1; }
 
-        #score-board { 
-            position: absolute; top: 40px; font-size: 3.5rem; 
-            font-weight: 200; letter-spacing: 8px; color: #5a7fa3;
-            opacity: 0.6;
+        .action-btn {
+            background: rgba(255,255,255,0.9); border: none; width: 35px; height: 35px;
+            border-radius: 50%; cursor: pointer; color: #2d2d6a; display: flex;
+            align-items: center; justify-content: center; font-size: 0.9rem;
         }
+        .delete-btn { color: #ff4d4d; }
 
-        .card { 
-            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(15px); 
-            padding: 45px; border-radius: 35px; text-align: center; 
-            pointer-events: auto; box-shadow: 0 15px 40px rgba(0,0,0,0.04);
-            width: 70%;
-        }
+        .sky-info { padding: 15px; }
+        .sky-info h3 { margin: 0; font-size: 1rem; color: #2d2d6a; }
+        
+        .interaction-bar { display: flex; align-items: center; margin-top: 10px; }
+        .like-btn { cursor: pointer; font-size: 1.2rem; color: #ddd; transition: 0.3s; }
+        .like-btn.liked { color: #ff4d6d; }
+        .like-count { font-size: 0.85rem; margin-left: 6px; color: #666; font-weight: 600; }
+        .sky-tag { margin-left: auto; background: #f0f4ff; color: #6c63ff; font-size: 0.7rem; padding: 4px 10px; border-radius: 20px; }
 
-        .btn { 
-            background: #5a7fa3; color: white; border: none; padding: 16px 45px; 
-            border-radius: 50px; font-weight: bold; text-transform: uppercase;
-            letter-spacing: 2px; cursor: pointer; margin-top: 25px; 
-            transition: 0.3s ease; 
-        }
+        /* Zoom Modal */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 1000; align-items: center; justify-content: center; }
+        .modal-content { max-width: 90%; max-height: 90%; border-radius: 12px; }
+        
+        #loader { text-align: center; padding: 100px; color: #5a7fa3; font-family: 'Poppins', sans-serif; }
+
+        @media (max-width: 768px) { .gallery-grid { columns: 2 160px; column-gap: 12px; } }
     </style>
 </head>
 <body>
 
-    <div id="game-container">
-        <canvas id="gameCanvas"></canvas>
-        <div class="ui">
-            <div id="score-board">00</div>
-            <div id="start-menu" class="card">
-                <h1 style="font-weight: 400; margin: 0;">COTTON LOOP</h1>
-                <p style="opacity: 0.7; font-size: 0.9rem; margin: 15px 0;">Jump through the matching hoops</p>
-                <button class="btn" onclick="startGame()">Start Game</button>
-            </div>
-        </div>
-    </div>
+<header>
+    <div class="logo"><a href="index.html"><span>ShareTheSky</span></a></div>
+    <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="gallery.html" style="font-weight:bold; color:var(--primary-purple);">Gallery</a>
+        <a href="upload.html">Upload</a>
+    </nav>
+</header>
 
-<script>
-    const canvas = document.getElementById('gameCanvas');
-    const container = document.getElementById('game-container');
-    const ctx = canvas.getContext('2d');
-    const scoreBoard = document.getElementById('score-board');
-    const startMenu = document.getElementById('start-menu');
+<main>
+    <div id="loader"><i class="fa-solid fa-cloud-sun fa-spin fa-2x"></i><p>Painting the gallery...</p></div>
+    <div class="gallery-grid" id="grid"></div>
+</main>
 
-    const dpr = window.devicePixelRatio || 1;
-    let viewW, viewH;
+<div id="zoomModal" class="modal" onclick="this.style.display='none'">
+    <img class="modal-content" id="modalImg">
+</div>
 
-    function resize() {
-        viewW = container.clientWidth;
-        viewH = container.clientHeight;
-        canvas.width = viewW * dpr;
-        canvas.height = viewH * dpr;
-        ctx.scale(dpr, dpr);
-    }
-    resize();
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script type="module">
+    const SUPABASE_URL = 'https://quunbblagrcwayyeiahv.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF1dW5iYmxhZ3Jjd2F5eWVpYWh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzNjQ4MjcsImV4cCI6MjA5MDk0MDgyN30.ylX47zmQXI_kAkY3wQUyJz0BqZ7xZ3hZARonm80Id3M';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    let cottonBall, hoops, sparkles, gameActive, score, frame;
+    const myId = localStorage.getItem("mySkyUserId");
 
-    class Particle {
-        constructor(x, y, color) {
-            this.x = x; this.y = y;
-            this.size = Math.random() * 5 + 2;
-            this.speedX = -Math.random() * 2 - 1;
-            this.color = color; this.opacity = 0.6;
-        }
-        update() { this.x += this.speedX; this.opacity -= 0.02; }
-        draw() {
-            ctx.globalAlpha = this.opacity; ctx.fillStyle = this.color;
-            ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill();
-            ctx.globalAlpha = 1;
-        }
-    }
+    async function loadGallery() {
+        const { data: photos, error } = await supabaseClient.from('photos').select('*').order('id', { ascending: false });
+        if (error) return console.error(error);
 
-    class Hoop {
-        constructor() {
-            this.radius = 60;
-            this.x = viewW + 100;
-            this.y = Math.random() * (viewH - 200) + 100;
-            this.type = Math.random() > 0.5 ? 'pink' : 'cyan';
-            this.color = this.type === 'pink' ? '#ffb6d5' : '#b4f5ff';
-            this.passed = false;
-        }
-        draw() {
-            ctx.save();
-            ctx.lineWidth = 10;
-            ctx.strokeStyle = this.color;
-            ctx.lineCap = 'round';
-            
-            // Draw a dashed "cotton-thread" loop
-            ctx.setLineDash([15, 10]);
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2);
-            ctx.stroke();
-            
-            // Subtle glow around the hoop
-            ctx.globalAlpha = 0.2;
-            ctx.lineWidth = 20;
-            ctx.stroke();
-            ctx.restore();
-        }
-        update() { this.x -= 2.8; }
-    }
+        const grid = document.getElementById('grid');
+        grid.innerHTML = '';
+        document.getElementById('loader').style.display = 'none';
 
-    class CottonBall {
-        constructor() { 
-            this.x = 90; this.y = viewH / 2; 
-            this.v = 0; 
-            this.type = 'pink';
-            this.color = '#ffb6d5'; 
-        }
-        draw() {
-            ctx.save();
-            ctx.fillStyle = "white";
-            // Drawing the "Fluffy Cotton Ball" using multiple small circles
-            for(let i=0; i<6; i++) {
-                let angle = (i / 6) * Math.PI * 2;
-                let ox = Math.cos(angle) * 10;
-                let oy = Math.sin(angle) * 10;
-                ctx.beginPath();
-                ctx.arc(this.x + ox, this.y + oy, 12, 0, Math.PI*2);
-                ctx.fill();
-            }
-            // Center core that shows current color
-            ctx.fillStyle = this.color;
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, 8, 0, Math.PI*2);
-            ctx.fill();
-            ctx.restore();
-        }
-        update() {
-            this.v += 0.18; 
-            if (this.v > 6) this.v = 6; 
-            this.y += this.v;
-            // Trails
-            if (frame % 3 === 0) sparkles.push(new Particle(this.x - 10, this.y, this.color));
-            if (this.y > viewH || this.y < 0) endGame();
+        for (const photo of photos) {
+            const isOwner = photo.uploader_id === myId;
+            const likeCount = await getLikeCount(photo.id);
+            const hasLiked = await checkIfLiked(photo.id, myId);
+
+            const card = document.createElement('div');
+            card.className = 'sky-card';
+            card.innerHTML = `
+                <div class="card-actions">
+                    <button class="action-btn" onclick="downloadImg('${photo.url}')"><i class="fa-solid fa-download"></i></button>
+                    ${isOwner ? `<button class="action-btn delete-btn" onclick="deleteSky('${photo.id}', '${photo.url}')"><i class="fa-solid fa-trash"></i></button>` : ''}
+                </div>
+                <img src="${photo.url}" onclick="event.stopPropagation(); zoomImg('${photo.url}')" loading="lazy">
+                <div class="sky-info">
+                    <h3>${photo.caption}</h3>
+                    <div class="interaction-bar">
+                        <i class="fa-solid fa-heart like-btn ${hasLiked ? 'liked' : ''}" onclick="handleLike(this, ${photo.id})"></i>
+                        <span class="like-count" id="lc-${photo.id}">${likeCount}</span>
+                        <span class="sky-tag">${photo.category}</span>
+                    </div>
+                </div>
+            `;
+            grid.appendChild(card);
         }
     }
 
-    function startGame() {
-        resize();
-        cottonBall = new CottonBall(); hoops = []; sparkles = [];
-        score = 0; frame = 0; gameActive = true;
-        startMenu.style.display = 'none'; scoreBoard.innerText = "00";
-        animate();
+    // --- LOGIC FUNCTIONS ---
+    window.zoomImg = (url) => {
+        document.getElementById('zoomModal').style.display = 'flex';
+        document.getElementById('modalImg').src = url;
+    };
+
+    window.downloadImg = async (url) => {
+        const res = await fetch(url);
+        const blob = await res.blob();
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'ShareTheSky.jpg';
+        a.click();
+    };
+
+    window.handleLike = async (el, photoId) => {
+        if (el.classList.contains('liked')) {
+            await supabaseClient.from('likes').delete().match({ photo_id: photoId, user_id: myId });
+            el.classList.remove('liked');
+        } else {
+            await supabaseClient.from('likes').insert([{ photo_id: photoId, user_id: myId }]);
+            el.classList.add('liked');
+        }
+        document.getElementById(`lc-${photoId}`).innerText = await getLikeCount(photoId);
+    };
+
+    window.deleteSky = async (id, url) => {
+        if (!confirm("Delete this photo forever?")) return;
+        const fileName = url.split('/').pop();
+        await supabaseClient.storage.from('sky-photos').remove([fileName]);
+        await supabaseClient.from('photos').delete().eq('id', id);
+        location.reload();
+    };
+
+    async function getLikeCount(id) {
+        const { count } = await supabaseClient.from('likes').select('*', { count: 'exact', head: true }).eq('photo_id', id);
+        return count || 0;
     }
 
-    function animate() {
-        if (!gameActive) return;
-        ctx.clearRect(0, 0, viewW, viewH);
-
-        cottonBall.update(); cottonBall.draw();
-
-        if (frame % 110 === 0) hoops.push(new Hoop());
-
-        hoops.forEach((h, i) => {
-            h.update(); h.draw();
-            
-            let dist = Math.hypot(cottonBall.x - h.x, cottonBall.y - h.y);
-            if (!h.passed && dist < 50) {
-                if (h.type === cottonBall.type) {
-                    score++; h.passed = true;
-                    // Change cotton ball color
-                    cottonBall.type = (cottonBall.type === 'pink' ? 'cyan' : 'pink');
-                    cottonBall.color = (cottonBall.type === 'pink' ? '#ffb6d5' : '#b4f5ff');
-                    scoreBoard.innerText = score < 10 ? "0" + score : score;
-                } else { endGame(); }
-            }
-            if (h.x < -100) hoops.splice(i, 1);
-        });
-
-        sparkles.forEach((s, i) => { s.update(); s.draw(); if (s.opacity <= 0) sparkles.splice(i, 1); });
-        frame++; requestAnimationFrame(animate);
+    async function checkIfLiked(pId, uId) {
+        const { data } = await supabaseClient.from('likes').select('id').match({ photo_id: pId, user_id: uId });
+        return data && data.length > 0;
     }
 
-    function endGame() {
-        if (!gameActive) return;
-        gameActive = false;
-        startMenu.style.display = 'block';
-        startMenu.innerHTML = `<h2 style="font-weight:400; color:#5a7fa3; margin:0;">DRIFT ENDED</h2><p style="margin:10px 0; opacity:0.6;">Score: ${score}</p><button class="btn" onclick="startGame()">Fly Again</button>`;
-    }
-
-    const jump = (e) => { if (gameActive) { if (e) e.preventDefault(); cottonBall.v = -4.5; } };
-    window.addEventListener('touchstart', (e) => jump(e), { passive: false });
-    window.addEventListener('mousedown', () => jump());
-    window.addEventListener('resize', resize);
+    loadGallery();
 </script>
 </body>
 </html>
