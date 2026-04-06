@@ -123,27 +123,33 @@
 </header>
 <main class="upload-container">
     <section class="upload-card">
-        <h2 style="color: var(--dark-text);">Share Your View ☁️</h2>
+        <h2 style="color: var(--dark-text); margin-bottom: 20px;">
+            Share Your View <i class="fa-solid fa-cloud" style="color: var(--primary-purple); opacity: 0.5;"></i>
+        </h2>
+        
         <div id="dropArea" onclick="document.getElementById('fileInput').click()">
             <div id="promptContent">
-                <i class="fa-solid fa-cloud-arrow-up fa-3x" style="color: #6c63ff; margin-bottom: 15px;"></i>
-                <p style="color: #666;">Click to select a high-res sky photo</p>
+                <i class="fa-solid fa-cloud-arrow-up fa-3x" style="color: var(--primary-purple); margin-bottom: 15px;"></i>
+                <p style="color: #666;">Click or drag to select a high-res sky photo</p>
             </div>
             <img id="previewImage" class="preview-img">
         </div>
         
         <input type="file" id="fileInput" accept="image/*" style="display: none;">
-        <input type="text" id="captionInput" placeholder="Write a caption...">
-        
-        <select id="categorySelect">
-            <option value="" disabled selected>Select Category</option>
-            <option value="Sunrise">Sunrise 🌅</option>
-            <option value="Sunset">Sunset 🌇</option>
-            <option value="Cloudy">Cloudy ☁️</option>
-            <option value="Infinite Azure">Infinite Azure 🟦</option>
-        </select>
-        
-        <button id="uploadBtn" class="main-btn">Share the Sky</button>
+
+        <div class="upload-form-group">
+            <input type="text" id="captionInput" placeholder="Write a caption...">
+            
+            <select id="categorySelect">
+                <option value="" disabled selected>Select Category</option>
+                <option value="Sunrise">Sunrise 🌅</option>
+                <option value="Sunset">Sunset 🌇</option>
+                <option value="Cloudy">Cloudy ☁️</option>
+                <option value="Infinite Azure">Infinite Azure 🟦</option>
+            </select>
+            
+            <button id="uploadBtn" class="main-btn">Share the Sky</button>
+        </div>
     </section>
 </main>
 
