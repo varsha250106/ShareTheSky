@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root { --primary-purple: #6c63ff; --dark-text: #2d2d6a; --danger: #ff4d6d; }
-        body { font-family: 'Poppins', sans-serif; background: #f8faff; margin: 0; }
+        body { font-family: 'Poppins', sans-serif; background: #f8faff; margin: 0; overflow-x: hidden; }
         
         header { 
             display: flex; 
@@ -22,10 +22,21 @@
             z-index: 1000; 
         }
 
+        /* FIX: Animated Cloud Logo */
+        .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--dark-text); font-weight: 600; }
+        .logo i { 
+            color: var(--primary-purple); 
+            font-size: 1.5rem; 
+            animation: floatCloud 3s ease-in-out infinite; 
+        }
+        @keyframes floatCloud {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
         .nav-links { display: flex; gap: 25px; align-items: center; }
         .nav-links a { text-decoration: none; color: var(--dark-text); font-weight: 500; }
 
-        /* FIX: Explore Dropdown Menu */
         .dropdown { position: relative; display: inline-block; }
         .dropbtn { background: none; border: none; font-family: inherit; font-weight: 500; color: var(--dark-text); cursor: pointer; padding: 0; display: flex; align-items: center; gap: 5px; }
         .dropdown-content { 
@@ -37,35 +48,36 @@
         .dropdown-content a:hover { background-color: #f0f4ff; color: var(--primary-purple); }
         .dropdown:hover .dropdown-content { display: block; }
 
-        /* Gallery Layout & High-Quality Fix */
+        /* Gallery Grid */
         .gallery-grid { columns: 3 250px; column-gap: 20px; width: 92%; max-width: 1200px; margin: 40px auto; }
         .sky-card { break-inside: avoid; margin-bottom: 20px; background: white; border-radius: 20px; overflow: hidden; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: 0.3s; }
-        
-        .sky-card img { 
-            width: 100%; 
-            display: block; 
-            cursor: zoom-in; 
-            object-fit: cover; /* Prevents stretching */
-            background: #eee;
-        }
-        
+        .sky-card img { width: 100%; display: block; cursor: zoom-in; object-fit: cover; }
         .card-actions { position: absolute; top: 12px; right: 12px; display: flex; gap: 8px; opacity: 0; transition: 0.3s; z-index: 10; }
         .sky-card:hover .card-actions { opacity: 1; }
-        
         .action-btn { background: rgba(255,255,255,0.9); border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .sky-info { padding: 15px; }
-        .like-btn { cursor: pointer; font-size: 1.3rem; color: #ccc; transition: 0.3s; }
+        .like-btn { cursor: pointer; font-size: 1.3rem; color: #ccc; }
         .like-btn.liked { color: var(--danger); }
         .sky-tag { margin-left: auto; font-size: 0.7rem; background: #f0f4ff; color: var(--primary-purple); padding: 4px 10px; border-radius: 20px; }
 
-        /* Zoom Modal Style */
+        /* FIX: Zoom Modal & Control Pill */
         .zoom-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.9); z-index: 2000; display: none;
-            align-items: center; justify-content: center; cursor: zoom-out;
+            align-items: center; justify-content: center;
         }
-        .zoom-overlay img { max-width: 90%; max-height: 90%; border-radius: 10px; }
-        
+        .zoom-container { position: relative; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+        #zoomImg { max-width: 90vw; max-height: 80vh; border-radius: 15px; transition: transform 0.2s; transform: scale(1); }
+
+        .zoom-pill {
+            background: white; padding: 10px 20px; border-radius: 50px;
+            display: flex; gap: 20px; align-items: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .zoom-pill i { cursor: pointer; color: var(--dark-text); font-size: 1.2rem; transition: 0.2s; }
+        .zoom-pill i:hover { color: var(--primary-purple); }
+        .zoom-pill .fa-xmark { color: var(--danger); }
+
         #modToggle { position: fixed; bottom: 20px; right: 20px; padding: 10px 20px; border-radius: 30px; background: var(--dark-text); color: white; border: none; cursor: pointer; opacity: 0.6; }
         @media (max-width: 768px) { .gallery-grid { columns: 2 160px; } }
     </style>
@@ -73,7 +85,9 @@
 <body>
 
 <header>
-    <div class="logo"><a href="index.html" style="text-decoration:none; font-weight:600; color:var(--dark-text);">ShareTheSky</a></div>
+    <a href="index.html" class="logo">
+        <i class="fa-solid fa-cloud"></i> ShareTheSky
+    </a>
     <nav class="nav-links">
         <a href="index.html">Home</a>
         <div class="dropdown">
@@ -90,8 +104,15 @@
 
 <main><div class="gallery-grid" id="grid"></div></main>
 
-<div class="zoom-overlay" id="zoomOverlay" onclick="this.style.display='none'">
-    <img id="zoomImg" src="">
+<div class="zoom-overlay" id="zoomOverlay">
+    <div class="zoom-container">
+        <img id="zoomImg" src="">
+        <div class="zoom-pill">
+            <i class="fa-solid fa-minus" onclick="changeZoom(-0.2)"></i>
+            <i class="fa-solid fa-plus" onclick="changeZoom(0.2)"></i>
+            <i class="fa-solid fa-xmark" onclick="closeZoom()"></i>
+        </div>
+    </div>
 </div>
 
 <button id="modToggle" onclick="toggleModMode()">Admin View</button>
@@ -104,18 +125,15 @@
     const myId = localStorage.getItem("mySkyUserId") || "user_" + Math.random().toString(36).substr(2, 9);
     localStorage.setItem("mySkyUserId", myId);
     let isModMode = false;
+    let currentScale = 1;
 
     async function loadGallery() {
         const grid = document.getElementById('grid');
-        // FIX: Relationship Error
         let { data: photos, error } = await supabaseClient.from('photos').select('*')
             .or('is_reported.eq.false,is_reported.is.null')
             .order('id', { ascending: false });
 
-        if (error) {
-            grid.innerHTML = `<p style="text-align:center;">Error loading photos.</p>`;
-            return;
-        }
+        if (error) { grid.innerHTML = `<p style="text-align:center;">Connection Error.</p>`; return; }
 
         const { data: myLikes } = await supabaseClient.from('likes').select('photo_id').eq('user_id', myId);
         const myLikedIds = new Set(myLikes?.map(l => l.photo_id));
@@ -143,12 +161,24 @@
         });
     }
 
-    // Zoom Function
+    // Zoom Pill Logic
     window.openZoom = (url) => {
-        const overlay = document.getElementById('zoomOverlay');
         const img = document.getElementById('zoomImg');
         img.src = url;
-        overlay.style.display = 'flex';
+        currentScale = 1;
+        img.style.transform = `scale(${currentScale})`;
+        document.getElementById('zoomOverlay').style.display = 'flex';
+    };
+
+    window.changeZoom = (amount) => {
+        currentScale += amount;
+        if (currentScale < 0.5) currentScale = 0.5; // Min zoom
+        if (currentScale > 3) currentScale = 3;     // Max zoom
+        document.getElementById('zoomImg').style.transform = `scale(${currentScale})`;
+    };
+
+    window.closeZoom = () => {
+        document.getElementById('zoomOverlay').style.display = 'none';
     };
 
     window.toggleLike = async (el, photoId) => {
