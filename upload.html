@@ -6,230 +6,124 @@
     <title>Upload - ShareTheSky</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    
     <style>
-        .category-select {
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-            font-family: 'Poppins', sans-serif;
-            margin-top: 10px;
-            background-color: white;
-            cursor: pointer;
-        }
+        :root { --primary-purple: #6c63ff; --dark-text: #2d2d6a; }
+        body { font-family: 'Poppins', sans-serif; margin: 0; background-color: #f8faff; color: #333; }
+        
+        /* Floating Cloud Animation */
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .floating-cloud { animation: float 3s ease-in-out infinite; width: 40px; }
 
-        @media (max-width: 768px) {
-            header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                flex-wrap: wrap;
-                padding: 15px 20px;
-                background: white;
-            }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .nav-links { display: flex; align-items: center; gap: 25px; }
+        
+        .dropdown { position: relative; display: inline-block; }
+        .dropbtn { background: none; border: none; font-family: 'Poppins'; font-size: 1rem; cursor: pointer; color: #333; }
+        .dropdown-content { display: none; position: absolute; background: white; min-width: 160px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); border-radius: 12px; z-index: 1001; top: 100%; }
+        .dropdown-content a { color: #333; padding: 12px 16px; text-decoration: none; display: block; border-radius: 12px; }
+        .dropdown-content a:hover { background: #f0f4ff; color: var(--primary-purple); }
+        .dropdown:hover .dropdown-content { display: block; }
 
-            .menu-icon {
-                display: block !important;
-                font-size: 1.8rem;
-                cursor: pointer;
-                color: #2d2d6a;
-            }
-
-            .nav-links {
-                display: none;
-                width: 100%;
-                flex-direction: column;
-                background: white;
-                text-align: center;
-                padding: 20px 0;
-                position: relative;
-                border-top: 1px solid #eee;
-            }
-
-            .nav-links.active {
-                display: flex;
-            }
-
-            .nav-links a { margin: 15px 0; }
-        }
-
-        .menu-icon { display: none; }
+        .upload-card { max-width: 500px; margin: 40px auto; padding: 30px; background: white; border-radius: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.05); text-align: center; }
+        .preview-img { width: 100%; border-radius: 15px; margin-top: 15px; display: none; object-fit: cover; max-height: 300px; }
+        input, select { width: 100%; padding: 12px; margin-top: 15px; border-radius: 10px; border: 1px solid #eee; box-sizing: border-box; }
+        .main-btn { width: 100%; margin-top: 20px; padding: 15px; border-radius: 15px; background: var(--primary-purple); color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .main-btn:disabled { background: #ccc; }
     </style>
 </head>
 <body>
 
 <header>
     <div class="logo">
-        <a href="index.html">
+        <a href="index.html" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
             <img src="https://img.icons8.com/fluency/48/cloud.png" class="floating-cloud">
-            <span>ShareTheSky</span>
+            <span style="font-weight: 600; color: var(--dark-text); font-size: 1.2rem;">ShareTheSky</span>
         </a>
     </div>
-
-    <div class="menu-icon" onclick="toggleMobileMenu()">
-        <i class="fa-solid fa-bars"></i>
-    </div>
-
-    <nav class="nav-links" id="navLinks">
-        <a href="index.html">Home</a>
+    <nav class="nav-links">
+        <a href="index.html" style="text-decoration: none; color: #333;">Home</a>
         <div class="dropdown">
             <button class="dropbtn">Explore ▾</button>
             <div class="dropdown-content">
                 <a href="gallery.html">Gallery</a>
                 <a href="upload.html">Upload</a>
-                <a href="skymatch.html" style="color:var(--primary-purple); font-weight:bold;">Sky Match 🎮</a>
-                <a href="goldenhour.html">Golden Hour</a>          
-                <a href="about.html">About Me</a>
+                <a href="skymatch.html">Sky Match 🎮</a>
             </div>
         </div>
     </nav>
 </header>
 
-<main class="upload-wrapper">
+<main>
     <section class="upload-card">
-        <h2 class="upload-heading">Upload Your Sky Photo ⛅</h2>
-        <div id="dropArea" class="upload-box" onclick="document.getElementById('fileInput').click()">
-            <div class="upload-content-container">
-                <div class="upload-illustration">
-                    <img src="https://img.icons8.com/fluency/96/cloud.png" alt="Sky Icon" class="upload-icon-small">
-                </div>
-                <p id="uploadText" class="upload-instruction">Click to select or drag your sky here</p>
-                <img id="previewImage" class="preview-img" style="display:none; max-width: 100%; border-radius: 12px;">
-            </div>
+        <h2>Share Your View ☁️</h2>
+        <div id="dropArea" style="border: 2px dashed #ddd; padding: 40px; border-radius: 20px; cursor: pointer;" onclick="document.getElementById('fileInput').click()">
+            <p id="promptText">Click to select a sky photo</p>
+            <img id="previewImage" class="preview-img">
         </div>
         <input type="file" id="fileInput" accept="image/*" style="display: none;">
-        
-        <div class="input-container">
-            <input type="text" id="captionInput" placeholder="Write a caption...">
-            
-            <select id="categorySelect" class="category-select">
-                <option value="" disabled selected>Select a Category</option>
-                <option value="Sunrise">Sunrise 🌅</option>
-                <option value="Sunset">Sunset 🌇</option>
-                <option value="Cloudy">Cloudy ☁️</option>
-                <option value="Moody">Moody ⛈️</option>
-                <option value="Night">Night 🌌</option>
-                <option value="Azure">Infinite Azure 🟦</option>
-            </select>
-        </div>
-        
-        <button id="uploadBtn" class="main-upload-btn">Share the Sky</button>
+        <input type="text" id="captionInput" placeholder="Write a caption...">
+        <select id="categorySelect">
+            <option value="" disabled selected>Select Category</option>
+            <option value="Sunrise">Sunrise 🌅</option>
+            <option value="Sunset">Sunset 🌇</option>
+            <option value="Cloudy">Cloudy ☁️</option>
+            <option value="Infinite Azure">Infinite Azure 🟦</option>
+        </select>
+        <button id="uploadBtn" class="main-btn">Share the Sky</button>
     </section>
 </main>
 
-<footer>
-    <p>© 2026 ShareTheSky — Created with love ♥</p>
-</footer>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
 <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
 
-<script>
-    function toggleMobileMenu() {
-        const nav = document.getElementById("navLinks");
-        if (nav) {
-            nav.classList.toggle("active");
-        }
-    }
-</script>
-
 <script type="module">
-    // --- SUPABASE SETUP ---
     const SUPABASE_URL = 'https://quunbblagrcwayyeiahv.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_ktjfitGlZ3F-Kvrji4YYvvQ_yuY3g...'; // Paste full key from your settings
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF1dW5iYmxhZ3Jjd2F5eWVpYWh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzNjQ4MjcsImV4cCI6MjA5MDk0MDgyN30.ylX47zmQXI_kAkY3wQUyJz0BqZ7xZ3hZARonm80Id3M';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // --- USER ID ---
-    let mySkyUserId = localStorage.getItem("mySkyUserId") || "user_" + Math.random().toString(36).substr(2, 9);
-    localStorage.setItem("mySkyUserId", mySkyUserId);
+    if (!localStorage.getItem("mySkyUserId")) localStorage.setItem("mySkyUserId", "user_" + Math.random().toString(36).substr(2, 9));
+    const myId = localStorage.getItem("mySkyUserId");
 
     const fileInput = document.getElementById("fileInput");
     const previewImage = document.getElementById("previewImage");
-    const uploadText = document.getElementById("uploadText");
     const uploadBtn = document.getElementById("uploadBtn");
 
-    // Preview Logic
     fileInput.addEventListener("change", function() {
         const file = this.files[0];
-        if (file) {
-            previewImage.src = URL.createObjectURL(file);
-            previewImage.style.display = "block";
-            uploadText.innerText = "Selected: " + file.name;
-            const illustration = document.querySelector(".upload-illustration");
-            if (illustration) illustration.style.display = "none";
-        }
+        if (file) { previewImage.src = URL.createObjectURL(file); previewImage.style.display = "block"; document.getElementById("promptText").style.display = "none"; }
     });
 
-    // Upload Logic
     uploadBtn.addEventListener("click", async () => {
         const file = fileInput.files[0];
         const category = document.getElementById("categorySelect").value;
-        const userCaption = document.getElementById("captionInput").value.trim() || "Untitled Sky";
-
-        if (!file) return alert("Please select a sky photo first!");
-        if (!category) return alert("Please select a category!");
+        if (!file || !category) return alert("Please select a photo and category!");
 
         uploadBtn.disabled = true;
-        uploadBtn.innerText = "Scanning sky...";
+        uploadBtn.innerText = "Uploading to Clouds...";
 
         try {
-            // STEP 1: AI Verification
-            const model = await mobilenet.load();
-            const predictions = await model.classify(previewImage);
-            const isSky = predictions.some(p => 
-                p.className.toLowerCase().includes('sky') || 
-                p.className.toLowerCase().includes('cloud') ||
-                p.className.toLowerCase().includes('sunset')
-            );
-
-            if (!isSky) {
-                alert("☁️ Sky Check Failed: Please upload an actual sky photo.");
-                uploadBtn.disabled = false;
-                uploadBtn.innerText = "Share the Sky";
-                return;
-            }
-
-            uploadBtn.innerText = "Compressing...";
-
-            // STEP 2: Compression
-            const options = { maxSizeMB: 0.3, maxWidthOrHeight: 1920, useWebWorker: true };
-            const compressedFile = await imageCompression(file, options);
-
-            uploadBtn.innerText = "Uploading...";
-
-            // STEP 3: Storage Upload
-            const fileName = `${Date.now()}_${mySkyUserId}.jpg`;
-            const { data: uploadData, error: uploadError } = await supabaseClient.storage
-                .from('sky-photos')
-                .upload(fileName, compressedFile);
-
-            if (uploadError) throw uploadError;
+            // COMPRESSION
+            const compressed = await imageCompression(file, { maxSizeMB: 0.3, maxWidthOrHeight: 1920 });
+            const fileName = `${Date.now()}-${file.name}`;
+            
+            // STORAGE UPLOAD
+            const { data: upData, error: upErr } = await supabaseClient.storage.from('sky-photos').upload(fileName, compressed);
+            if (upErr) throw upErr;
 
             const { data: urlData } = supabaseClient.storage.from('sky-photos').getPublicUrl(fileName);
-            const publicUrl = urlData.publicUrl;
 
-            // STEP 4: Database Save
-            const { error: dbError } = await supabaseClient
-                .from('photos')
-                .insert([{
-                    url: publicUrl,
-                    caption: userCaption,
-                    category: category,
-                    uploader_id: mySkyUserId
-                }]);
+            // DATABASE INSERT
+            const { error: dbErr } = await supabaseClient.from('photos').insert([{
+                url: urlData.publicUrl,
+                caption: document.getElementById("captionInput").value || "A beautiful sky",
+                category: category,
+                uploader_id: myId
+            }]);
 
-            if (dbError) throw dbError;
-
-            alert("Sky shared successfully! 🌍");
+            if (dbErr) throw dbErr;
             window.location.href = "gallery.html";
-
         } catch (err) {
-            console.error(err);
-            alert("Error: " + err.message);
+            alert("Upload failed: " + err.message);
             uploadBtn.disabled = false;
             uploadBtn.innerText = "Share the Sky";
         }
