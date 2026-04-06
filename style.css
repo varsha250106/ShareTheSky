@@ -4310,3 +4310,39 @@ header {
   animation: shake 0.3s linear;
   border: 2px solid #ff4757; /* Red flash for error */
 }
+/* 1. Fix the "HomeUpload" spacing */
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 30px; /* This creates the space between links */
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--dark-text);
+    font-weight: 500;
+}
+
+/* 2. Make the header look like it's floating */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 5%;
+    background: white;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08); /* Stronger floating shadow */
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+/* 3. The Floating Cloud Animation */
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+.floating-cloud {
+    animation: float 3s ease-in-out infinite;
+    width: 40px;
+}
