@@ -10,7 +10,7 @@
         :root { --primary-purple: #6c63ff; --dark-text: #2d2d6a; --danger: #ff4d6d; }
         body { font-family: 'Poppins', sans-serif; background: #f8faff; margin: 0; }
         
-        /* FIX: Navigation Bar Spacing & Floating Look */
+        /* Fixed Navigation Spacing */
         header { 
             display: flex; 
             justify-content: space-between; 
@@ -56,13 +56,9 @@
 <button id="modToggle" onclick="toggleModMode()">Admin View</button>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script>
-    // Remove type="module" from the tag above to fix the global variable error
     const SUPABASE_URL = 'https://quunbblagrcwayyeiahv.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF1dW5iYmxhZ3Jjd2F5eWVpYWh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzNjQ4MjcsImV4cCI6MjA5MDk0MDgyN30.ylX47zmQXI_kAkY3wQUyJz0BqZ7xZ3hZARonm80Id3M';
-    
-    // Initialize the client
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     
     const myId = localStorage.getItem("mySkyUserId") || "user_" + Math.random().toString(36).substr(2, 9);
@@ -73,23 +69,25 @@
     async function loadGallery() {
         const grid = document.getElementById('grid');
         
-        // This query handles the FALSE and NULL columns correctly
-        let query = supabaseClient.from('photos').select('*, likes(count)');
+        // FIX: Removed likes(count) to prevent the Relationship Error
+        let query = supabaseClient.from('photos').select('*');
         
         if (isModMode) {
             query = query.eq('is_reported', true);
         } else {
+            // Allows showing images that are both FALSE and NULL
             query = query.or('is_reported.eq.false,is_reported.is.null');
         }
         
         const { data: photos, error } = await query.order('id', { ascending: false });
 
         if (error) {
-            console.error("Detailed Supabase Error:", error);
+            console.error("Supabase Error:", error);
             grid.innerHTML = `<p style="text-align:center; width:100%;">Connection Error: ${error.message}</p>`;
             return;
         }
 
+        // Fetch user's likes separately to keep hearts accurate
         const { data: myLikes } = await supabaseClient.from('likes').select('photo_id').eq('user_id', myId);
         const myLikedIds = new Set(myLikes?.map(l => l.photo_id));
 
@@ -109,6 +107,7 @@
                 <div class="card-actions">
                     ${!isModMode ? `<button class="action-btn" onclick="reportSky(${photo.id})" title="Report"><i class="fa-solid fa-flag"></i></button>` : ''}
                     ${isOwner || isModMode ? `<button class="action-btn" onclick="deleteSky(${photo.id})" style="color:var(--danger);"><i class="fa-solid fa-trash"></i></button>` : ''}
+                    ${isModMode ? `<button class="action-btn" onclick="clearReport(${photo.id})" style="color:green;"><i class="fa-solid fa-check"></i></button>` : ''}
                 </div>
                 <img src="${photo.url}" loading="lazy">
                 <div class="sky-info">
@@ -122,7 +121,6 @@
         });
     }
 
-    // Attach functions to window so they work with onclick attributes
     window.toggleLike = async (el, photoId) => {
         if (el.classList.contains('liked')) {
             await supabaseClient.from('likes').delete().eq('photo_id', photoId).eq('user_id', myId);
@@ -140,6 +138,11 @@
         } 
     };
     
+    window.clearReport = async (id) => { 
+        await supabaseClient.from('photos').update({ is_reported: false }).eq('id', id); 
+        loadGallery(); 
+    };
+
     window.deleteSky = async (id) => { 
         if(confirm("Delete permanently?")) { 
             await supabaseClient.from('photos').delete().eq('id', id); 
@@ -156,7 +159,6 @@
         } 
     };
 
-    // Start the loading process
     loadGallery();
 </script>
 </body>
