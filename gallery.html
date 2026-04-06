@@ -10,7 +10,6 @@
         :root { --primary-purple: #6c63ff; --dark-text: #2d2d6a; --danger: #ff4d6d; }
         body { font-family: 'Poppins', sans-serif; background: #f8faff; margin: 0; }
         
-        /* Fixed Navigation Spacing */
         header { 
             display: flex; 
             justify-content: space-between; 
@@ -22,37 +21,79 @@
             top: 0; 
             z-index: 1000; 
         }
+
         .nav-links { display: flex; gap: 25px; align-items: center; }
         .nav-links a { text-decoration: none; color: var(--dark-text); font-weight: 500; }
 
+        /* FIX: Explore Dropdown Menu */
+        .dropdown { position: relative; display: inline-block; }
+        .dropbtn { background: none; border: none; font-family: inherit; font-weight: 500; color: var(--dark-text); cursor: pointer; padding: 0; display: flex; align-items: center; gap: 5px; }
+        .dropdown-content { 
+            display: none; position: absolute; right: 0; background-color: white; 
+            min-width: 160px; box-shadow: 0px 8px 16px rgba(0,0,0,0.1); 
+            border-radius: 12px; z-index: 1; overflow: hidden; margin-top: 10px;
+        }
+        .dropdown-content a { color: var(--dark-text); padding: 12px 16px; text-decoration: none; display: block; font-size: 0.9rem; transition: 0.2s; }
+        .dropdown-content a:hover { background-color: #f0f4ff; color: var(--primary-purple); }
+        .dropdown:hover .dropdown-content { display: block; }
+
+        /* Gallery Layout & High-Quality Fix */
         .gallery-grid { columns: 3 250px; column-gap: 20px; width: 92%; max-width: 1200px; margin: 40px auto; }
         .sky-card { break-inside: avoid; margin-bottom: 20px; background: white; border-radius: 20px; overflow: hidden; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: 0.3s; }
-        .sky-card img { width: 100%; display: block; cursor: zoom-in; }
+        
+        .sky-card img { 
+            width: 100%; 
+            display: block; 
+            cursor: zoom-in; 
+            object-fit: cover; /* Prevents stretching */
+            background: #eee;
+        }
         
         .card-actions { position: absolute; top: 12px; right: 12px; display: flex; gap: 8px; opacity: 0; transition: 0.3s; z-index: 10; }
-        .sky-card:hover { transform: translateY(-5px); }
         .sky-card:hover .card-actions { opacity: 1; }
         
         .action-btn { background: rgba(255,255,255,0.9); border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .sky-info { padding: 15px; }
-        .like-container { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
         .like-btn { cursor: pointer; font-size: 1.3rem; color: #ccc; transition: 0.3s; }
         .like-btn.liked { color: var(--danger); }
         .sky-tag { margin-left: auto; font-size: 0.7rem; background: #f0f4ff; color: var(--primary-purple); padding: 4px 10px; border-radius: 20px; }
+
+        /* Zoom Modal Style */
+        .zoom-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 2000; display: none;
+            align-items: center; justify-content: center; cursor: zoom-out;
+        }
+        .zoom-overlay img { max-width: 90%; max-height: 90%; border-radius: 10px; }
         
-        #modToggle { position: fixed; bottom: 20px; right: 20px; padding: 10px 20px; border-radius: 30px; background: var(--dark-text); color: white; border: none; cursor: pointer; opacity: 0.6; font-family: 'Poppins'; }
+        #modToggle { position: fixed; bottom: 20px; right: 20px; padding: 10px 20px; border-radius: 30px; background: var(--dark-text); color: white; border: none; cursor: pointer; opacity: 0.6; }
         @media (max-width: 768px) { .gallery-grid { columns: 2 160px; } }
     </style>
 </head>
 <body>
+
 <header>
     <div class="logo"><a href="index.html" style="text-decoration:none; font-weight:600; color:var(--dark-text);">ShareTheSky</a></div>
     <nav class="nav-links">
         <a href="index.html">Home</a>
-        <a href="upload.html">Upload</a>
+        <div class="dropdown">
+            <button class="dropbtn">Explore <i class="fa-solid fa-chevron-down" style="font-size:0.7rem;"></i></button>
+            <div class="dropdown-content">
+                <a href="upload.html">Upload</a>
+                <a href="match.html">Sky Match</a>
+                <a href="golden-hour.html">Golden Hour</a>
+                <a href="about.html">About Me</a>
+            </div>
+        </div>
     </nav>
 </header>
+
 <main><div class="gallery-grid" id="grid"></div></main>
+
+<div class="zoom-overlay" id="zoomOverlay" onclick="this.style.display='none'">
+    <img id="zoomImg" src="">
+</div>
+
 <button id="modToggle" onclick="toggleModMode()">Admin View</button>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -60,44 +101,26 @@
     const SUPABASE_URL = 'https://quunbblagrcwayyeiahv.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF1dW5iYmxhZ3Jjd2F5eWVpYWh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzNjQ4MjcsImV4cCI6MjA5MDk0MDgyN30.ylX47zmQXI_kAkY3wQUyJz0BqZ7xZ3hZARonm80Id3M';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-    
     const myId = localStorage.getItem("mySkyUserId") || "user_" + Math.random().toString(36).substr(2, 9);
     localStorage.setItem("mySkyUserId", myId);
-    
     let isModMode = false;
 
     async function loadGallery() {
         const grid = document.getElementById('grid');
-        
-        // FIX: Removed likes(count) to prevent the Relationship Error
-        let query = supabaseClient.from('photos').select('*');
-        
-        if (isModMode) {
-            query = query.eq('is_reported', true);
-        } else {
-            // Allows showing images that are both FALSE and NULL
-            query = query.or('is_reported.eq.false,is_reported.is.null');
-        }
-        
-        const { data: photos, error } = await query.order('id', { ascending: false });
+        // FIX: Relationship Error
+        let { data: photos, error } = await supabaseClient.from('photos').select('*')
+            .or('is_reported.eq.false,is_reported.is.null')
+            .order('id', { ascending: false });
 
         if (error) {
-            console.error("Supabase Error:", error);
-            grid.innerHTML = `<p style="text-align:center; width:100%;">Connection Error: ${error.message}</p>`;
+            grid.innerHTML = `<p style="text-align:center;">Error loading photos.</p>`;
             return;
         }
 
-        // Fetch user's likes separately to keep hearts accurate
         const { data: myLikes } = await supabaseClient.from('likes').select('photo_id').eq('user_id', myId);
         const myLikedIds = new Set(myLikes?.map(l => l.photo_id));
 
         grid.innerHTML = '';
-        
-        if (!photos || photos.length === 0) {
-            grid.innerHTML = `<p style="text-align:center; width:100%;">No skies found! ☁️</p>`;
-            return;
-        }
-
         photos.forEach(photo => {
             const isOwner = photo.uploader_id === myId;
             const isLiked = myLikedIds.has(photo.id);
@@ -105,14 +128,13 @@
             card.className = 'sky-card';
             card.innerHTML = `
                 <div class="card-actions">
-                    ${!isModMode ? `<button class="action-btn" onclick="reportSky(${photo.id})" title="Report"><i class="fa-solid fa-flag"></i></button>` : ''}
+                    <button class="action-btn" onclick="reportSky(${photo.id})"><i class="fa-solid fa-flag"></i></button>
                     ${isOwner || isModMode ? `<button class="action-btn" onclick="deleteSky(${photo.id})" style="color:var(--danger);"><i class="fa-solid fa-trash"></i></button>` : ''}
-                    ${isModMode ? `<button class="action-btn" onclick="clearReport(${photo.id})" style="color:green;"><i class="fa-solid fa-check"></i></button>` : ''}
                 </div>
-                <img src="${photo.url}" loading="lazy">
+                <img src="${photo.url}" onclick="openZoom('${photo.url}')">
                 <div class="sky-info">
                     <h3 style="margin:0; font-size:0.9rem;">${photo.caption || 'Beautiful View'}</h3>
-                    <div class="like-container">
+                    <div style="display:flex; align-items:center; gap:10px; margin-top:10px;">
                         <i class="fa-heart ${isLiked ? 'fa-solid liked' : 'fa-regular'} like-btn" onclick="toggleLike(this, ${photo.id})"></i>
                         <span class="sky-tag">${photo.category}</span>
                     </div>
@@ -120,6 +142,14 @@
             grid.appendChild(card);
         });
     }
+
+    // Zoom Function
+    window.openZoom = (url) => {
+        const overlay = document.getElementById('zoomOverlay');
+        const img = document.getElementById('zoomImg');
+        img.src = url;
+        overlay.style.display = 'flex';
+    };
 
     window.toggleLike = async (el, photoId) => {
         if (el.classList.contains('liked')) {
@@ -131,32 +161,9 @@
         }
     };
 
-    window.reportSky = async (id) => { 
-        if(confirm("Report this photo?")) { 
-            await supabaseClient.from('photos').update({ is_reported: true }).eq('id', id); 
-            loadGallery(); 
-        } 
-    };
-    
-    window.clearReport = async (id) => { 
-        await supabaseClient.from('photos').update({ is_reported: false }).eq('id', id); 
-        loadGallery(); 
-    };
-
-    window.deleteSky = async (id) => { 
-        if(confirm("Delete permanently?")) { 
-            await supabaseClient.from('photos').delete().eq('id', id); 
-            loadGallery(); 
-        } 
-    };
-
     window.toggleModMode = () => { 
         const pass = prompt("Admin Pass:");
-        if (pass === "skyadmin123") { 
-            isModMode = !isModMode; 
-            document.getElementById('modToggle').innerText = isModMode ? "Public View" : "Admin View";
-            loadGallery(); 
-        } 
+        if (pass === "skyadmin123") { isModMode = !isModMode; loadGallery(); } 
     };
 
     loadGallery();
