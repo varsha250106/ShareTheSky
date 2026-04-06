@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="style.css">
     
     <style>
-        /* Category dropdown specific styling to match your Pinterest vibe */
         .category-select {
             width: 100%;
             padding: 12px;
@@ -77,13 +76,13 @@
         <a href="index.html">Home</a>
         <div class="dropdown">
             <button class="dropbtn">Explore ▾</button>
-           <div class="dropdown-content">
-    <a href="gallery.html">Gallery</a>
-    <a href="upload.html">Upload</a>
-    <a href="skymatch.html" style="color:var(--primary-purple); font-weight:bold;">Sky Match 🎮</a>
-      <a href="goldenhour.html">Golden Hour</a>         
-    <a href="about.html">About Me</a>
-</div>
+            <div class="dropdown-content">
+                <a href="gallery.html">Gallery</a>
+                <a href="upload.html">Upload</a>
+                <a href="skymatch.html" style="color:var(--primary-purple); font-weight:bold;">Sky Match 🎮</a>
+                <a href="goldenhour.html">Golden Hour</a>          
+                <a href="about.html">About Me</a>
+            </div>
         </div>
     </nav>
 </header>
@@ -97,7 +96,7 @@
                     <img src="https://img.icons8.com/fluency/96/cloud.png" alt="Sky Icon" class="upload-icon-small">
                 </div>
                 <p id="uploadText" class="upload-instruction">Click to select or drag your sky here</p>
-                <img id="previewImage" class="preview-img" style="display:none;">
+                <img id="previewImage" class="preview-img" style="display:none; max-width: 100%; border-radius: 12px;">
             </div>
         </div>
         <input type="file" id="fileInput" accept="image/*" style="display: none;">
@@ -124,6 +123,11 @@
     <p>© 2026 ShareTheSky — Created with love ♥</p>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
+<script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
+
 <script>
     function toggleMobileMenu() {
         const nav = document.getElementById("navLinks");
@@ -134,32 +138,21 @@
 </script>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    // --- SUPABASE SETUP ---
+    const SUPABASE_URL = 'https://quunbblagrcwayyeiahv.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_ktjfitGlZ3F-Kvrji4YYvvQ_yuY3g...'; // Paste full key from your settings
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyDxgtNzywhjYGR7R2XMVobR73-SioT6v98",
-        authDomain: "sharethesky-a9c7d.firebaseapp.com",
-        projectId: "sharethesky-a9c7d",
-        storageBucket: "sharethesky-a9c7d.firebasestorage.app",
-        messagingSenderId: "1047232389865",
-        appId: "1:1047232389865:web:37694bf13bcef31f570678"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
+    // --- USER ID ---
     let mySkyUserId = localStorage.getItem("mySkyUserId") || "user_" + Math.random().toString(36).substr(2, 9);
     localStorage.setItem("mySkyUserId", mySkyUserId);
-
-    const cloudName = "dqpmybazh";
-    const uploadPreset = "sharethesky";
 
     const fileInput = document.getElementById("fileInput");
     const previewImage = document.getElementById("previewImage");
     const uploadText = document.getElementById("uploadText");
     const uploadBtn = document.getElementById("uploadBtn");
 
+    // Preview Logic
     fileInput.addEventListener("change", function() {
         const file = this.files[0];
         if (file) {
@@ -171,56 +164,72 @@
         }
     });
 
+    // Upload Logic
     uploadBtn.addEventListener("click", async () => {
         const file = fileInput.files[0];
         const category = document.getElementById("categorySelect").value;
-        
+        const userCaption = document.getElementById("captionInput").value.trim() || "Untitled Sky";
+
         if (!file) return alert("Please select a sky photo first!");
-        if (!category) return alert("Please select a category for your sky!");
+        if (!category) return alert("Please select a category!");
 
         uploadBtn.disabled = true;
-        uploadBtn.innerText = "Checking the sky...";
-
-        let userCaption = document.getElementById("captionInput").value.trim();
-        if (userCaption === "") userCaption = "Untitled Sky";
-
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("upload_preset", uploadPreset);
+        uploadBtn.innerText = "Scanning sky...";
 
         try {
-            const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-                method: "POST",
-                body: formData
-            });
-            const data = await res.json();
+            // STEP 1: AI Verification
+            const model = await mobilenet.load();
+            const predictions = await model.classify(previewImage);
+            const isSky = predictions.some(p => 
+                p.className.toLowerCase().includes('sky') || 
+                p.className.toLowerCase().includes('cloud') ||
+                p.className.toLowerCase().includes('sunset')
+            );
 
-            let isSafe = true;
-            if (data.moderation && data.moderation.length > 0) {
-                if (data.moderation[0].status !== "approved") isSafe = false;
-            }
-
-            if (!isSafe) {
-                alert("☁️ Sky Check Failed: AI restricted this image.");
+            if (!isSky) {
+                alert("☁️ Sky Check Failed: Please upload an actual sky photo.");
                 uploadBtn.disabled = false;
                 uploadBtn.innerText = "Share the Sky";
                 return;
             }
 
-            await addDoc(collection(db, "photos"), {
-                url: data.secure_url,
-                caption: userCaption,
-                category: category, // SAVING CATEGORY HERE
-                date: new Date().toLocaleString(),
-                likes: [], 
-                uploaderId: mySkyUserId 
-            });
+            uploadBtn.innerText = "Compressing...";
+
+            // STEP 2: Compression
+            const options = { maxSizeMB: 0.3, maxWidthOrHeight: 1920, useWebWorker: true };
+            const compressedFile = await imageCompression(file, options);
+
+            uploadBtn.innerText = "Uploading...";
+
+            // STEP 3: Storage Upload
+            const fileName = `${Date.now()}_${mySkyUserId}.jpg`;
+            const { data: uploadData, error: uploadError } = await supabaseClient.storage
+                .from('sky-photos')
+                .upload(fileName, compressedFile);
+
+            if (uploadError) throw uploadError;
+
+            const { data: urlData } = supabaseClient.storage.from('sky-photos').getPublicUrl(fileName);
+            const publicUrl = urlData.publicUrl;
+
+            // STEP 4: Database Save
+            const { error: dbError } = await supabaseClient
+                .from('photos')
+                .insert([{
+                    url: publicUrl,
+                    caption: userCaption,
+                    category: category,
+                    uploader_id: mySkyUserId
+                }]);
+
+            if (dbError) throw dbError;
 
             alert("Sky shared successfully! 🌍");
             window.location.href = "gallery.html";
+
         } catch (err) {
             console.error(err);
-            alert("Connection error. Try again!");
+            alert("Error: " + err.message);
             uploadBtn.disabled = false;
             uploadBtn.innerText = "Share the Sky";
         }
